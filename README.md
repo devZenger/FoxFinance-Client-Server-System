@@ -34,7 +34,10 @@ erDiagram
         int customer_id PK "not null"
         string name "not null"
         string email "not null"
+        string phone_number "not null"
+        string birthdate "not null"
         decimal deposit
+        string reference_account "not null"
         string password "not null"
         string registration_date "not null"
     }
@@ -43,7 +46,7 @@ erDiagram
         int transaction_id PK "not null"
         int customer_id FK "not null"
         string wkn FK "not null"
-        string type "not null"
+        enum action "not null"
         int count "not null"
         decimal price_per_stock "not null"
         decimal order_charge "not null"

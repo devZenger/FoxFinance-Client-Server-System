@@ -1,5 +1,18 @@
 from menubase import MenuBase
 
+     
+class CreateAccount(MenuBase):
+    menu_title = "Konto erstellen"
+    menu_formular = {"Name": " ", "E-mail Adresse": " ", "Handynummer": " ", "Passwort": " "}
+    
+    def run(self):
+        filled_formular = self.execute_formular()
+        
+        print("Create Account")
+        for k, v, in filled_formular.items():
+            print(f"{k} = {v}")
+ 
+ 
 class Login(MenuBase):
     menu_title = "Login Menü"
     menu_formular = {"E-mail Adresse: ": " ", "Passwort :": " "}
@@ -13,6 +26,24 @@ class Login(MenuBase):
 
     def __init__(self):
         super().__init__(self.menu_title, self.menu_formular)
+        
+
+class Information(MenuBase):
+    menu_title = "Informationen"
+    infos = "Fox Finance bietet umfassenden Service rund um das Thema Aktien\n"        
+    
+    def back(self):
+        print("zurück")
+        main_menu = MainMenu()
+        main_menu.run()
+    
+    menu_points = {infos: " ", "1. zurück": back}
+    
+    def __init__(self):
+        super().__init__(self.menu_title, self.menu_points)
+        
+    def run(self):
+        self.execute_choice()
 
 class MainMenu(MenuBase):
     menu_title = "Hauptmenü"
@@ -28,14 +59,15 @@ class MainMenu(MenuBase):
         login.login_check()
 
     def information(self):
-        print("Information")
+        information = Information()
+        information.run()
 
     def end_programm(self):
         print("Programm beenden")
         exit(0)
 
     menu_points = {
-        "3.Beispieldepot betrachten": example_portfolio,
+        "1.Beispieldepot betrachten": example_portfolio,
         "2.Konto erstellen": create_account,
         "3.Login": login,
         "4.Informationen": information,
