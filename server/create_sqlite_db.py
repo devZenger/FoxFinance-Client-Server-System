@@ -10,15 +10,15 @@ cursor = connection.cursor()
 
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            registration TEXT DEFAULT (CURRENT_TIMESTAMP)
+            registration TEXT DEFAULT (CURRENT_TIMESTAMP),
             last_login TEXT DEFAULT (CURRENT_TIMESTAMP)            
             )"""
 cursor.execute(sql)   
             
 sql = """CREATE TABLE authentication(
             customer_id INTEGER PRIMARY KEY,
-            email TEXT
-            phone TEXT
+            email TEXT,
+            phone TEXT,
             password TEXT,
             FOREIGEN KEY (customer_id) REFEERENCES customers(customer_id),
             UNIQUE (customer_id, email)
@@ -31,7 +31,7 @@ sql = """CREATE TABLE customer_adresses(
             last_name TEXT,
             street TEXT,
             zip_code INTEGER,
-            city TEXT
+            city TEXT,
             birthday TEXT,
             FOREIGEN KEY (customer_id) REFEERENCES customers(customer_id),
             UNDIQUE (customer_id, first_name, last_name, birthday)
