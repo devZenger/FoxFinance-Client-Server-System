@@ -1,4 +1,7 @@
+import requests
+
 from menubase import MenuBase
+
 
      
 class CreateAccount(MenuBase):
@@ -30,7 +33,8 @@ class Login(MenuBase):
 
 class Information(MenuBase):
     menu_title = "Informationen"
-    infos = "Fox Finance bietet umfassenden Service rund um das Thema Aktien\n"        
+    response = requests.get('http://127.0.0.1:5000/information')
+    infos = response #"Fox Finance bietet umfassenden Service rund um das Thema Aktien\n"        
     
     def back(self):
         print("zurück")

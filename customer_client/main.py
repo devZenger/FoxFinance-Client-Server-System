@@ -1,6 +1,7 @@
 from menu import MainMenu
 
 
+
 def main():
     print("hello, world")
     menu = MainMenu()
