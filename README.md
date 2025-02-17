@@ -29,21 +29,46 @@ mindmap
 ````mermaid
 erDiagram
     customers ||--o{ transactions : makes
-    customers ||--o{ stock_watch : has
+    customers ||--o{ stock_watch_list : watch
     customers {
-        int customer_id PK "not null"
-        string name "not null"
+        int customer_id PK
+        string registration_date "not null"
+        string last_login "not null"
+    }
+
+    authentication ||--|| customers : use
+    authentication {
+        int customer_id PK, FK
         string email "not null"
         string phone_number "not null"
-        string birthdate "not null"
-        decimal deposit
-        string reference_account "not null"
         string password "not null"
-        string registration_date "not null"
     }
+
+    customer_adresses ||--|| customers : owns
+    customer_adresses{
+        int customer_id PK, FK
+        string first_name "not null"
+        string last_name "not null"
+        string street "not null"
+        int zip_coide "not null"
+        string city "not null"
+        string birthdate "not null"
+    }
+
+    
+
+    financials ||--|| customers : has
+    financials {
+        int costumer_id PK, FK
+        string reference_account "not null"
+        decimal balance "not null"
+    }
+
+
+    
     transactions ||--o{ stocks : contains
     transactions {
-        int transaction_id PK "not null"
+        int transaction_id PK
         int customer_id FK "not null"
         string wkn FK "not null"
         enum action "not null"
@@ -51,16 +76,16 @@ erDiagram
         decimal price_per_stock "not null"
         decimal order_charge "not null"
         string transaction_date "not null"
-        }
+    }
 
     stocks ||--o{ stock_data : has
     stocks {
-        string wkn PK "not null"
+        string wkn PK 
         string ticker_symbol "not null"
         string company_name "not null"
     }
     stock_data {
-        string dataID PK "not null"
+        string dataID PK 
         string wkn FK "not null"
         string date "not null"
         decimal open "not null"
@@ -73,15 +98,15 @@ erDiagram
         decimal stock_splits "not null"
     }
     employees {
-        int emplayee_id PK "not null"
+        int emplayee_id PK
         string name "not null"
         string email_adress "not null"
         string password "not null"
     }
 
-    stock_watch ||--o{ stocks : contains
-    stock_watch {
-        int watchlist_id PK "not null"
+    stock_watch_list ||--o{ stocks : contains
+    stock_watch_list {
+        int watchlist_id PK
         int customer_id FK "not null"
         string wkn FK "not null"
         decimal price_per_stock "not null"
