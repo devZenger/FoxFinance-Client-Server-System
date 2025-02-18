@@ -1,0 +1,150 @@
+
+
+
+class RegistrationForm:
+    def __init__(self):
+        self._last_name = None
+        self._first_name = None
+        self._street = None
+        self._house_number = None
+        self._zip_code = None
+        self._city = None
+        self._birthday = None
+        self._email = None
+        self._phone_number = None
+        self._reference_account = None
+        self._password = None
+    
+    # last name
+    @property
+    def last_name(self):
+        return self._last_name
+    
+    @last_name.setter
+    def last_name(self, input):
+        if len(input) >= 2:
+            self._last_name = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # first name
+    @property
+    def first_name(self):
+        return self._first_name
+    
+    @last_name.setter
+    def first_name(self, input):
+        if len(input) >= 2:
+            self._first_name = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    #  street
+    @property
+    def street(self):
+        return self._street
+    
+    @last_name.setter
+    def street(self, input):
+        if len(input) >= 2:
+            self._street = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+        
+    # house number
+    @property
+    def house_number(self):
+        return self._street
+    
+    @house_number.setter
+    def house_number(self, input):
+        if len(input) >= 1:
+            self._house_number = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # city
+    @property
+    def city(self):
+        return self._city
+    
+    @city.setter
+    def city(self, input):
+        if len(input) >= 2:
+            self._city = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # zip code
+    @property
+    def zip_code(self):
+        return self._zip_code
+    
+    @zip_code.setter
+    def zip_code(self, input):
+        if len(input) >= 2:
+            self._zip_code = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # birthday
+    @property
+    def birthday(self):
+        return self._birthday
+    
+    @birthday.setter
+    def birthday(self, input):
+        if len(input) >= 2:
+            self._birthday = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # email
+    @property
+    def email(self):
+        return self._birthday
+    
+    @email.setter
+    def email(self, input):
+        if len(input) >= 2:
+            self._email = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # phone number
+    @property
+    def phone_number(self):
+        return self._birthday
+    
+    @phone_number.setter
+    def phone_number(self, input):
+        if len(input) >= 2:
+            self._phone_number = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # reference account
+    @property
+    def reference_acccount(self):
+        return self._birthday
+    
+    @reference_acccount.setter
+    def reference_acccount(self, input):
+        if len(input) >= 2:
+            self._reference_acccount = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    # passwort
+    @property
+    def passwort(self):
+        return self._passwort
+    
+    @passwort.setter
+    def passwort(self, input):
+        if len(input) >= 2:
+            self._passwort = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+    
+    
