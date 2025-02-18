@@ -14,6 +14,7 @@ class RegistrationForm:
         self._phone_number = None
         self._reference_account = None
         self._password = None
+        
     
     # last name
     @property
@@ -137,14 +138,15 @@ class RegistrationForm:
     
     # passwort
     @property
-    def passwort(self):
-        return self._passwort
+    def password(self):
+        return self._password
     
-    @passwort.setter
-    def passwort(self, input):
+    @password.setter
+    def password(self, input):
         if len(input) >= 2:
-            self._passwort = input
+            self._password = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-    
+  
+  
     
