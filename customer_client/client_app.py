@@ -1,9 +1,7 @@
 from controller import MainMenu
 
 
-
 def main():
-    print("hello, world")
     menu = MainMenu()
     menu.show()
     

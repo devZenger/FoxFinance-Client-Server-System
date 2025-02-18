@@ -1,23 +1,17 @@
 import requests
 
-from view.display_menus import DisplayMenuChoice
+from view import DisplayMenuChoice
+from view import  DisplayMenuForm
+
 from model.forms import RegistrationForm
 
 class MenuBase:
    
-    def __init__(self, title, menu_points, display_choice, infos = "", form = None):
-        if form is None:
-            form = {}
-            
-        self.menu_title = title
-        self.menu_points = menu_points
+    def __init__(self, display_choice):
         self.display_choice = display_choice
-        self.infos = infos
-        self.form = form
-    
     
     def show(self):
-        self.display_choice.execute_menu(self.menu_title, self.menu_points, self.infos, self.form)
+        self.display_choice.execute()
         
         
  
@@ -50,14 +44,14 @@ class CreateAccount(MenuBase):
         
     
     menu_points = {
-        "Account erstellen": create_account,
-        "Zurück zum Hauptmenü:": back
+        "1. Account erstellen": create_account,
+        "2. abbrechen Zurück zum Hauptmenü:": back
     }
   
       
     
     def __init__(self):
-        super().__init__(self.menu_title, self.menu_points, DisplayMenuChoice(), self.menu_form)
+        super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.menu_form))
         
         
 
@@ -85,13 +79,13 @@ class MainMenu(MenuBase):
         exit(0)
 
     menu_points = {
-        "1.Beispieldepot betrachten": example_portfolio,
-        "2.Konto erstellen": create_account,
-        "3.Login": login,
-        "4.Informationen": information,
-        "5.beenden": end_programm
+        "1. Beispieldepot betrachten": example_portfolio,
+        "2. Konto erstellen": create_account,
+        "3. Login": login,
+        "4. Informationen": information,
+        "5. beenden": end_programm
         }
 
     def __init__(self):
-        super().__init__(self.menu_title, self.menu_points, DisplayMenuChoice(), self.info)
+        super().__init__(DisplayMenuChoice(self.menu_title, self.menu_points, self.info))
     
