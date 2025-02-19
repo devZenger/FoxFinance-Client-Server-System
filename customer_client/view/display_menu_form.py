@@ -28,12 +28,12 @@ class DisplayMenuForm(DisplayMenuChoice):
                     setattr(self.to_fill, key, user_input)
                     break
                 except Exception as e:
-                    print(f"Fehlerhafte eingabe: {e}")
+                    print(f"\tFehlerhafte eingabe: {e}")
         print(self.line)
                     
 
     def display_filled_form(self):
-        print("Bitte Eingaben überprüfen")
+        print("\tBitte Eingaben überprüfen")
         for key, value in self.form_names.items():
             print(f"\t{value}: {getattr(self.to_fill, key)}")
         

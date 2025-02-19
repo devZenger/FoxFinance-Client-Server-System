@@ -10,9 +10,6 @@ from .menu_base import MenuBase
 from .login_menu import LoginMenu
 
 
-        
-        
- 
  
 class CreateAccount(MenuBase):         
     def __init__(self):
@@ -31,6 +28,11 @@ class CreateAccount(MenuBase):
             "reference_account": "Referenzkonto (IBAN)",
             "password": "Passwort"
         }
+        self.menu_points = {
+            "1. Account erstellen": self.create_account,
+            "2. abbrechen Zurück zum Hauptmenü:": self.back
+        }
+        
         super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.form_names, self.form))
 
     def back(self):
@@ -48,11 +50,6 @@ class CreateAccount(MenuBase):
             print("Account erstellt")
         else:
             print("Fehler", response.status_code)
-    
-    menu_points = {
-        "1. Account erstellen": create_account,
-        "2. abbrechen Zurück zum Hauptmenü:": back
-    }
 
 
 class MainMenu(MenuBase):

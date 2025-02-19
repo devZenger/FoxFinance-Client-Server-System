@@ -17,13 +17,13 @@ class LoginForm:
     
     @property
     def password(self):
-        return self.password
+        return self._password
     @password.setter
     def password(self, input):
         if len(input) > 12:
-            self.password = input
+            self._password = input
         else:
-            raise ValueError("Fehler")
+            raise ValueError("min. 12 Zeichen")
     
     def to_dict(self):
         return {
