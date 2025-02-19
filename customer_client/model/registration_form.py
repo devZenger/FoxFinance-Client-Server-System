@@ -148,10 +148,22 @@ class RegistrationForm:
         else:
             raise ValueError("Mindestens zwei Zeichen")
         
-        
-    def testfunkt(self):
-        print("testfunkt")
-        
+
+    def to_dict(self):
+        return {
+            "last_name": self.last_name,
+            "first_name": self.first_name,
+            "street": self.street,
+            "house_number": self.house_number,
+            "zip_code": self.zip_code,
+            "city": self.city,
+            "birthday": self.birthday,
+            "email": self.email,
+            "phone_number": self.phone_number,
+            "reference_account": self.reference_acccount,
+            "password": self.password
+        }
+                
         
         
 

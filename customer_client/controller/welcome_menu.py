@@ -16,31 +16,16 @@ class MenuBase:
         
  
  
-class CreateAccount(MenuBase):
+class CreateAccount(MenuBase):      
+              
     
-        
-    
-    def back(self):
-        print("zurück")
-        main_menu = MainMenu()
-        main_menu.show()
-    
-    def create_account(self):
-        print("Account erstellt")
-        
-    
-    menu_points = {
-        "1. Account erstellen": create_account,
-        "2. abbrechen Zurück zum Hauptmenü:": back
-    }
   
       
-    
     def __init__(self):
         self.menu_title = "Konto erstellen"
         self.form = RegistrationForm()
         
-        self.menu_form_name = {
+        self.form_names = {
             "last_name": "Familiennamen",
             "first_name": "Vornamen",
             "street": "Straße",
@@ -53,7 +38,33 @@ class CreateAccount(MenuBase):
             "reference_account": "Referenzkonto (IBAN)",
             "password": "Passwort"
         }
-        super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.menu_form_name, self.form))
+        super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.form_names, self.form))
+    
+    
+    def back(self):
+        print("zurück")
+        main_menu = MainMenu()
+        main_menu.show()
+    
+    def create_account(self):
+        print("Bitte Eingaben2 überprüfen")
+        #to_send = self.to_fill.to_dict()
+        url =  'http://127.0.0.1:5000/create_customer_account/'
+        
+        response = requests.post(url, json = self.to_fill.to_dict())
+        if response.status_code == 200:
+            print ("Empfangen:", response.json())
+            print("Account erstellt")
+
+        else:
+            print("Fehler", response.status_code)
+    
+    menu_points = {
+        "1. Account erstellen": create_account,
+        "2. abbrechen Zurück zum Hauptmenü:": back
+    }
+
+
         
 
 class MainMenu(MenuBase):
