@@ -15,6 +15,8 @@ class DisplayMenuForm(DisplayMenuChoice):
         
         self.display_form()
         
+        self.display_filled_form()
+        
         self.display_option()
     
     
@@ -30,7 +32,7 @@ class DisplayMenuForm(DisplayMenuChoice):
         print(self.line)
                     
 
-
+    def display_filled_form(self):
         print("Bitte Eingaben überprüfen")
         for key, value in self.form_names.items():
             print(f"\t{value}: {getattr(self.to_fill, key)}")

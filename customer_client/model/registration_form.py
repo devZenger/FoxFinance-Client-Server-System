@@ -1,6 +1,3 @@
-
-
-
 class RegistrationForm:
     def __init__(self):
         self._last_name = None
@@ -26,7 +23,7 @@ class RegistrationForm:
         if len(input) >= 2:
             self._last_name = input
         else:
-            print("Mindestens zwei Zeichen")
+            raise ValueError("Mindestens zwei Zeichen")
     
     # first name
     @property
@@ -34,11 +31,10 @@ class RegistrationForm:
         return self._first_name
     @first_name.setter
     def first_name(self, input):
-        if len(input) < 2:
-            raise ValueError("Mindestens zwei Zeichen")   
+        if len(input) > 2:
+            self.first_name = input  
         else:
-             self._first_name = input
-            # raise ValueError("Mindestens zwei Zeichen")
+             raise ValueError("Mindestens zwei Zeichen")
     
     #  street
     @property

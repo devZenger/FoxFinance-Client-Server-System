@@ -5,26 +5,19 @@ from view import  DisplayMenuForm
 
 from model import RegistrationForm
 
-class MenuBase:
-   
-    def __init__(self, display_choice):
-        self.display_choice = display_choice
-    
-    def show(self):
-        self.display_choice.execute()
+from .menu_base import MenuBase
+
+from .login_menu import LoginMenu
+
+
         
         
  
  
-class CreateAccount(MenuBase):      
-              
-    
-  
-      
+class CreateAccount(MenuBase):         
     def __init__(self):
         self.menu_title = "Konto erstellen"
         self.form = RegistrationForm()
-        
         self.form_names = {
             "last_name": "Familiennamen",
             "first_name": "Vornamen",
@@ -39,8 +32,7 @@ class CreateAccount(MenuBase):
             "password": "Passwort"
         }
         super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.form_names, self.form))
-    
-    
+
     def back(self):
         print("zurück")
         main_menu = MainMenu()
@@ -48,14 +40,12 @@ class CreateAccount(MenuBase):
     
     def create_account(self):
         print("Bitte Eingaben2 überprüfen")
-        #to_send = self.to_fill.to_dict()
         url =  'http://127.0.0.1:5000/create_customer_account/'
         
         response = requests.post(url, json = self.to_fill.to_dict())
         if response.status_code == 200:
             print ("Empfangen:", response.json())
             print("Account erstellt")
-
         else:
             print("Fehler", response.status_code)
     
@@ -64,8 +54,6 @@ class CreateAccount(MenuBase):
         "2. abbrechen Zurück zum Hauptmenü:": back
     }
 
-
-        
 
 class MainMenu(MenuBase):
     menu_title = "Hauptmenü"
@@ -81,6 +69,8 @@ class MainMenu(MenuBase):
 
     def login(self):
         print ("Login")
+        login = LoginMenu()
+        login.show()
 
     def information(self):
         print("info")
