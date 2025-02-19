@@ -3,7 +3,7 @@ import requests
 from view import DisplayMenuChoice
 from view import  DisplayMenuForm
 
-from model.forms import RegistrationForm
+from model import RegistrationForm
 
 class MenuBase:
    
@@ -17,22 +17,8 @@ class MenuBase:
  
  
 class CreateAccount(MenuBase):
-    menu_title = "Konto erstellen"
-    form = RegistrationForm()
     
-    menu_form = {
-        "Familiennamen": form.last_name,
-        "Vornamen": form.first_name,
-        "Straße": form.street,
-        "Hausnummer": form.house_number,
-        "PLZ": form.zip_code,
-        "Wohnort": form.city,
-        "Geburtstag": form.birthday,
-        "E-Mail Adresse":form.email,
-        "Handynummer": form.phone_number,
-        "Referenzkonto (IBAN)": form.reference_acccount,
-        "Passwort": form.password   
-    }
+        
     
     def back(self):
         print("zurück")
@@ -51,10 +37,24 @@ class CreateAccount(MenuBase):
       
     
     def __init__(self):
-        super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.menu_form))
+        self.menu_title = "Konto erstellen"
+        self.form = RegistrationForm()
         
+        self.menu_form_name = {
+            "last_name": "Familiennamen",
+            "first_name": "Vornamen",
+            "street": "Straße",
+            "house_number": "Hausnummer",
+            "zip_code": "PLZ",
+            "city": "Stadt",
+            "birthday": "Geburtstag",
+            "email" : "E-Mail Adresse",
+            "phone_number": "Handynummer",
+            "reference_account": "Referenzkonto (IBAN)",
+            "password": "Passwort"
+        }
+        super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.menu_form_name, self.form))
         
-
 
 class MainMenu(MenuBase):
     menu_title = "Hauptmenü"
