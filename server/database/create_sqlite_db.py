@@ -7,7 +7,6 @@ if os.path.exists("FoxFinance.db"):
 connection = sqlite3.connect("FoxFinanceData.db")
 cursor = connection.cursor()
 
-
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -29,6 +28,7 @@ sql = """CREATE TABLE customer_adresses(
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
             street TEXT NOT NULL,
+            house_number TEXT NOT NULL
             zip_code INTEGER NOT NULL,
             city TEXT NOT NULL,
             birthday TEXT NOT NULL,
@@ -42,9 +42,6 @@ sql = """CREATE TABLE financials(
             balance REAL NOT NULL
             )"""
 cursor.execute(sql)
-
-
-
 
 sql = """CREATE TABLE stocks(
             wkn TEXT PRIMARY KEY,
@@ -77,7 +74,21 @@ sql = """CREATE TABLE stock_watch(
             )"""  
 cursor.execute(sql) 
 
-
+sql = """CREATE TABLE stock_indexes(
+            index_id INTEGER PRIMARY KEY
+            name TEXT NOT NULL
+            symbol INTERGER NOT NUll
+            )"""
+cursor.execute(sql)
+            
+sql = """ CREATE TABLE index_members(
+            wkn NOT NULL
+            index_id NOT NULL
+            PRIMARY KEY (wkn, index_id)
+            FOREIGN KEY (wkn) REFERENCES stocks
+            FOREIGN KEY (index_id) REFERENCES stock_indexes
+            )"""
+cursor.execute(sql)
 
 
 connection.commit()

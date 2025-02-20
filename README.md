@@ -16,7 +16,6 @@ mindmap
                     Kursübersicht
                     Postfach
             Informationen
-            Firmenportal
             Programm beenden
             
         Kunden Verwaltung
@@ -50,12 +49,11 @@ erDiagram
         string first_name "not null"
         string last_name "not null"
         string street "not null"
+        string house_number "not null"
         int zip_coide "not null"
         string city "not null"
         string birthdate "not null"
     }
-
-    
 
     financials ||--|| customers : has
     financials {
@@ -64,8 +62,6 @@ erDiagram
         decimal balance "not null"
     }
 
-
-    
     transactions ||--o{ stocks : contains
     transactions {
         int transaction_id PK
@@ -79,6 +75,7 @@ erDiagram
     }
 
     stocks ||--o{ stock_data : has
+    stocks ||--o{ index_members : "is part"
     stocks {
         string wkn PK 
         string ticker_symbol "not null"
@@ -113,5 +110,15 @@ erDiagram
         string transaction_date "not null"
     }
         
-        
 
+    stock_indexes {
+        int index_id PK "NOT NULL"
+        string name "NOT NULL"
+        string symbol "NOT NULL"
+    }
+
+    index_members ||--|| stock_indexes : includes
+    index_members {
+        string wkn PK, FK "NOT NULL"
+        int index_id PK, FK "NOT NULL"
+    }
