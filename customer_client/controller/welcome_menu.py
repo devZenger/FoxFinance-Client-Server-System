@@ -20,7 +20,7 @@ class WelcomeMenu(MenuBase):
         print("Beispieldepot in Bearbeitung")
 
     def create_account(self):
-        create_acc = CreateAccount()
+        create_acc = CreateAccountMenu()
         create_acc.show()
 
     def login(self):
