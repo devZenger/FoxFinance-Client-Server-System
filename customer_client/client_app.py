@@ -1,11 +1,8 @@
-from controller import MainMenu
-
+from controller import WelcomeMenu
 
 def main():
-    menu = MainMenu()
+    menu = WelcomeMenu()
     menu.show()
-    
-    
 
 if __name__ == "__main__":
    main()
