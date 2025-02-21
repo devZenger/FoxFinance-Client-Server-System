@@ -1,11 +1,10 @@
 import requests
 
 from view import DisplayMenuLogin
+from model import LoginForm
 
 from .menu_base import MenuBase
-from .welcome_menu import MainMenu
-
-from model import LoginForm
+from .welcome_menu import WelcomeMenu
 
 class LoginMenu(MenuBase):
      
@@ -34,5 +33,5 @@ class LoginMenu(MenuBase):
             print("Fehler", response.status_code)
 
     def discontinue(self):
-        main_menu = MainMenu()
+        main_menu = WelcomeMenu()
         main_menu.show()
