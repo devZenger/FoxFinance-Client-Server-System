@@ -117,7 +117,7 @@ erDiagram
         string symbol "NOT NULL"
     }
 
-    index_members ||--|| stock_indexes : includes
+    index_members }o--|| stock_indexes : includes
     index_members {
         string wkn PK, FK "NOT NULL"
         int index_id PK, FK "NOT NULL"
