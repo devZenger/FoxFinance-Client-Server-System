@@ -1,4 +1,4 @@
-class RegistrationForm:
+class RegistrationFormVertification:
     def __init__(self):
         self._last_name = None
         self._first_name = None
@@ -29,7 +29,6 @@ class RegistrationForm:
     @property
     def first_name(self):
         return self._first_name
-    
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:

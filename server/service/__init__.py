@@ -1,0 +1,1 @@
+from .registration_form_vertification import RegistrationFormVertification

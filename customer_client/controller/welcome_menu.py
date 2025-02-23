@@ -1,16 +1,12 @@
-import requests
 
 from view import DisplayMenuChoice
 from view import  DisplayMenuForm
-
 from model import RegistrationForm
 
 from .menu_base import MenuBase
-
-from.create_account_menu import CreateAccountMenu
-
+from .information_menu import InformationMenu 
+from .create_account_menu import CreateAccountMenu
 from .login_menu import LoginMenu
-
 
 class WelcomeMenu(MenuBase):
     menu_title = "Hauptmenü"
@@ -20,16 +16,16 @@ class WelcomeMenu(MenuBase):
         print("Beispieldepot in Bearbeitung")
 
     def create_account(self):
-        create_acc = CreateAccountMenu()
-        create_acc.show()
+        start = CreateAccountMenu()
+        start.show()
 
     def login(self):
-        print ("Login")
         login = LoginMenu()
         login.show()
-
+        
     def information(self):
-        print("info")
+        start = InformationMenu()
+        start.show()
 
     def end_programm(self):
         print("Programm beenden")

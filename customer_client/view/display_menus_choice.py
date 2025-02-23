@@ -47,6 +47,7 @@ class DisplayMenuChoice:
             if choice in key:
                 self.menu_points[key](self)
                 test = True
+                
         if test is False:
             print("Fehlerhafte eingabe")
        

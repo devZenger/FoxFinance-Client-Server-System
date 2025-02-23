@@ -2,15 +2,11 @@ import requests
 
 from view import DisplayMenuChoice
 from view import  DisplayMenuForm
-
 from model import RegistrationForm
 
+from .server_url import server_URL
 from .menu_base import MenuBase
-from .welcome_menu import WelcomeMenu
-
 from .login_menu import LoginMenu
-
-
 
 
 class CreateAccountMenu(MenuBase):         
@@ -37,16 +33,25 @@ class CreateAccountMenu(MenuBase):
         
         super().__init__(DisplayMenuForm(self.menu_title, self.menu_points, self.form_names, self.form))
 
-    def back(self):
-        print("zurück")
-        main_menu = WelcomeMenu()
-        main_menu.show()
-    
-    def create_account(self):
-        print("Bitte Eingaben2 überprüfen")
-        url =  'http://127.0.0.1:5000/create_customer_account/'
+    def back(self, test=None):
+        from .welcome_menu import WelcomeMenu
+        back = WelcomeMenu()
+        back.show()
         
-        response = requests.post(url, json = self.to_fill.to_dict())
+    def create_account(self, test= None):
+        print("\tBitte Eingaben überprüfen")
+        
+        data = self.display_choice.to_fill.to_dict()
+        
+        for d,v in data.items():
+            print(f"{d} value = {v}")
+        
+        
+        #url =  f"{server_URL}/create_customer_account/"
+        url =  'http://127.0.0.1:8000/create_costumer_account/'
+        
+        response = requests.post(url, json = self.form.to_dict())
+        
         if response.status_code == 200:
             print ("Empfangen:", response.json())
             print("Account erstellt")

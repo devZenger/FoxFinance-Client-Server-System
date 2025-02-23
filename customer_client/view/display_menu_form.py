@@ -17,7 +17,7 @@ class DisplayMenuForm(DisplayMenuChoice):
         
         self.display_filled_form()
         
-        self.display_option()
+        DisplayMenuChoice.display_option(self)
     
     
     def display_form(self):
