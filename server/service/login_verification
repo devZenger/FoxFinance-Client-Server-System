@@ -1,7 +1,0 @@
-from ..repository import AuthData
-
-class CustomerVerification:
-    def validation(self, input):
-        
-        
-        

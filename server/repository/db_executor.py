@@ -4,11 +4,11 @@ import os, sys
 
 class DBExecutor:
     def __init__(self):
-        self.path= "FoxFinanceData.db"
+        self.path= "FoxFinanceData1.db"
         self.cursor = None
         self.connection = None
         
-        if os.path.exists("FoxFinanceData.db"):
+        if os.path.exists("FoxFinanceData1.db"):
             print("Datenbank vorhanden")
         else:
             print("keine Datenbank")
@@ -41,6 +41,16 @@ class DBExecutor:
             raise Exception(f"Ausführungsprobleme: {str(e)}")
         
         return self.cursor
+    
+    def col_names(self):
+        col_name=[]
+        names = self.cursor.description
+        for name in names:
+            col_name.append(name[0])
+        
+        return col_name
+            
+        
     
     def close(self):
         self.connection.close()

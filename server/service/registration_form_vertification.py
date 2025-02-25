@@ -1,3 +1,5 @@
+from passlib.context import CryptContext
+
 class RegistrationFormVertification:
     def __init__(self):
         self._last_name = None
@@ -140,7 +142,8 @@ class RegistrationFormVertification:
     @password.setter
     def password(self, input):
         if len(input) >= 2:
-            self._password = input
+            password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            self._password = password_context.hash(input)
         else:
             raise ValueError("Mindestens zwei Zeichen")
         
