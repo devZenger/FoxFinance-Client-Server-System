@@ -6,6 +6,7 @@ from api import information, create_customer_accout
 server = FastAPI()
 
 
+
 server.include_router(information.router)
 server.include_router(create_customer_accout.router)
 
@@ -21,11 +22,11 @@ def start_server():
         port=8000,
         log_level="debug",
         reload=True)
-    
 
 
 
 if __name__ == "__main__":
+
     start_server()
     
     

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+
 from service import RegistrationFormVertification
 
 from repository import InsertCustomer
@@ -22,8 +23,7 @@ class AccountForm(BaseModel):
     
 
 @router.post("/create_costumer_account/")
-async def create_account(accountform: AccountForm):
-   
+async def create_account(accountform: AccountForm):   
    data = accountform.model_dump()
    rfv = RegistrationFormVertification()
    
@@ -34,6 +34,7 @@ async def create_account(accountform: AccountForm):
          setattr(rfv, key, value)
          
       except Exception as e:
+         print(f"Fehlerhafte eingabe für {key}: {e}")
          errors.append(f"Fehlerhafte eingabe für {key}: {e}")
    
    if errors:

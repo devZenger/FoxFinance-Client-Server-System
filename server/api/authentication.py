@@ -3,20 +3,16 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-class AccountForm(BaseModel):
-    last_name: str
-    first_name: str
-    street: str
-    house_number: str
-    zip_code: int
-    city: str
-    birthday: str
+class LoginForm(BaseModel):
     email: str
-    phone_number: str
-    reference_account: str
     password: str
     
 
-@router.post("create_account")
-async def create_account(accountform: AccountForm):
+@router.post("/login/")
+async def create_account(loginform: LoginForm):
+    
+    login_input = loginform.model_dump()
+    
+    
+    
     return {"message": "Accoount created"}

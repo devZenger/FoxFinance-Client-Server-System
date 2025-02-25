@@ -1,11 +1,3 @@
-from abc import ABC, abstractmethod
-
-
-class DisplayMenu(ABC):
-    @abstractmethod
-    def execute_menu(self, menu_title, menu_points, info):
-        pass
-
 
 
 class DisplayMenuChoice:

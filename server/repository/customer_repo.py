@@ -6,12 +6,11 @@ class InsertCustomer:
     
     def insert(self, input):
              
-        into = DBExecutor()
+        db_ex = DBExecutor()
 
         sql= """INSERT INTO customers(last_login) VALUES(?)"""
         value = (None,)
-        customer_id = into.execute_and_commit(sql, value).lastrowid
-
+        customer_id = db_ex.execute_and_commit(sql, value).lastrowid
 
         input["customer_id"]=customer_id
 
@@ -25,7 +24,7 @@ class InsertCustomer:
                     :zip_code,
                     :city,
                     :birthday)"""
-        into.execute_and_commit(sql, input)
+        db_ex.execute_and_commit(sql, input)
 
 
         sql = """INSERT INTO authentication VALUES(
@@ -33,16 +32,16 @@ class InsertCustomer:
                     :email,
                     :phone_number,
                     :password)"""
-        into.execute_and_commit(sql, input)
+        #db_ex.execute_and_commit(sql, input)
 
 
         sql = """INSERT INTO financials VALUES(
                     :customer_id,
                     :reference_account)"""
-        into.execute_and_commit(sql, input)
+        #db_ex.execute_and_commit(sql, input)
 
 
-        into.close()
+        db_ex.close()
         
 
 
