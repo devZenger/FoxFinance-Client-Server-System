@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from api import information, create_customer_accout
+from api import information, create_customer_accout, customer_depot
 
 server = FastAPI()
 
@@ -9,6 +9,7 @@ server = FastAPI()
 
 server.include_router(information.router)
 server.include_router(create_customer_accout.router)
+server.include_router(customer_depot.router)
 
 @server.get("/")
 async def root():

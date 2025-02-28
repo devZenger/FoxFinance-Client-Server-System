@@ -11,9 +11,19 @@ from pydantic import BaseModel
 
 from repository import AuthData
 
+
 SECRET_KEY = "fefbda68bb1af51ee7c4295f509b570a1aa96b01b754c4d50b52bdb3c17d7643"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
+
+
+#For this part https://fastapi.tiangolo.com/de/tutorial is used. So instead of customer, it is 
+# username used,
+
+def get_costumer_data(email: str):
+    search = AuthData()
+    user_dict = search.get_data(email)
+    return user_dict
 
 
 class Token(BaseModel):
@@ -44,7 +54,7 @@ def verify_password(plain_password, hashed_password):
 
 
 
-def get_user(email: str):
+#def get_user(email: str):
     db = AuthData()
     user_dict = db.get_data(email)
     return user_dict
@@ -56,13 +66,18 @@ def get_user(email: str):
    #     return UserInDB(**user_dict)
     
 
-def authenticate_user(username: str, password: str):
+def authenticate_customer(email: str, password: str):
     user = get_user(username)
     if not user:
         return False
     if not verify_password(password, user["password"]):
         return False
     return user
+
+
+
+
+
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()

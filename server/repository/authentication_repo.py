@@ -1,6 +1,6 @@
 import sqlite3
 
-from db_executor import DBExecutor
+from .db_executor import DBExecutor
 
 class AuthData:
     
