@@ -31,10 +31,12 @@ class Token(BaseModel):
 
 @router.post("/token")
 async def customer_login_for_access_token(
-    login_form: Annotated[EmailOAuth2PasswordRequestForm, Depends()],) -> Token:
+    login_form: EmailOAuth2PasswordRequestForm) -> Token:
     
     authentication = Authentication()
-    customer = authentication.autheticate_customer(login_form.email, login_form.password)
+    
+    print(login_form.email)
+    customer = authentication.authenticate_customer(login_form.email, login_form.password)
     
     if not customer:
         raise HTTPException(
@@ -43,5 +45,5 @@ async def customer_login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    
-    return Token(create_access_token(customer["email"]), token_type="bearer")
+    print(customer)
+    return Token(access_token = await create_access_token(customer["email"]), token_type="bearer")

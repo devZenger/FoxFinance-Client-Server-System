@@ -19,7 +19,8 @@ sql = """CREATE TABLE authentication(
             customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
             email TEXT UNIQUE NOT NULL,
             phone_number TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            disabled BOOL DEFAULT TRUE
             )"""
 cursor.execute(sql)   
 

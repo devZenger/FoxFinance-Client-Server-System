@@ -24,8 +24,8 @@ class LoginMenu(MenuBase):
         
     def login(self):
         url =  f"{server_URL}/token"
-        
-        response = requests.post()
+        print(url)
+        response = requests.post(url, json = self.login_form.to_dict())
         if response.status_code == 200:
             print ("Empfangen:", response.json())
             print("Account erstellt")

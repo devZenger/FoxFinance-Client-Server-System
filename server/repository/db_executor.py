@@ -4,7 +4,7 @@ import os, sys
 
 class DBExecutor:
     def __init__(self):
-        self.path= "FoxFinanceData1.db"
+        self.path= "FoxFinanceData.db"
         self.cursor = None
         self.connection = None
         
@@ -42,6 +42,19 @@ class DBExecutor:
         
         return self.cursor
     
+    
+    def execute_and_commit_just_sql(self, sql):
+        try:
+            self.cursor.execute(sql)
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"Ausführungsprobleme: {str(e)}")
+            raise Exception(f"Ausführungsprobleme: {str(e)}")
+        
+        return self.cursor
+    
+    
+        
     def col_names(self):
         col_name=[]
         names = self.cursor.description

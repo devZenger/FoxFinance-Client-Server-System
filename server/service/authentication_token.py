@@ -9,7 +9,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 
 
-from repository import AuthData
+from repository import get_auth_datas, insert_login_time
 
 SECRET_KEY = "fefbda68bb1af51ee7c4295f509b570a1aa96b01b754c4d50b52bdb3c17d7643"
 ALGORITHM = "HS256"
@@ -31,12 +31,13 @@ class User(BaseModel):
     email: str
     #full_name: str | None = None
     disabled: bool | None = None  
-    
 
-def get_costumer_data(email: str):
-    search = AuthData()
-    user_dict = search.get_data(email)
-    return user_dict
+  
+#def get_costumer_data(email: str):
+ #       search = AuthData()
+  #      user_dict = search.get_data(email)
+   #     return user_dict
+
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -46,20 +47,27 @@ class Authentication:
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     
-    
     def verify_password(self, input_password, hashed_password):
         return self.pwd_context.verify(input_password, hashed_password)
     
-    def autheticate_customer(self, email:str, password:str):
+    def authenticate_customer(self, email:str, password:str):
         
-        db_query = get_costumer_data(email)
+        print(f"ausgabe email in line 58 {email}")
+        db_query = get_auth_datas(email)
+        print(f"ausgage von db_query: {db_query}")
+        print(db_query)
         
         if not db_query:
             return False
-        if db_query[email] != email:
+        if db_query["email"] != email:
             return False
-        if not self.verify_password(password, db_query[password]):
+        if not self.verify_password(password, db_query["password"]):
             return False
+        
+        #login time to database
+        insert_login_time(db_query["customer_id"])
+        
+        
         return db_query
 
 
@@ -73,21 +81,30 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
+        print(f"payload {payload}")
+        email = payload.get("sub")
+        print(f"username: {email}")
+        if email is None:
             raise credtials_execption
-        token_data = TokenData(username = username)
+        token_data = TokenData(email = email)
     except InvalidTokenError:
         raise credtials_execption
-    user = get_costumer_data(username=token_data.username)
-    if user is None:
+    print(f"token data {token_data}")
+    print(f"token data.email {token_data.email}")
+    email = get_auth_datas(email=token_data.email)
+    if email is None:
         raise credtials_execption
-    return user
+    return email
 
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
-):
-    if current_user.disabled:
+):  
+    print(type(current_user))
+    print(f"currend_user {current_user}")
+    print(type(current_user))
+    current_user["disabled"] = False
+    print(f"currend_user2 {current_user}")
+    if current_user["disabled"]:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 

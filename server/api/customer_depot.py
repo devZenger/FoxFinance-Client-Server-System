@@ -16,8 +16,11 @@ class User(BaseModel):
 
 @router.get("/depot/")
 async def get_depot( current_customer: Annotated[User, Depends(get_current_active_user)]):
+    
+    useremail = current_customer
+    print(f"usermail: {useremail}")
         
         
         
         
-        return {"message":"Fox Finance offers great service"}
+    return {"message":"Fox Finance offers great service from /depot/"}
