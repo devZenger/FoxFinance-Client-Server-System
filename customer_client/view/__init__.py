@@ -1,3 +1,5 @@
-from .display_menus_choice import DisplayMenuChoice
-from .display_menu_form import DisplayMenuForm
-from .display_menu_login import DisplayMenuLogin
+
+from .display_menu_option import DisplayMenuOption
+from.display_menu_form import DisplayMenuForm
+from .display_menu_input import DisplayMenuInput
+from .display_responses import display_response

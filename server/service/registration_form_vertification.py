@@ -1,6 +1,6 @@
+from passlib.context import CryptContext
 
-
-class RegistrationForm:
+class RegistrationFormVertification:
     def __init__(self):
         self._last_name = None
         self._first_name = None
@@ -15,22 +15,6 @@ class RegistrationForm:
         self._balance = None
         self._password = None
         
-        
-        self.form_names = {
-            "last_name": "Familiennamen",
-            "first_name": "Vorname",
-            "street": "Straße (ohne Hausnummer)",
-            "house_number": "Hausnummer",
-            "city": "Stadt",
-            "zip_code": "Postleitzahl",
-            "birthday": "Geburtstag",
-            "email" : "E-Mail Adresse",
-            "phone_number": "Handynummer",
-            "reference_account": "Referenzkonto",
-            "balance": "Startgeld einzahlen",
-            "password": "Passwort"
-        }
-        
     
     # last name
     @property
@@ -43,21 +27,18 @@ class RegistrationForm:
             self._last_name = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # first name
     @property
     def first_name(self):
         return self._first_name
-    
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:
             self._first_name = input  
         else:
              raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     #  street
     @property
     def street(self):
@@ -69,8 +50,7 @@ class RegistrationForm:
             self._street = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+        
     # house number
     @property
     def house_number(self):
@@ -82,8 +62,7 @@ class RegistrationForm:
             self._house_number = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # city
     @property
     def city(self):
@@ -95,8 +74,7 @@ class RegistrationForm:
             self._city = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # zip code
     @property
     def zip_code(self):
@@ -108,8 +86,7 @@ class RegistrationForm:
             self._zip_code = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # birthday
     @property
     def birthday(self):
@@ -121,12 +98,11 @@ class RegistrationForm:
             self._birthday = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # email
     @property
     def email(self):
-        return self._email
+        return self._birthday
     
     @email.setter
     def email(self, input):
@@ -138,7 +114,7 @@ class RegistrationForm:
     # phone number
     @property
     def phone_number(self):
-        return self._phone_number
+        return self._birthday
     
     @phone_number.setter
     def phone_number(self, input):
@@ -146,8 +122,7 @@ class RegistrationForm:
             self._phone_number = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-
+    
     # reference account
     @property
     def reference_acccount(self):
@@ -159,8 +134,8 @@ class RegistrationForm:
             self._reference_acccount = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
-    # start capital / balance
+    
+    # balance
     @property
     def balance(self):
         return self._balance
@@ -171,8 +146,7 @@ class RegistrationForm:
             self._balance = input
         else:
             self._balance = 0
-
-
+    
     # passwort
     @property
     def password(self):
@@ -181,7 +155,8 @@ class RegistrationForm:
     @password.setter
     def password(self, input):
         if len(input) >= 2:
-            self._password = input
+            password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            self._password = password_context.hash(input)
         else:
             raise ValueError("Mindestens zwei Zeichen")
         
@@ -198,6 +173,11 @@ class RegistrationForm:
             "email": self.email,
             "phone_number": self.phone_number,
             "reference_account": self.reference_acccount,
-            "balance":self._balance,
+            "balance": self.balance,
             "password": self.password
         }
+                
+        
+        
+
+

@@ -1,16 +1,54 @@
-from flask import Flask, request
-from flask_restx import Namespace, Resource
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 
-create_customer_account_ns = Namespace ("create_customer_account_ns", description="Create customer account")
+from service import RegistrationFormVertification
 
+from repository import InsertCustomer
 
-@create_customer_account_ns.route("/")
-class CreateCustomerAccount(Resource):
-    def post(self):
-        try:
-            data = request.get_json()
-            
-            return {"message":"Test erfolgreich"}, 200
-        except Exception as e:
-            return {"error:" f"{e} error orccurred"}, 500
+router = APIRouter()
+
+class AccountForm(BaseModel):
+   last_name: str
+   first_name: str
+   street: str
+   house_number: str
+   zip_code: str
+   city: str
+   birthday: str
+   email: str
+   phone_number: str
+   reference_account: str
+   balance: str
+   password: str
+    
+
+@router.post("/create_costumer_account/")
+async def create_account(accountform: AccountForm):   
+   data = accountform.model_dump()
+   rfv = RegistrationFormVertification()
+   
+   errors = [] 
+   
+   for key, value in data.items():
+      try :
+         setattr(rfv, key, value)
+         
+      except Exception as e:
+         print(f"Fehlerhafte eingabe für {key}: {e}")
+         errors.append(f"Fehlerhafte eingabe für {key}: {e}")
+   
+   if errors:
+      raise HTTPException(status_code=422, detail=errors)
+   
+   try:
+      dic = rfv.to_dict()
+      fill_in = InsertCustomer()
+      fill_in.insert(dic)
+   except Exception as e:
+      errors.append(f"Konnte Daten nicht speicher: {e}")
+   
+   if errors:
+      raise HTTPException(status_code=500, detail=errors)
+          
+   return {"messeage": "gespeichert"}

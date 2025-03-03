@@ -3,7 +3,7 @@ import requests
 
 # just to try out the server
 
-url = 'http://127.0.0.1:5000/info/'
+url = 'http://127.0.0.1:8000/information/'
 
 response = requests.get(url)
 

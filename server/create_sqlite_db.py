@@ -1,16 +1,16 @@
 import os, sys, sqlite3
 
-if os.path.exists("../FoxFinance.db"):
+if os.path.exists("FoxFinance.db"):
     print("Datenbank bereits vorhanden")
     sys.exit(0)
     
-connection = sqlite3.connect("../FoxFinanceData.db")
+connection = sqlite3.connect("FoxFinanceData.db")
 cursor = connection.cursor()
 
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            last_login TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            last_login TEXT DEFAULT CURRENT_TIMESTAMP,
             UNIQUE (customer_id, registration_date)        
             )"""
 cursor.execute(sql)   
@@ -18,8 +18,9 @@ cursor.execute(sql)
 sql = """CREATE TABLE authentication(
             customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
             email TEXT UNIQUE NOT NULL,
-            phone TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
+            phone_number TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            disabled BOOL DEFAULT TRUE
             )"""
 cursor.execute(sql)   
 

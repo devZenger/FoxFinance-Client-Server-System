@@ -1,11 +1,8 @@
-from flask import Flask
-from flask_restx import Namespace, Resource
+from fastapi import APIRouter
+
+router = APIRouter()
 
 
-information_ns = Namespace ("information_ns", description="Information about Fox Finance")
-
-
-@information_ns.route("/")
-class Information(Resource):
-    def get(self):
-        return {"message":"Test erfolgreich"}, 200
+@router.get("/information/")
+async def get_infos():
+        return {"message":"Fox Finance offers great service"}

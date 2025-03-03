@@ -2,6 +2,9 @@ class LoginForm:
     def __init__(self):
         self._email = None
         self._password = None
+        
+        self.form_names = {"email":"Email Adresse",
+                           "password": "Passwort"}
     
     
     @property
@@ -28,6 +31,6 @@ class LoginForm:
     def to_dict(self):
         return {
             "email": self.email,
-            "password": self.password
+            "password": str(self.password)
         }
     

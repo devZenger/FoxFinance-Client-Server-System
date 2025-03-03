@@ -6,22 +6,22 @@ Ideen:
 ````mermaid
 mindmap
     root((Aktiendepot<br>Verwaltung))
-        Hauptmenü
+        Willkomensmenü
             Testdepot
             Neues Konto erstellen
             Kundenlogin
                 Kundenmenü
                     Depot Übersicht
+                        Liste an Aktien
+                        Gewinn/Verlust
                     Aktien kauf/verkauf
                     Kursübersicht
-                    Postfach
+                    Kontotransaktionen
+                    Änderungen der Daten
             Informationen
             Programm beenden
             
-        Kunden Verwaltung
-            Kundenanfragen
-            Kundenübersicht
-            Aktienübersicht
+   
 ````
 
 
@@ -66,7 +66,7 @@ erDiagram
     transactions {
         int transaction_id PK
         int customer_id FK "not null"
-        string wkn FK "not null"
+        string isin FK "not null"
         enum action "not null"
         int count "not null"
         decimal price_per_stock "not null"
@@ -77,13 +77,13 @@ erDiagram
     stocks ||--o{ stock_data : has
     stocks ||--o{ index_members : "is part"
     stocks {
-        string wkn PK 
+        string isin PK 
         string ticker_symbol "not null"
         string company_name "not null"
     }
     stock_data {
         string dataID PK 
-        string wkn FK "not null"
+        string isin FK "not null"
         string date "not null"
         decimal open "not null"
         decimal close "not null"
@@ -105,7 +105,7 @@ erDiagram
     stock_watch_list {
         int watchlist_id PK
         int customer_id FK "not null"
-        string wkn FK "not null"
+        string isin FK "not null"
         decimal price_per_stock "not null"
         string transaction_date "not null"
     }
@@ -119,6 +119,6 @@ erDiagram
 
     index_members }o--|| stock_indexes : includes
     index_members {
-        string wkn PK, FK "NOT NULL"
+        string isin PK, FK "NOT NULL"
         int index_id PK, FK "NOT NULL"
     }
