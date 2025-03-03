@@ -1,7 +1,7 @@
 from view.display_menu_base import DisplayMenuBase
 
 
-class DisplayMenuForm(DisplayMenuBase):
+class DisplayMenuInput(DisplayMenuBase):
     def __init__(self, title, info=""):
         self.title=title
         self.info=info
@@ -18,14 +18,8 @@ class DisplayMenuForm(DisplayMenuBase):
         
         self.display_info()
         
-        self.display_form()
-        
-        self.display_filled_form()
-        
+        self.display_form()    
        
-        return  self.display_options()
-  
+        return self.display_options()
+
         
-    
-    
-   
