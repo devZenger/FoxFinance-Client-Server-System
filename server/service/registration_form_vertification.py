@@ -12,6 +12,7 @@ class RegistrationFormVertification:
         self._email = None
         self._phone_number = None
         self._reference_account = None
+        self._balance = None
         self._password = None
         
     
@@ -134,6 +135,18 @@ class RegistrationFormVertification:
         else:
             raise ValueError("Mindestens zwei Zeichen")
     
+    # balance
+    @property
+    def balance(self):
+        return self._balance
+    
+    @balance.setter
+    def balance(self, input):
+        if len(input) >= 1:
+            self._balance = input
+        else:
+            self._balance = 0
+    
     # passwort
     @property
     def password(self):
@@ -160,6 +173,7 @@ class RegistrationFormVertification:
             "email": self.email,
             "phone_number": self.phone_number,
             "reference_account": self.reference_acccount,
+            "balance": self.balance,
             "password": self.password
         }
                 

@@ -8,7 +8,7 @@ class DBExecutor:
         self.cursor = None
         self.connection = None
         
-        if os.path.exists("FoxFinanceData1.db"):
+        if os.path.exists("FoxFinanceData.db"):
             print("Datenbank vorhanden")
         else:
             print("keine Datenbank")

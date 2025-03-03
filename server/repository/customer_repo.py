@@ -37,9 +37,9 @@ class InsertCustomer:
 
         sql = """INSERT INTO financials VALUES(
                     :customer_id,
-                    :reference_account)"""
-        #db_ex.execute_and_commit(sql, input)
-
+                    :reference_account,
+                    :balance)"""
+        db_ex.execute_and_commit(sql, input)
 
         db_ex.close()
         

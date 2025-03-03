@@ -19,6 +19,7 @@ class AccountForm(BaseModel):
    email: str
    phone_number: str
    reference_account: str
+   balance: str
    password: str
     
 
