@@ -19,7 +19,7 @@ for dsatz in result:
  
     try:
         ticker_data = yf.Ticker(ticker_symbol)
-        historical_data = ticker_data.history(period='2y')
+        historical_data = ticker_data.history(period='5y')
     except:
         print("Fehler konnte keine Daten zum Ticker Symbol finden")
         

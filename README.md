@@ -55,6 +55,12 @@ erDiagram
         string birthdate "not null"
     }
 
+    zip_codes ||--o{ customer_adresses : has
+    zip_codes {
+        int zip_code PK
+        string city
+    }
+
     financials ||--|| customers : has
     financials {
         int costumer_id PK, FK
@@ -72,6 +78,12 @@ erDiagram
         decimal price_per_stock "not null"
         decimal order_charge "not null"
         string transaction_date "not null"
+    }
+
+    transaction_status ||--o{ transactions : has
+    transaction_status{
+        transactions_status_id PK
+        kind_of_action "not null"
     }
 
     stocks ||--o{ stock_data : has

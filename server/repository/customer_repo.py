@@ -13,6 +13,8 @@ class InsertCustomer:
         customer_id = db_ex.execute_and_commit(sql, value).lastrowid
 
         input["customer_id"]=customer_id
+        input["disabled"]=False
+        
 
 
         sql = """INSERT INTO customer_adresses VALUES(
@@ -22,7 +24,6 @@ class InsertCustomer:
                     :street,
                     :house_number,
                     :zip_code,
-                    :city,
                     :birthday)"""
         db_ex.execute_and_commit(sql, input)
 
@@ -31,7 +32,8 @@ class InsertCustomer:
                     :customer_id,
                     :email,
                     :phone_number,
-                    :password)"""
+                    :password,
+                    :disabled)"""
         db_ex.execute_and_commit(sql, input)
 
 

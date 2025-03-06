@@ -4,14 +4,30 @@ import os, sys
 
 class DBExecutor:
     def __init__(self):
-        self.path= "FoxFinanceData.db"
+        self.path= "../server/database/FoxFinanceData.db"
         self.cursor = None
         self.connection = None
         
-        if os.path.exists("FoxFinanceData.db"):
+        if os.path.exists(self.path):
             print("Datenbank vorhanden")
         else:
             print("keine Datenbank")
+        
+        self.path1= "../server/database/FoxFinanceData.db"
+        
+        if os.path.exists(self.path1):
+            print("Datenbank1 vorhanden")
+        else:
+            print("keine Datenbank")
+        
+        self.path2= "/../server/database/FoxFinanceData.db"
+        
+        if os.path.exists(self.path2):
+            print("Datenbank2 vorhanden")
+        else:
+            print("keine Datenbank")
+        
+
             
         try:
             self.connection = sqlite3.connect(self.path)

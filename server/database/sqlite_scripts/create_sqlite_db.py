@@ -7,6 +7,8 @@ if os.path.exists("../FoxFinance.db"):
 connection = sqlite3.connect("../FoxFinanceData.db")
 cursor = connection.cursor()
 
+
+# customer related:
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -34,6 +36,7 @@ sql = """CREATE TABLE customer_adresses(
             zip_code INTEGER NOT NULL,
             city TEXT NOT NULL,
             birthday TEXT NOT NULL,
+            FOREIGN KEY (zip_code) REFERENCES zip_codes(zip_code),
             UNIQUE (first_name, last_name, birthday)
             )"""
 cursor.execute(sql)
@@ -45,6 +48,12 @@ sql = """CREATE TABLE financials(
             )"""
 cursor.execute(sql)
 
+sql = """ CREATE TABLE zip_codes(
+            zip_code INTEGER PRIMARY KEY,
+            city TEXT NOT NULL)"""
+cursor.execute(sql)
+
+# stock related:
 sql = """CREATE TABLE stocks(
             isin TEXT PRIMARY KEY,
             ticker_symbol TEXT NOT NULL,
@@ -92,6 +101,36 @@ sql = """ CREATE TABLE index_members(
             )"""
 cursor.execute(sql)
 
+sql = """ CREATE TABLE transactions(
+            transactions_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_id INTEGER
+            isin NOT NULL,
+            transaction_status_id,
+            count INTEGER NOT NULL,
+            price_per_stock NOT NULL,
+            order_charge_id NOT NULL,
+            FOREIGN KEY (customer_id) REFERENCES customers,
+            FOREIGN KEY (isin) REFERENCES stocks,
+            FOREIGN KEY (transaction_status_id) REFERENCES transaction_status
+            )"""
+cursor.execute(sql)
+
+sql = """ CREATE TABLE order_charges(
+            order_charge_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            start_validation DATE NOT NULL,
+            end_validation DATE NOT NULL,
+            min_stock_vol DECIAML NOT NULL,
+            order_charge_percent DECIMAL NOT NULL,
+            kind_of_action
+            UNIQUE (start_validation, min_stock_vol)
+            )"""
+cursor.execute(sql)
+
+sql = """ CREATE TABLE transaction_status(
+            transactions_status_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+            kind of action TEXT NOT NULL)"""
+cursor.execute(sql)
+
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('DAX', '^GDAXI')"""
 cursor.execute(sql)
@@ -113,5 +152,11 @@ sql = """INSERT INTO stock_indexes(name, symbol) VALUES('EURO STOXX 50', '^STOXX
 cursor.execute(sql)
 connection.commit()
 
+
+sql = """INSERT INTO transaction_status(kind of action) VALUES('buy')"""
+cursor.execute(sql)
+sql = """INSERT INTO transaction_status(kind of action) VALUES('sell')"""
+cursor.execute(sql)
+connection.commit()
 
 connection.close()
