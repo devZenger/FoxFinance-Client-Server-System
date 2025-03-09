@@ -1,12 +1,16 @@
 import yfinance as yf
 import os, sys, sqlite3
 
+path = os.path.join("..", "server", "database", "FoxFinanceData.db")
+
 try: 
-    connection = sqlite3.connect("../FoxFinanceData.db")
+    connection = sqlite3.connect(path)
     cursor = connection.cursor()
     print("verbunden")
 except:
     print("Konnte keine Verbindung herstellen")
+
+
 
 cursor.execute("SELECT * FROM stocks")
 

@@ -46,4 +46,4 @@ async def customer_login_for_access_token(
         )
 
     print(customer)
-    return Token(access_token = await create_access_token(customer["email"]), token_type="bearer")
+    return Token(access_token = await create_access_token(customer), token_type="bearer")

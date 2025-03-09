@@ -17,6 +17,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 
+class User(BaseModel):
+    #username: str
+    email: str 
+    customer_id: int
+    disabled: bool | None = None
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -25,12 +31,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
    email: str | None = None
     
-
-class User(BaseModel):
-    #username: str
-    email: str
-    #full_name: str | None = None
-    disabled: bool | None = None  
 
   
 #def get_costumer_data(email: str):
@@ -74,6 +74,7 @@ class Authentication:
 
     
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    print("debug start check")
     credtials_execption = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -82,23 +83,28 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         print(f"payload {payload}")
-        email = payload.get("sub")
+        email = payload.get("email")
         print(f"username: {email}")
         if email is None:
+            print("debug raise credtials")
             raise credtials_execption
         token_data = TokenData(email = email)
     except InvalidTokenError:
+        print("raise credtials")
         raise credtials_execption
     print(f"token data {token_data}")
     print(f"token data.email {token_data.email}")
-    email = get_auth_datas(email=token_data.email)
-    if email is None:
+    user_dic = get_auth_datas(email=token_data.email)
+    print(f"debug {user_dic}")
+    if user_dic.get("customer_id") is None:
+        print("debug credtials2")
         raise credtials_execption
-    return email
+    return user_dic
 
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ):  
+    print("start get_current_active_user")
     print(type(current_user))
     print(f"currend_user {current_user}")
     print(type(current_user))
@@ -109,9 +115,9 @@ async def get_current_active_user(
     return current_user
 
 
-async def create_access_token(user):
+async def create_access_token(user:dict):
     expires_delta = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode = {"sub": user}
+    to_encode = user.copy()
     
     expire = datetime.now(timezone.utc) + expires_delta
 

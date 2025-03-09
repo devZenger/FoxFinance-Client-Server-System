@@ -27,8 +27,9 @@ mindmap
 
 ````mermaid
 erDiagram
-    customers ||--o{ transactions : makes
+    customers ||--o{ stock_transactions : makes
     customers ||--o{ stock_watch_list : watch
+    customers ||--o{ balance_transactions : makes
     customers {
         int customer_id PK
         string registration_date "not null"
@@ -65,25 +66,40 @@ erDiagram
     financials {
         int costumer_id PK, FK
         string reference_account "not null"
-        decimal balance "not null"
     }
 
-    transactions ||--o{ stocks : contains
-    transactions {
-        int transaction_id PK
+    balance_transactions }o--|| balance_transactions_status : has
+    balance_transactions{
+        int balance_transaction_id PK
+        int customer_id FK "not null"
+        string bank_account "not null"
+        decimal balance_sum "not null"
+        string kind_of_action "not null"
+        string transaction_date "not null"
+    }
+
+    balance_transactions_status {
+        int balance_transaction_status_id PK
+        string type_of_action "not null"
+    }
+
+    stock_transactions ||--|| order_charges : contains
+    stock_transactions ||--o{ stocks : contains
+    stock_transactions {
+        int stock_transaction_id PK
         int customer_id FK "not null"
         string isin FK "not null"
-        enum action "not null"
+        int transactions_status_id FK "not null"
         int count "not null"
         decimal price_per_stock "not null"
         decimal order_charge "not null"
         string transaction_date "not null"
     }
 
-    transaction_status ||--o{ transactions : has
+    transaction_status ||--o{ stock_transactions : has
     transaction_status{
-        transactions_status_id PK
-        kind_of_action "not null"
+        int transactions_status_id PK
+        string kind_of_action "not null"
     }
 
     stocks ||--o{ stock_data : has
@@ -105,12 +121,6 @@ erDiagram
         int volume "not null"
         decimal dividends "not null"
         decimal stock_splits "not null"
-    }
-    employees {
-        int emplayee_id PK
-        string name "not null"
-        string email_adress "not null"
-        string password "not null"
     }
 
     stock_watch_list ||--o{ stocks : contains
@@ -134,3 +144,12 @@ erDiagram
         string isin PK, FK "NOT NULL"
         int index_id PK, FK "NOT NULL"
     }
+
+    order_charges {
+    int order_charge_id PK
+    string start_validation "not null"
+    string end_validation "not null"
+    decimal min_stock_vol "not null"
+    decimal order_charge_base "not null"
+    decimal order_charge_provision "not null"
+}

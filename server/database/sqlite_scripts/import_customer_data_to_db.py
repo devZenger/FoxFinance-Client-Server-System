@@ -1,23 +1,29 @@
 import os, sys, sqlite3
 from passlib.context import CryptContext
 
-
+path_csv = os.path.join("..", "server", "database", "sqlite_scripts", "customer_adresses.csv")
+# d = open("customer_adresses.csv", encoding='utf-8')
+print (path_csv)
 
 try:
-    d = open("customer_adresses.csv", encoding='utf-8')
+    d = open(path_csv, encoding='utf-8')
+    print("opened file")
+
 except:
     print("Datei nicht geöffnet")
     sys.exit(0)
 
-d.readline()
+print(d.readline())
+
 tx = d.read()
 d.close()
 
 line_list= tx.split("\n")
 
-            
+path = os.path.join("..", "server", "database", "FoxFinanceData.db")
+        
 try:        
-    connection = sqlite3.connect("../FoxFinanceData.db")
+    connection = sqlite3.connect(path)
     print("Verbunden")
 except:
     print("Fehler in der Verbundung")
@@ -113,7 +119,7 @@ for line in line_list:
         
         except:
             print("not insert")
-            print(new_user)
+            #print(new_user)
         
 
 connection.close()

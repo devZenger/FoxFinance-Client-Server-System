@@ -9,30 +9,14 @@ class DBExecutor:
         self.connection = None
         
         if os.path.exists(self.path):
-            print("Datenbank vorhanden")
+            print("debug Datenbank vorhanden")
         else:
-            print("keine Datenbank")
-        
-        self.path1= "../server/database/FoxFinanceData.db"
-        
-        if os.path.exists(self.path1):
-            print("Datenbank1 vorhanden")
-        else:
-            print("keine Datenbank")
-        
-        self.path2= "/../server/database/FoxFinanceData.db"
-        
-        if os.path.exists(self.path2):
-            print("Datenbank2 vorhanden")
-        else:
-            print("keine Datenbank")
-        
-
+            print("debug keine Datenbank")
             
         try:
             self.connection = sqlite3.connect(self.path)
             self.cursor = self.connection.cursor()
-            print("Mit Datenbank verbunden")
+            print("debug Mit Datenbank verbunden")
         except sqlite3.Error as e:
             print(f"Verbindungsprobleme: {str(e)}")
             raise Exception(f"Verbidungsprobleme: {str(e)}")

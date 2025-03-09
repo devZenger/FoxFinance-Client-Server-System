@@ -1,8 +1,8 @@
 import sys
 from view import DisplayMenuOption
 
-from .create_account import CreateAccountMenu
-from .login import LoginMenu
+from .main_create_account import CreateAccountMenu
+from .main_login import LoginMenu
 from .depot_controller import DepotControl
 
 

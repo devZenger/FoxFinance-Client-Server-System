@@ -6,22 +6,25 @@ from .db_executor import DBExecutor
 def get_auth_datas(email):
             
     db_ex = DBExecutor()
-
-    sql= """SELECT * FROM authentication WHERE email= ?"""
-    value = (email,)
-    data = db_ex.execute(sql, value).fetchall()
-    data = data[0]
-    names = db_ex.col_names()
+    try:
+        sql= """SELECT * FROM authentication WHERE email= ?"""
+        value = (email,)
+        data = db_ex.execute(sql, value).fetchall()
+        data = data[0]
+        names = db_ex.col_names()
+        
+        auth_dic = {}
+        for i in range (len(data)):
+            auth_dic[names[i]]= data[i]
+        
+        db_ex.close()
+        
+        print(f"debug ausgabe von auth_dic: {auth_dic}")
+        
+        return auth_dic
     
-    auth_dic = {}
-    for i in range (len(data)):
-        auth_dic[names[i]]= data[i]
-    
-    db_ex.close()
-    
-    print(auth_dic)
-    
-    return auth_dic
+    except:
+        return None
 
 
 def insert_login_time(customer_id):

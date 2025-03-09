@@ -11,7 +11,7 @@ router = APIRouter()
 class User(BaseModel):
     #username: str
     email: str 
-    #full_name: str | None = None
+    customer_id: int | None = None
     disabled: bool | None = None
 
 @router.get("/depot/")

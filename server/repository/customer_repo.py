@@ -24,6 +24,7 @@ class InsertCustomer:
                     :street,
                     :house_number,
                     :zip_code,
+                    :city,
                     :birthday)"""
         db_ex.execute_and_commit(sql, input)
 

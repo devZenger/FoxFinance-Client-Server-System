@@ -52,6 +52,7 @@ class DisplayMenuBase(ABC):
                 except Exception as e:
                     print(f"\tFehlerhafte eingabe: {e}")
         print(self.line)
+        return "form_filled"
                     
 
     def display_filled_form(self):

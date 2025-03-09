@@ -70,9 +70,11 @@ cursor.execute(sql)
 sql = """CREATE TABLE stock_watch(
             watchlist_id INTEGER PRIMARY KEY,
             customer_id INTERGER,
-            isin TEXT, price_per_stock REAL,
-            transaction_date TEXT,
-            FOREIGN KEY (customer_id) REFERENCES customers
+            isin TEXT,
+            price_per_stock REAL,
+            bookmark_date TEXT,
+            FOREIGN KEY (customer_id) REFERENCES customers,
+            FOREIGN KEY (isin) REFERENCES stocks
             )"""  
 cursor.execute(sql) 
 

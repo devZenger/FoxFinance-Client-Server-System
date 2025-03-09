@@ -1,10 +1,17 @@
 import os, sys, sqlite3
 
-if os.path.exists("../FoxFinance.db"):
+
+path = os.path.join("..", "server", "database", "FoxFinanceData_v3.db")
+
+print(path)
+
+if os.path.exists(path):
     print("Datenbank bereits vorhanden")
     sys.exit(0)
+else:
+    print("Datenbank nicht vorhanden")
     
-connection = sqlite3.connect("../FoxFinanceData.db")
+connection = sqlite3.connect(path)
 cursor = connection.cursor()
 
 
@@ -51,6 +58,24 @@ cursor.execute(sql)
 sql = """ CREATE TABLE zip_codes(
             zip_code INTEGER PRIMARY KEY,
             city TEXT NOT NULL)"""
+cursor.execute(sql)
+
+# balance related:
+sql = """CREATE TABLE balance_transactions(
+            balance_transaction_id INTEGER PRIMARY KEY,
+            customer_id NOT NULL,
+            bank_account NOT NULL,
+            balance_sum REAL NOT NULL,
+            balance_transaction_status_id NOT NULL,
+            usage TEXT,
+            transaction_date NOT NULL,
+            FOREIGN KEY (customer_id) REFERENCES customers,
+            FOREIGN KEY (balance_transaction_status_id) REFERENCES balance_transactions_status)"""
+cursor.execute(sql)
+
+sql = """CREATE TABLE balance_transactions_status(
+            balance_transaction_status_id INTEGER PRIMARY KEY,
+            type_of_action TEST NOT NULL)"""
 cursor.execute(sql)
 
 # stock related:
@@ -103,7 +128,7 @@ cursor.execute(sql)
 
 sql = """ CREATE TABLE transactions(
             transactions_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_id INTEGER
+            customer_id INTEGER,
             isin NOT NULL,
             transaction_status_id,
             count INTEGER NOT NULL,
@@ -111,7 +136,8 @@ sql = """ CREATE TABLE transactions(
             order_charge_id NOT NULL,
             FOREIGN KEY (customer_id) REFERENCES customers,
             FOREIGN KEY (isin) REFERENCES stocks,
-            FOREIGN KEY (transaction_status_id) REFERENCES transaction_status
+            FOREIGN KEY (transaction_status_id) REFERENCES transaction_status,
+            FOREIGN KEY (order_charge_id) REFERENCES order_charges
             )"""
 cursor.execute(sql)
 
@@ -121,42 +147,49 @@ sql = """ CREATE TABLE order_charges(
             end_validation DATE NOT NULL,
             min_stock_vol DECIAML NOT NULL,
             order_charge_percent DECIMAL NOT NULL,
-            kind_of_action
             UNIQUE (start_validation, min_stock_vol)
             )"""
 cursor.execute(sql)
 
 sql = """ CREATE TABLE transaction_status(
             transactions_status_id  INTEGER PRIMARY KEY AUTOINCREMENT,
-            kind of action TEXT NOT NULL)"""
+            kind_of_action TEXT NOT NULL)"""
 cursor.execute(sql)
 
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('DAX', '^GDAXI')"""
 cursor.execute(sql)
-connection.commit()
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('MDAX', '^MDAXI')"""
 cursor.execute(sql)
-connection.commit()
+
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('SDAX', '^SDAXI')"""
 cursor.execute(sql)
-connection.commit()
+
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('TecDAX', '^TECDAX')"""
 cursor.execute(sql)
-connection.commit()
+
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('EURO STOXX 50', '^STOXX50E')"""
 cursor.execute(sql)
 connection.commit()
 
 
-sql = """INSERT INTO transaction_status(kind of action) VALUES('buy')"""
+sql = """INSERT INTO transaction_status(kind_of_action) VALUES('buy')"""
 cursor.execute(sql)
-sql = """INSERT INTO transaction_status(kind of action) VALUES('sell')"""
+sql = """INSERT INTO transaction_status(kind_of_action) VALUES('sell')"""
 cursor.execute(sql)
 connection.commit()
+
+
+sql = """INSERT INTO balance_transactions_status(type_of_action) VALUES('deposit')"""
+cursor.execute(sql)
+
+sql = """INSERT INTO balance_transactions_status(type_of_action) VALUES('withdrawal')"""
+cursor.execute(sql)
+connection.commit()
+
 
 connection.close()

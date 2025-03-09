@@ -1,7 +1,9 @@
 import os, sys, sqlite3
 
+path_csv = os.path.join("..", "server", "database", "sqlite_scripts", "dax.csv")
+
 try:
-    d = open("dax.csv")
+    d = open(path_csv)
 except:
     print("Datei nicht geöffnet")
     sys.exit(0)
@@ -13,8 +15,10 @@ d.close()
 li= tx.split("\n")
 
             
+path = os.path.join("..", "server", "database", "FoxFinanceData.db")
+        
 try:        
-    connection = sqlite3.connect("../FoxFinanceData.db")
+    connection = sqlite3.connect(path)
     print("Verbunden")
 except:
     print("Fehler in der Verbundung")

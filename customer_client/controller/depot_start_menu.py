@@ -12,9 +12,9 @@ class DepotStartMenu:
         
     def run(self):
         
+        headers = { "Authorization": f"Bearer {self.token['access_token']}"}
         
-        
-        headers = { "Authorization": f"Bearer {self.token["access_token"]}"}
+        print(self.token)
         
         url =  'http://127.0.0.1:8000/depot/'
         

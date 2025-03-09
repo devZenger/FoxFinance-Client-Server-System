@@ -2,17 +2,22 @@ import sys
 from view import DisplayMenuOption
 
 from .depot_start_menu import DepotStartMenu
+from .depot_stock_search import DepotStockSearch
+from .depot_informationen import DepotInformation
 
 
 class DepotControl:
     def __init__(self, token):
         self.token = token
+        self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
+        
         self.option ={"1. Depot Übersicht": "depot overview",
-                      "2. Aktien kaufen": "buy stocks",
-                      "3. Aktien verkaufen":"sell stocks",
-                      "4. Informationen": "information",
-                      "5. Abmelden":"loggout",
-                      "6. Abmelden und benden":"loggout_and_exit"}
+                      "2. Aktien suche":"stock_search",
+                      "3. Aktien kaufen": "buy stocks",
+                      "4. Aktien verkaufen":"sell stocks",
+                      "5. Informationen": "information",
+                      "6. Abmelden":"loggout",
+                      "7. Abmelden und benden":"loggout_and_exit"}
         
     def run(self):
         
@@ -32,9 +37,11 @@ class DepotControl:
                     display_menu = DisplayMenuOption(title, info)
                     choice = display_menu.execute(self.option)
                 
-                    
-                    
+                case "stock_search":
+                    stock_search = DepotStockSearch(self.token)
+                    choice = stock_search.run()
                 
+                    
                 case "buy stocks":
                     title ="Informationen"
                     info = "in Bearbeitung"
@@ -49,10 +56,10 @@ class DepotControl:
                     choice = display_menu.execute(self.option)
                 
                 case "information":
-                    title ="Informationen"
-                    info = "in Bearbeitung"
-                    display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.option)
+                    information = DepotInformation(self.token)
+                    information.run()
+                    choice = "start"
+                    
                 
                 
                 case "loggout":
