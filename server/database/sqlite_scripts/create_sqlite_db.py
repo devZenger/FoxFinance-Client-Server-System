@@ -1,7 +1,7 @@
 import os, sys, sqlite3
 
 
-path = os.path.join("..", "server", "database", "FoxFinanceData_v3.db")
+path = os.path.join("..", "server", "database", "FoxFinanceData.db")
 
 print(path)
 
@@ -66,15 +66,15 @@ sql = """CREATE TABLE balance_transactions(
             customer_id NOT NULL,
             bank_account NOT NULL,
             balance_sum REAL NOT NULL,
-            balance_transaction_status_id NOT NULL,
+            balance_transaction_type_id NOT NULL,
             usage TEXT,
-            transaction_date NOT NULL,
+            balance_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
             FOREIGN KEY (customer_id) REFERENCES customers,
-            FOREIGN KEY (balance_transaction_status_id) REFERENCES balance_transactions_status)"""
+            FOREIGN KEY (balance_transaction_type_id) REFERENCES balance_transactions_type)"""
 cursor.execute(sql)
 
-sql = """CREATE TABLE balance_transactions_status(
-            balance_transaction_status_id INTEGER PRIMARY KEY,
+sql = """CREATE TABLE balance_transactions_type(
+            balance_transaction_type_id INTEGER PRIMARY KEY,
             type_of_action TEST NOT NULL)"""
 cursor.execute(sql)
 
@@ -127,16 +127,17 @@ sql = """ CREATE TABLE index_members(
 cursor.execute(sql)
 
 sql = """ CREATE TABLE transactions(
-            transactions_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER,
             isin NOT NULL,
-            transaction_status_id,
+            transaction_type_id,
             count INTEGER NOT NULL,
             price_per_stock NOT NULL,
             order_charge_id NOT NULL,
+            transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
             FOREIGN KEY (customer_id) REFERENCES customers,
             FOREIGN KEY (isin) REFERENCES stocks,
-            FOREIGN KEY (transaction_status_id) REFERENCES transaction_status,
+            FOREIGN KEY (transaction_type_id) REFERENCES transaction_type,
             FOREIGN KEY (order_charge_id) REFERENCES order_charges
             )"""
 cursor.execute(sql)
@@ -145,14 +146,14 @@ sql = """ CREATE TABLE order_charges(
             order_charge_id INTEGER PRIMARY KEY AUTOINCREMENT,
             start_validation DATE NOT NULL,
             end_validation DATE NOT NULL,
-            min_stock_vol DECIAML NOT NULL,
-            order_charge_percent DECIMAL NOT NULL,
-            UNIQUE (start_validation, min_stock_vol)
+            min_volumn DECIAML NOT NULL,
+            order_charge DECIMAL NOT NULL,
+            UNIQUE (start_validation, min_volumn)
             )"""
 cursor.execute(sql)
 
-sql = """ CREATE TABLE transaction_status(
-            transactions_status_id  INTEGER PRIMARY KEY AUTOINCREMENT,
+sql = """ CREATE TABLE transaction_type(
+            transaction_type_id  INTEGER PRIMARY KEY AUTOINCREMENT,
             kind_of_action TEXT NOT NULL)"""
 cursor.execute(sql)
 
@@ -177,19 +178,102 @@ cursor.execute(sql)
 connection.commit()
 
 
-sql = """INSERT INTO transaction_status(kind_of_action) VALUES('buy')"""
+sql = """INSERT INTO transaction_type(kind_of_action) VALUES('buy')"""
 cursor.execute(sql)
-sql = """INSERT INTO transaction_status(kind_of_action) VALUES('sell')"""
+sql = """INSERT INTO transaction_type(kind_of_action) VALUES('sell')"""
 cursor.execute(sql)
+connection.commit()
+
+
+sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('deposit')"""
+cursor.execute(sql)
+
+sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('withdrawal')"""
+cursor.execute(sql)
+
+sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('buy stocks')"""
+cursor.execute(sql)
+
+sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('sell stocks')"""
+cursor.execute(sql)
+
+
 connection.commit()
 
 
-sql = """INSERT INTO balance_transactions_status(type_of_action) VALUES('deposit')"""
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2018-01-01',
+            '2020-12-31',
+            0,
+            0.1)"""
 cursor.execute(sql)
 
-sql = """INSERT INTO balance_transactions_status(type_of_action) VALUES('withdrawal')"""
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2018-01-01',
+            '2020-12-31',
+            1000,
+            0.05)"""
+cursor.execute(sql)
+
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2021-01-01',
+            '2023-12-31',
+            0,
+            0.08)"""
+cursor.execute(sql)
+
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2021-01-01',
+            '2023-12-31',
+            800,
+            0.06)"""
+cursor.execute(sql)
+
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2024-01-01',
+            '2025-12-31',
+            0,
+            0.07)"""
+cursor.execute(sql)
+
+sql = """INSERT INTO order_charges(
+            start_validation,
+            end_validation, 
+            min_volumn, 
+            order_charge 
+            ) VALUES(
+            '2024-01-01',
+            '2025-12-31',
+            600,
+            0.05)"""
 cursor.execute(sql)
 connection.commit()
+
 
 
 connection.close()

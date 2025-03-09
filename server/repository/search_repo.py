@@ -51,40 +51,9 @@ def simple_search(table, column, search_term):
         print("debug none")
         return None
 
-def search_youngest_entry(table, column, search_term):
-    
-    try:
-        sql=f"""SELECT * FROM {table} WHERE {column} = ? ORDER BY date DESC LIMIT 1 """
-        value = (search_term,)
-        datas = db_ex.execute(sql, value).fetchall()
-        
-        names = db_ex.col_names()
-        
-        return make_dictionary(datas, names)
-    
-    except:
-        print("debug none")
-        return None
 
-def search_entry_by_period(table, column, search_term, time):
-    
-    try:
-        sql=f"""SELECT * 
-                FROM {table} 
-                WHERE {column} = ? AND date <= DATE('now', '-{time}') 
-                ORDER BY date DESC LIMIT 1"""
-                
-        value = (search_term,)
-        datas = db_ex.execute(sql, value).fetchall()
-        names = db_ex.col_names()
-        
-        print(datas)
-        
-        return make_dictionary(datas, names)
-    
-    except:
-        print("debug none")
-        return None
+
+
 
 
 

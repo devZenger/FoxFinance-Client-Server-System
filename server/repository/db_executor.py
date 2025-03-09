@@ -33,6 +33,8 @@ class DBExecutor:
 
      
     def execute_and_commit(self, sql, value):
+        
+        print(sql)
         try:
             self.cursor.execute(sql, value)
             self.connection.commit()

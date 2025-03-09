@@ -45,6 +45,8 @@ class InsertCustomer:
         db_ex.execute_and_commit(sql, input)
 
         db_ex.close()
+
+
         
 
 

@@ -16,7 +16,7 @@ def latest_trade_day_entry(search_term):
         sql=f"""SELECT * 
                 FROM stock_data 
                 WHERE isin = ? 
-                ORDER BY date DESC LIMIT 1 """
+                ORDER BY date DESC LIMIT 1"""
                 
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()

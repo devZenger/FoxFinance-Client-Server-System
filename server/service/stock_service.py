@@ -1,4 +1,14 @@
-from repository import simple_search, latest_trade_day_entry, trade_day_by_period
+from pydantic import BaseModel
+
+from datetime import date
+
+from repository import simple_search, latest_trade_day_entry, trade_day_by_period, search_order_charges, insert_one_table
+
+
+class StockTrade(BaseModel):
+    isin: str
+    count: int
+    transaction_type: str
 
 
 def search_stock(search_input):
@@ -31,7 +41,6 @@ def search_stock(search_input):
         #presenable_data = performance_data_presentable(performance_data)
         
         return result1
-
 
 
 def stock_performence(stocks_row:dict):
@@ -70,94 +79,132 @@ def stock_performence(stocks_row:dict):
     
     performance_data["stocks_row"]=stocks_row.copy()
     performance_data["latest_day"]=last_trade_day.copy()
-    
-    #presenable_data = performance_data_presentable(performance_data)
+
     
     return performance_data
     
-        
-
-
-
-def performance_data_presentable(performance_data):
-    
-    data_presentable = {}
-    
-    data_presentable["name"]= f'\tName: {performance_data["stocks_row"]["company_name"]}'
-    data_presentable["symbol"]=f"\tSymbol: {performance_data["stocks_row"]["ticker_symbol"]}"
-    data_presentable["isin"]=f"\tISIN: {performance_data["stocks_row"]["isin"]}"
-    
-    data_presentable["trade_day"]=f"\tAktuellster Handelstag: {performance_data["latest_day"]["date"]}"
-    data_presentable["open"]=f"\tÖffnungskurs:\t {performance_data["latest_day"]["open"]:.2f} €"
-    data_presentable["high"]=f"\thöchster Kurs:\t {performance_data["latest_day"]["high"]:.2f} €"
-    data_presentable["low"]=f"\ttiefster Kurs:\t {performance_data["latest_day"]["low"]:.2f} €"
-    data_presentable["close"]=f"\tSchlusskurs:\t {performance_data["latest_day"]["close"]:.2f} €"
-
-    data_presentable["time0"]="\tPerformance über 6 Monate: "
-    data_presentable["price0"]=f"\tKurs:\t\t {performance_data["6 months"]["price"]:.2f} €"
-    data_presentable["perform0"]=f"\tVeränderung:\t {performance_data["6 months"]["performance"]:.2f}%"
  
-    data_presentable["time1"]="\tPerformance über ein Jahr: "
-    data_presentable["price1"]=f"\tKurs:\t\t {performance_data["1 years"]["price"]:.2f} €"
-    data_presentable["perform1"]=f"\tVeränderung:\t {performance_data["1 years"]["performance"]:.2f}%"
-
-    data_presentable["time2"]="\tPerformance über 6 Monate: "
-    data_presentable["price2"]=f"\tKurs:\t\t {performance_data["2 years"]["price"]:.2f} €"
-    data_presentable["perfom2"]=f"\tVeränderung:\t {performance_data["2 years"]["performance"]:.2f}%"
+ 
+def buy_stocks(customer_id, stock_trade:StockTrade): 
+        
+    current_market = latest_trade_day_entry(stock_trade.isin)  
+     
+    trade_vol = current_market["close"]* stock_trade.count
     
-    return data_presentable
+    current_day= date.today()
+    
+    print(current_day)
+    
+    current_charges = search_order_charges(trade_vol, current_day)
+    
+    trade_charge = trade_vol * current_charges["order_charge"]
+    
+    
+    
+    customer_finance_result = simple_search("financials", "customer_id",  customer_id)
+    
+    customer_finance = customer_finance_result["row_result0"]
+        
+    
+    total = trade_vol+trade_charge
+    
+    print(customer_finance)
+    
+    if customer_finance["balance"] < total:
+        
+        return ("Guthaben reicht nicht aus")
+    
+    else:
+        
+        transaction_type = simple_search("transaction_type", "kind_of_action","buy")
+        print(transaction_type)
+        ts_id = transaction_type["row_result0"]["transaction_type_id"]
+        
+        transaction = {
+            "customer_id":customer_id,
+            "isin": stock_trade.isin,
+            "transaction_type_id": ts_id,
+            "count":stock_trade.count,
+            "price_per_stock":current_market["close"],
+            "order_charge_id":current_charges["order_charge_id"]    
+        }
+        
+        balance_transaction_type = simple_search("balance_transactions_type", "type_of_action","buy stocks")
+        print("balance", balance_transaction_type)
+        bts_id = balance_transaction_type["row_result0"]["balance_transaction_type_id"]
+        
+        
+        balance = {
+            "customer_id":customer_id,
+            "bank_account":customer_finance["reference_account"],
+            "balance_sum": total,
+            "balance_transaction_type_id": bts_id
+        }
+        
+        return trade_transaction(transaction, balance)
+
+
+def trade_transaction(transaction:dict, balance:dict):
+    
+    try:
+        transaction_id = insert_one_table("transactions", transaction)
+        balance["usage"]= f"Aktientransaktions Nr.: {transaction_id}"
+        
+        
+        transaction_insert = simple_search("transactions","transaction_id", transaction_id)
+        
+        
+        
+        
+        balance_id = insert_one_table("balance_transactions", balance)
+        
+        balance_insert = simple_search("balance_transactions","balance_transaction_id", balance_id)
+        
+        validation={}
+        validation["stock_trade"] = transaction_insert["row_result0"]
+        validation["balance_statement"] = balance_insert["row_result0"]
+                                              
+        
+        return validation
+    
+    except Exception as e:
+        return e
+        
+        
+    
+    
+    
     
     
     
     
 if __name__ == "__main__":
+    
+    from pydantic import BaseModel
 
+    class StockTrade(BaseModel):
+        isin: str
+        count: int
+        transaction_type: str
+    
+    
+    stock_trade = StockTrade(isin = "DE0005190003", count=20, transaction_type="buy")
+    
+    
     print("start")
     table = "stocks"
     column = "isin"
     search_term = "DE0005190003"
     time = "6 months"
     
-    performance_data = search_stock(search_term)
-    
+    performance_data = buy_stocks(2, stock_trade)
+
+
+    print("--------------------------")    
     print(performance_data)
-    print(performance_data)
-    #for an in answer:
-    #    print(an)
 
-    for per in performance_data.values():
-        print(per)
+    print("---------------------------")
 
-
-
-    #print(len(answer))
-    line = "-"*80
-    print(" ")
-    test= """ print("\tName: ", performance_data["stocks_row"]["company_name"])
-    print("\tSymbol: ", performance_data["stocks_row"]["ticker_symbol"])
-    print("\tISIN: ", performance_data["stocks_row"]["isin"])
-    print(line)
-    print("\tAktuellster Handelstag:", performance_data["latest_day"]["date"])
-    print(f"\tÖffnungskurs:\t {performance_data["latest_day"]["open"]:.2f} €")
-    print(f"\thöchster Kurs:\t {performance_data["latest_day"]["high"]:.2f} €")
-    print(f"\ttiefster Kurs:\t {performance_data["latest_day"]["low"]:.2f} €")
-    print(f"\tSchlusskurs:\t {performance_data["latest_day"]["close"]:.2f} €")
-    print(line)
-    print("\tPerformance über 6 Monate: ")
-    print(f"\tKurs:\t\t {performance_data["6 months"]["price"]:.2f} €")
-    print(f"\tVeränderung:\t {performance_data["6 months"]["performance"]:.2f}%")
-    print(line)
-    print("\tPerformance über ein Jahr: ")
-    print(f"\tKurs:\t\t {performance_data["1 years"]["price"]:.2f} €")
-    print(f"\tVeränderung:\t {performance_data["1 years"]["performance"]:.2f}%")
-    print(line)
-    print("\tPerformance über 6 Monate: ")
-    print(f"\tKurs:\t\t {performance_data["2 years"]["price"]:.2f} €")
-    print(f"\tVeränderung:\t {performance_data["2 years"]["performance"]:.2f}%")
-    print(line)
- """
-    #stocks_row = answer["row_result0"]
-    #print(stocks_row) 
 
     
     
