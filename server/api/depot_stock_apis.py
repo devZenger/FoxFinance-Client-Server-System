@@ -36,6 +36,7 @@ async def buy_stocks(stock_trade: StockTrade, current_customer: Annotated[User, 
     
     if stock_trade.transaction_status == "buy":
         customer_id = current_customer.customer_id
+        
         validation = buy_stocks(customer_id, stock_trade)
         
         return {"message": validation}

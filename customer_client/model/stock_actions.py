@@ -25,7 +25,7 @@ def performance_data_presentable(performance_data):
     data_presentable["price1"]=f"\tKurs:\t\t {performance_data["1 years"]["price"]:.2f} €"
     data_presentable["perform1"]=f"\tVeränderung:\t {performance_data["1 years"]["performance"]:.2f}%"
 
-    data_presentable["time2"]="\tPerformance über 6 Monate: "
+    data_presentable["time2"]="\tPerformance über zwei Jahre: "
     data_presentable["price2"]=f"\tKurs:\t\t {performance_data["2 years"]["price"]:.2f} €"
     data_presentable["perfom2"]=f"\tVeränderung:\t {performance_data["2 years"]["performance"]:.2f}%"
     
@@ -38,15 +38,57 @@ class StockActions:
         self.token=token
         
         self.search_term=None
-        self.company_name=None
-        self.ticker_symbol=None
+   
         self.isin=None
+        self.stock_name=None
+        self.count=None
+        self._type_of_action=None
+        
+        
         self.stock_list=None
         self.stock_information=None
         
         self.response = None
         
-        self.form_names = {"search_term":"ISIN, Symbol oder Name eingeben: "}
+        self.search_form_names = {"search_term":"ISIN, Symbol oder Name eingeben: "}
+        
+        self.trade_form_names = {"count":"Anzahl eingeben: ", "type_of_action":"Kaufen oder Verkaufen?: "}
+        
+        self.make_trade_form ={"make_trade":"Handel abschließen (Ja/Nein) eingeben: "}
+        
+        self.form_names = {"stock_name": "Unternehmen: ", 
+                           "isin": "ISIN: ", 
+                           "count": "Anzahl: ",
+                           "type_of_action: ": "Kaufen oder Verkaufen: "}
+    
+    
+    @property
+    def type_of_action(self):
+        return self._type_of_action
+    
+    @type_of_action.setter
+    def type_of_action(self, input:str):
+        input = input.lower()
+        if input == "kaufen" or input == "verkaufen":
+            self._email = input
+        else:
+            raise ValueError("Fehler")
+    
+    @property
+    def make_trade(self):
+        return self._make_trade
+    
+    @make_trade.setter
+    def make_trade(self, input:str):
+        input = input.lower()
+        if input == "ja" or input == "yes" or input == "j":
+            self._make_trade = True
+        elif input == "nein" or input == "no" or input == "n":
+            self._make_trade = False
+        else:
+            raise ValueError("Fehler")
+    
+    
     
     
     
@@ -82,9 +124,14 @@ class StockActions:
 
             
             
-                return "several_stocks"  #self.response["message"]
+                return "several_stocks"  
 
             else:
+                
+                self.isin = results["one"]["latest_day"]["isin"]
+                self.stock_name = results["one"]["stocks_row"]["company_name"]
+                
+                print(f"self.isin = {self.isin}")
                 
                 presantable = performance_data_presentable(results["one"])
                 
@@ -100,8 +147,7 @@ class StockActions:
                 
                 return "single_stock"
             
-            
-    
+        
     def request_server(self):
         
         url = f'{url_server}/depot/stocksearch/{self.search_term}'
@@ -122,6 +168,17 @@ class StockActions:
         else:
             print("Fehler", self.response.status_code)
             return False
+    
+    
+    
+
+        
+        
+    
+    
+    def stock_trade(self):
+        
+     pass
         
        
         

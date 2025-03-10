@@ -46,7 +46,7 @@ def search_stock(search_input):
 def stock_performence(stocks_row:dict):
  
     isin = stocks_row["isin"]
-    
+    print(f"isin ist = {isin}")
     print(f"stocks_row {stocks_row}")
     
     last_trade_day = latest_trade_day_entry(isin)
@@ -61,6 +61,14 @@ def stock_performence(stocks_row:dict):
     for time in timespan:
    
         result = trade_day_by_period(isin, time)
+        
+        print(" ")
+        print("+++++++++++++++++++++++++++++++++++")
+        print(result)
+        print("-------------------------------------")
+        print(last_trade_day)
+        print("++++++++++++++++++++++++++++++++++++")
+        print(" ")
  
         performance = result["open"]/last_trade_day["close"] *100
         data = {}

@@ -20,11 +20,17 @@ def latest_trade_day_entry(search_term):
                 
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()
-        
+        print("datas:")
+        print(datas)
         names = db_ex.col_names()
         
-        return make_dictionary_one_result(datas[0], names)
-    
+        print("data0")
+        print(datas[0])
+        result= make_dictionary_one_result(datas[0], names)
+        print("latest_trade return:")
+        print(result)
+        return result
+        
     except:
         print("debug nicht gefunden")
         return None
