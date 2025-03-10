@@ -39,10 +39,9 @@ class StockActions:
         
         self.search_term=None
    
-        self.isin=None
-        self.stock_name=None
-        self.count=None
-        self._type_of_action=None
+        
+        
+        
         
         
         self.stock_list=None
@@ -50,16 +49,19 @@ class StockActions:
         
         self.response = None
         
-        self.search_form_names = {"search_term":"ISIN, Symbol oder Name eingeben: "}
+        self.search_form_names = {"search_term":"ISIN, Symbol oder Name"}
         
-        self.trade_form_names = {"count":"Anzahl eingeben: ", "type_of_action":"Kaufen oder Verkaufen?: "}
+        self.trade_form_names = {"count":"Anzahl", "type_of_action":"Kaufen oder Verkaufen"}
         
-        self.make_trade_form ={"make_trade":"Handel abschließen (Ja/Nein) eingeben: "}
+        self.form_names = {"stock_name": "Unternehmen", 
+                           "isin": "ISIN", 
+                           "count": "Anzahl",
+                           "type_of_action": "Kaufen oder Verkaufen"}
         
-        self.form_names = {"stock_name": "Unternehmen: ", 
-                           "isin": "ISIN: ", 
-                           "count": "Anzahl: ",
-                           "type_of_action: ": "Kaufen oder Verkaufen: "}
+        self.isin=None
+        self.stock_name=None
+        self.count=None
+        self._type_of_action=None
     
     
     @property
@@ -69,24 +71,15 @@ class StockActions:
     @type_of_action.setter
     def type_of_action(self, input:str):
         input = input.lower()
-        if input == "kaufen" or input == "verkaufen":
-            self._email = input
+        print(input)
+        if input == "kaufen" or input == "kauf":
+            self._type_of_action = "buy"
+        elif input == "verkaufen" or "verkauf":
+            self._type_of_action = "sell"
         else:
             raise ValueError("Fehler")
     
-    @property
-    def make_trade(self):
-        return self._make_trade
-    
-    @make_trade.setter
-    def make_trade(self, input:str):
-        input = input.lower()
-        if input == "ja" or input == "yes" or input == "j":
-            self._make_trade = True
-        elif input == "nein" or input == "no" or input == "n":
-            self._make_trade = False
-        else:
-            raise ValueError("Fehler")
+
     
     
     
@@ -96,13 +89,20 @@ class StockActions:
         
         get_data = self.request_server()
         
+        print(f"get_data= {get_data}")
+        
         if get_data == False:
             return f"\tFehler, {self.response.status_code}\n\tÜberprüfen Sie die Verbindung"
         else:
             results = {}
-            results = self.response["message"]       
+            results = self.response["message"]
+            
+            print(results)
+            
+            if results == "Die Aktien konnte nicht gefunden werden":
+                return  "no_stocks"
         
-            if len(results) > 1:      
+            elif len(results) > 1:      
                 result_str = "ISIN\t\t | Ticker Symbol | Firmenname\n"
                 
                 for result in results.values():
@@ -178,7 +178,28 @@ class StockActions:
     
     def stock_trade(self):
         
-     pass
+        url = f'{url_server}/depot/tradestocks/'
+        
+        headers = { "Authorization": f"Bearer {self.token['access_token']}"}
+        
+        order = {"isin": self.isin, "count":self.count, "transaction_type": self._type_of_action }
+        
+        
+        self.response = requests.post(url, json=order, headers=headers)
+        
+        
+        
+        if self.response.status_code == 200:
+            print ("Empfangen:", self.response.json())
+            print("suche erfolgreich")
+            self.response = self.response.json()
+            return "Kauf erfolgreich"
+            
+         
+        else:
+            print("Fehler", self.response.status_code)
+            return "Fehler"
+
         
        
         

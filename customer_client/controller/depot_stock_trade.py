@@ -59,13 +59,25 @@ class DepotStockTrade:
                 
                 case "single_stock":
                     display_menu.execute_form(trade_form_names, self.stock_actions)
+                    print("start from names")
                     display_menu.execute_filled_form(self.stock_actions.form_names)
                     
                     choice= display_menu.excute_options(self.options_make_trade)
+                
+                case "no_stocks":
+                    title_no_stocks="Ergebnis"
+                    no_stocks = "Die Aktie konnte nicht gefunden werden"
+                    display_menu.execute(title_no_stocks, no_stocks)
+                    choice="options"
                     
                     
-                case "make trade":
-                    pass
+                case "make_trade":
+                    response = self.stock_actions.stock_trade()
+                    print(f"make trade: {response}")
+                    choice="options"
+                        
+                    
+                    
                     
                 
                 case "options":

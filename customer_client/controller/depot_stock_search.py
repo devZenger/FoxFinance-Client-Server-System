@@ -39,9 +39,6 @@ class DepotStockSearch:
                     
                 case "form_filled":
                     choice = self.stock_actions.stock_search()
-                    print (choice)
-                    print("debug nächser schritt")
-                    
                 
                 case "several_stocks":
                     self.stock_information=self.stock_actions.stock_list
@@ -62,7 +59,7 @@ class DepotStockSearch:
                     return "buy_stocks", isin
                 
                 case _:
-                    return choice
+                    return choice, ""
                     
     
     
