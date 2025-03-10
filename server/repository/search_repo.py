@@ -65,6 +65,9 @@ def simple_search(table, column, search_term):
 
 
 
+
+
+
 if __name__ == "__main__":
 
     print("start")

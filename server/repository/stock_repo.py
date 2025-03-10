@@ -3,11 +3,6 @@ import sqlite3
 from .db_executor import DBExecutor
 from .search_repo import make_dictionary_one_result
 
-# if used main
-#from db_executor_for_test import DBExecutor
-#from search_repo import make_dictionary_one_result
-
-
 db_ex = DBExecutor()
 
 def latest_trade_day_entry(search_term):
@@ -55,17 +50,42 @@ def trade_day_by_period(search_term, time):
         return None
 
     
+
+
+def all_stocks_by_customer(customer_id, isin):
     
+    try: 
+        sql="""SELECT
+                    COALESCE((SELECT SUM(count) 
+                        FROM transactions
+                        WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1), 0) -
+                    COALESCE((SELECT SUM(count) 
+                        FROM transactions
+                        WHERE customer_id = ? AND isin = ? AND transaction_type_id = 2), 0)
+                AS DIFFERENCE"""
+        
+        value = (customer_id,isin, customer_id,isin,)
+        datas = db_ex.execute(sql, value).fetchall()
+        
+        return datas[0][0]
+        
+    except:
+        print("Fehler")
+
+
+
+
+
 
 if __name__ == "__main__":
 
     print("start")
     table = "stocks"
-    column = "isin"
-    search_term = "DE0005190003"
-    time = "6 months"
     
-    answer = latest_trade_day_entry(search_term)
+    isin = "DE0005190003"
+    customer_id = 2
+    
+    answer = select_all_stock_by_customer(customer_id, isin)
     
     print(" ")
     #for an in answer:
@@ -77,3 +97,20 @@ if __name__ == "__main__":
     print(" ")
     #stocks_row = answer["row_result0"]
     #print(stocks_row)
+    
+    
+#"""SELECT
+#                    (SELECT SUM(count) 
+#                    FROM transactions
+#                    WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1) -
+#                    (SELECT SUM(count) 
+#                    FROM transactions
+#                    WHERE customer_id = ? AND isin = ? AND transaction_type_id = 2)
+#                AS DIFFERENCE"""
+#                
+                
+                
+                
+#                """SELECT SUM(count) 
+#                FROM transactions
+#                WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1"""

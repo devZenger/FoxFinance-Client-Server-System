@@ -9,7 +9,7 @@ class DBExecutor:
         self.connection = None
         
         if os.path.exists(self.path):
-            print("debug Datenbank vorhanden")
+            print("debug Datenbank vorhanden test")
         else:
             print("debug keine Datenbank")
             

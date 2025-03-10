@@ -4,12 +4,13 @@ import os, sys
 
 class DBExecutor:
     def __init__(self):
-        self.path= "../server/database/FoxFinanceData.db"
+        
+        self.path= os.path.join("..", "server", "database", "FoxFinanceData.db")
         self.cursor = None
         self.connection = None
         
         if os.path.exists(self.path):
-            print("debug Datenbank vorhanden")
+            print("debug db_executer Datenbank vorhanden")
         else:
             print("debug keine Datenbank")
             

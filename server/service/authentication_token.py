@@ -52,11 +52,8 @@ class Authentication:
     
     def authenticate_customer(self, email:str, password:str):
         
-        print(f"ausgabe email in line 58 {email}")
         db_query = get_auth_datas(email)
-        print(f"ausgage von db_query: {db_query}")
-        print(db_query)
-        
+
         if not db_query:
             return False
         if db_query["email"] != email:
@@ -82,9 +79,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print(f"payload {payload}")
+     
         email = payload.get("email")
-        print(f"username: {email}")
+    
         if email is None:
             print("debug raise credtials")
             raise credtials_execption
@@ -92,8 +89,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     except InvalidTokenError:
         print("raise credtials")
         raise credtials_execption
-    print(f"token data {token_data}")
-    print(f"token data.email {token_data.email}")
+
     user_dic = get_auth_datas(email=token_data.email)
     print(f"debug {user_dic}")
     if user_dic.get("customer_id") is None:
@@ -105,11 +101,9 @@ async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
 ):  
     print("start get_current_active_user")
-    print(type(current_user))
-    print(f"currend_user {current_user}")
-    print(type(current_user))
+
     current_user["disabled"] = False
-    print(f"currend_user2 {current_user}")
+
     if current_user["disabled"]:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user

@@ -2,13 +2,19 @@ from pydantic import BaseModel
 
 from datetime import date
 
-from repository import simple_search, latest_trade_day_entry, trade_day_by_period, search_order_charges, insert_one_table
+from repository import simple_search, latest_trade_day_entry, trade_day_by_period, search_order_charges, insert_one_table, all_stocks_by_customer
 
 
 class StockTrade(BaseModel):
     isin: str
     count: int
     transaction_type: str
+
+def get_transaction_type(input):
+        transaction_type = simple_search("transaction_type", "kind_of_action",input)
+        return transaction_type["row_result0"]["transaction_type_id"]
+
+
 
 
 def search_stock(search_input):
@@ -62,14 +68,6 @@ def stock_performence(stocks_row:dict):
    
         result = trade_day_by_period(isin, time)
         
-        print(" ")
-        print("+++++++++++++++++++++++++++++++++++")
-        print(result)
-        print("-------------------------------------")
-        print(last_trade_day)
-        print("++++++++++++++++++++++++++++++++++++")
-        print(" ")
- 
         performance = result["open"]/last_trade_day["close"] *100
         data = {}
         data["date"]= result["date"]
@@ -78,12 +76,6 @@ def stock_performence(stocks_row:dict):
  
         performance_data[f"{time}"]=data.copy()
         
-        print("++++++++")
-        print(performance_data) 
-        print("-------------")   
-    
-    
-    print(performance_data)
     
     performance_data["stocks_row"]=stocks_row.copy()
     performance_data["latest_day"]=last_trade_day.copy()
@@ -91,44 +83,23 @@ def stock_performence(stocks_row:dict):
     
     return performance_data
     
- 
- 
-def buy_stocks(customer_id, stock_trade:StockTrade): 
-        
+
+def stocks_trade(customer_id, stock_trade:StockTrade):
+    
+    transaction_type = simple_search("transaction_type", "kind_of_action",stock_trade.transaction_type)
+    ts_id = transaction_type["row_result0"]["transaction_type_id"]
+
     current_market = latest_trade_day_entry(stock_trade.isin)  
-     
     trade_vol = current_market["close"]* stock_trade.count
     
     current_day= date.today()
     
-    print(current_day)
-    
     current_charges = search_order_charges(trade_vol, current_day)
     
     trade_charge = trade_vol * current_charges["order_charge"]
-    
-    
-    
-    customer_finance_result = simple_search("financials", "customer_id",  customer_id)
-    
-    customer_finance = customer_finance_result["row_result0"]
-        
-    
-    total = trade_vol+trade_charge
-    
-    print(customer_finance)
-    
-    if customer_finance["balance"] < total:
-        
-        return ("Guthaben reicht nicht aus")
-    
-    else:
-        
-        transaction_type = simple_search("transaction_type", "kind_of_action","buy")
-        print(transaction_type)
-        ts_id = transaction_type["row_result0"]["transaction_type_id"]
-        
-        transaction = {
+
+
+    transaction = {
             "customer_id":customer_id,
             "isin": stock_trade.isin,
             "transaction_type_id": ts_id,
@@ -136,18 +107,70 @@ def buy_stocks(customer_id, stock_trade:StockTrade):
             "price_per_stock":current_market["close"],
             "order_charge_id":current_charges["order_charge_id"]    
         }
-        
-        balance_transaction_type = simple_search("balance_transactions_type", "type_of_action","buy stocks")
-        print("balance", balance_transaction_type)
-        bts_id = balance_transaction_type["row_result0"]["balance_transaction_type_id"]
-        
-        
-        balance = {
+    
+    
+    
+
+    return transaction, trade_charge, trade_vol#, customer_finance, balance
+
+def customer_finance_data(customer_id, kind_of):
+    
+    customer_finance_result = simple_search("financials", "customer_id",  customer_id)
+    customer_finance = customer_finance_result["row_result0"]
+    
+    balance_transaction_type = simple_search("balance_transactions_type", "type_of_action",kind_of)
+    bts_id = balance_transaction_type["row_result0"]["balance_transaction_type_id"]
+    
+    balance = {
             "customer_id":customer_id,
             "bank_account":customer_finance["reference_account"],
-            "balance_sum": total,
             "balance_transaction_type_id": bts_id
         }
+    
+    return customer_finance, balance
+
+
+
+ 
+ 
+def buy_stocks(customer_id, stock_trade:StockTrade):
+    
+    transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
+    
+    customer_finance, balance =customer_finance_data(customer_id, "buy stocks")
+        
+    #current_market = latest_trade_day_entry(stock_trade.isin)  
+    #trade_vol = current_market["close"]* stock_trade.count
+    
+    #current_day= date.today()
+    
+    #current_charges = search_order_charges(trade_vol, current_day)
+    
+    #trade_charge = trade_vol * current_charges["order_charge"]
+    
+    ###
+    
+    #customer_finance_result = simple_search("financials", "customer_id",  customer_id)
+    
+    #customer_finance = customer_finance_result["row_result0"]
+        
+    total = trade_vol+trade_charge
+    
+    
+    if customer_finance["balance"] < total:
+        
+        return ("Guthaben reicht nicht aus")
+    
+    else:
+        #ts_id = get_transaction_type("buy")
+        #transaction_type = simple_search("transaction_type", "kind_of_action","buy")
+        #ts_id = transaction_type["row_result0"]["transaction_type_id"]
+        
+
+
+        balance["balance_sum"]=total
+        
+    
         
         return trade_transaction(transaction, balance)
 
@@ -160,9 +183,6 @@ def trade_transaction(transaction:dict, balance:dict):
         
         
         transaction_insert = simple_search("transactions","transaction_id", transaction_id)
-        
-        
-        
         
         balance_id = insert_one_table("balance_transactions", balance)
         
@@ -177,10 +197,34 @@ def trade_transaction(transaction:dict, balance:dict):
     
     except Exception as e:
         return e
+
+
+def sell_stocks(customer_id, stock_trade:StockTrade):
+    
+    ownership = all_stocks_by_customer(customer_id, stock_trade.isin)
+    
+    if stock_trade.count > ownership:
+        
+        return "Nicht genügend Aktien"
+    
+    else:
+        
+        transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
+        
+        customer_finance, balance =customer_finance_data(customer_id, "sell stocks")
+        
+        balance["balance_sum"]= (trade_vol - trade_charge)
         
         
+        return trade_transaction(transaction, balance)
+        
+        
+ 
     
     
+    
+    
+   
     
     
     
@@ -196,7 +240,7 @@ if __name__ == "__main__":
         transaction_type: str
     
     
-    stock_trade = StockTrade(isin = "DE0005190003", count=20, transaction_type="buy")
+    stock_trade = StockTrade(isin = "DE0005190003", count=10, transaction_type="sell")
     
     
     print("start")
@@ -205,7 +249,7 @@ if __name__ == "__main__":
     search_term = "DE0005190003"
     time = "6 months"
     
-    performance_data = buy_stocks(2, stock_trade)
+    performance_data = buy_stocks(1, stock_trade)
 
 
     print("--------------------------")    
