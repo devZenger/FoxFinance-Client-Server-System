@@ -1,10 +1,9 @@
 from fastapi import APIRouter, HTTPException
+
 from pydantic import BaseModel
 
 
-from service import RegistrationFormVertification
-
-from repository import InsertCustomer
+from service import CustomerRegistration
 
 router = APIRouter()
 
@@ -19,20 +18,20 @@ class AccountForm(BaseModel):
    email: str
    phone_number: str
    reference_account: str
-   balance: str
+   balance_sum: str
    password: str
     
 
 @router.post("/create_costumer_account/")
 async def create_account(accountform: AccountForm):   
    data = accountform.model_dump()
-   rfv = RegistrationFormVertification()
+   customer_datas = CustomerRegistration()
    
    errors = [] 
    
    for key, value in data.items():
       try :
-         setattr(rfv, key, value)
+         setattr(customer_datas, key, value)
          
       except Exception as e:
          print(f"Fehlerhafte eingabe für {key}: {e}")
@@ -41,14 +40,14 @@ async def create_account(accountform: AccountForm):
    if errors:
       raise HTTPException(status_code=422, detail=errors)
    
-   try:
-      dic = rfv.to_dict()
-      fill_in = InsertCustomer()
-      fill_in.insert(dic)
-   except Exception as e:
-      errors.append(f"Konnte Daten nicht speicher: {e}")
    
-   if errors:
-      raise HTTPException(status_code=500, detail=errors)
+   try:
+      customer_datas.insert_db()
+      
+   except Exception as e:
+      raise HTTPException(status_code=422, detail=e)
+   
+   
+  
+   
           
-   return {"messeage": "gespeichert"}

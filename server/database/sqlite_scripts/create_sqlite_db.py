@@ -50,8 +50,7 @@ cursor.execute(sql)
 
 sql = """CREATE TABLE financials(
             customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-            reference_account TEXT UNIQUE NOT NULL,
-            balance REAL NOT NULL
+            reference_account TEXT UNIQUE NOT NULL
             )"""
 cursor.execute(sql)
 
@@ -62,13 +61,13 @@ cursor.execute(sql)
 
 # balance related:
 sql = """CREATE TABLE balance_transactions(
-            balance_transaction_id INTEGER PRIMARY KEY,
-            customer_id NOT NULL,
-            bank_account NOT NULL,
+            balance_transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_id INTEGER NOT NULL,
+            bank_account TEXT NOT NULL,
             balance_sum REAL NOT NULL,
-            balance_transaction_type_id NOT NULL,
+            balance_transaction_type_id INTEGER NOT NULL,
             usage TEXT,
-            balance_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            balance_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (customer_id) REFERENCES customers,
             FOREIGN KEY (balance_transaction_type_id) REFERENCES balance_transactions_type)"""
 cursor.execute(sql)
@@ -131,7 +130,7 @@ sql = """ CREATE TABLE transactions(
             customer_id INTEGER,
             isin NOT NULL,
             transaction_type_id,
-            count INTEGER NOT NULL,
+            amount INTEGER NOT NULL,
             price_per_stock NOT NULL,
             order_charge_id NOT NULL,
             transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
