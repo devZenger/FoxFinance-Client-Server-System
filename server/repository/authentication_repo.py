@@ -2,11 +2,13 @@ import sqlite3
 
 from .db_executor import DBExecutor
 
+db_ex = DBExecutor()
     
 def get_auth_datas(email):
             
-    db_ex = DBExecutor()
     try:
+        db_ex.open_connection_db()
+        
         sql= """SELECT * FROM authentication WHERE email= ?"""
         value = (email,)
         data = db_ex.execute(sql, value).fetchall()
@@ -23,16 +25,27 @@ def get_auth_datas(email):
         
         return auth_dic
     
-    except:
+    except Exception as e:
+        print(f"Position: get_auth_datas, Error: {e}")
         return None
+    
+    finally:
+        db_ex.close()
+    
 
 
 def insert_login_time(customer_id):
     
-    db_ex = DBExecutor()
-    sql= f"""UPDATE customers SET last_login = CURRENT_TIMESTAMP WHERE customer_id = '{customer_id}'"""
-    db_ex.execute_and_commit_just_sql(sql)
-    db_ex.close()
+    try:
+        db_ex.open_connection_db()
+        sql= f"""UPDATE customers SET last_login = CURRENT_TIMESTAMP WHERE customer_id = '{customer_id}'"""
+        db_ex.execute_and_commit_just_sql(sql)
+    
+    except Exception as e:
+        print(f"position: insert_login_time; Error: {e}")
+    
+    finally:
+        db_ex.close()
 
 
 

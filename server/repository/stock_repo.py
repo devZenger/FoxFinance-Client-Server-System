@@ -8,6 +8,9 @@ db_ex = DBExecutor()
 def latest_trade_day_entry(search_term):
     
     try:
+        
+        db_ex.open_connection_db()
+        
         sql=f"""SELECT * 
                 FROM stock_data 
                 WHERE isin = ? 
@@ -15,24 +18,27 @@ def latest_trade_day_entry(search_term):
                 
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()
-        print("datas:")
-        print(datas)
+
         names = db_ex.col_names()
-        
-        print("data0")
-        print(datas[0])
+
         result= make_dictionary_one_result(datas[0], names)
-        print("latest_trade return:")
-        print(result)
-        return result
+
+
         
-    except:
-        print("debug nicht gefunden")
-        return None
+    except Exception as e:
+        print(f"position: latest_trade_day_entry, Error: {e}")
+        result = "Kein Eintrag gefunden, Error: {e}"
+    
+    finally:
+        db_ex.close()
+        return result
 
 def trade_day_by_period(search_term, time):
     
     try:
+        
+        db_ex.open_connection_db()
+        
         sql=f"""SELECT * 
                 FROM stock_data 
                 WHERE isin = ? AND date <= DATE('now', '-{time}') 
@@ -43,23 +49,29 @@ def trade_day_by_period(search_term, time):
         names = db_ex.col_names()
         
         
-        return make_dictionary_one_result(datas[0], names)
+        result = make_dictionary_one_result(datas[0], names)
     
-    except:
-        print("debug nicht gefunden")
-        return None
+    except Exception as e:
+        print(f"position: trade_day_by_period, Error: {e}")
+        result = "Kein Eintrag gefunden, Error: {e}"
+    
+    finally:
+        db_ex.close()
+        return result
 
     
 
 
 def all_stocks_by_customer(customer_id, isin):
     
-    try: 
+    try:
+        db_ex.open_connection_db()
+        
         sql="""SELECT
-                    COALESCE((SELECT SUM(count) 
+                    COALESCE((SELECT SUM(amount) 
                         FROM transactions
                         WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1), 0) -
-                    COALESCE((SELECT SUM(count) 
+                    COALESCE((SELECT SUM(amount) 
                         FROM transactions
                         WHERE customer_id = ? AND isin = ? AND transaction_type_id = 2), 0)
                 AS DIFFERENCE"""
@@ -67,50 +79,19 @@ def all_stocks_by_customer(customer_id, isin):
         value = (customer_id,isin, customer_id,isin,)
         datas = db_ex.execute(sql, value).fetchall()
         
-        return datas[0][0]
+        result = datas[0][0]
         
-    except:
-        print("Fehler")
+    except Exception as e:
+        print(f"postion: all_stock_by_customer, Error: {e}")
+        result = "Kein Eintrag gefunden, Error: {e}"
+
+    finally:
+        db_ex.close()
+        return result
 
 
 
 
 
 
-if __name__ == "__main__":
-
-    print("start")
-    table = "stocks"
     
-    isin = "DE0005190003"
-    customer_id = 2
-    
-    answer = select_all_stock_by_customer(customer_id, isin)
-    
-    print(" ")
-    #for an in answer:
-    #    print(an)
-
-    #print(len(answer))
-    print(answer)
-    
-    print(" ")
-    #stocks_row = answer["row_result0"]
-    #print(stocks_row)
-    
-    
-#"""SELECT
-#                    (SELECT SUM(count) 
-#                    FROM transactions
-#                    WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1) -
-#                    (SELECT SUM(count) 
-#                    FROM transactions
-#                    WHERE customer_id = ? AND isin = ? AND transaction_type_id = 2)
-#                AS DIFFERENCE"""
-#                
-                
-                
-                
-#                """SELECT SUM(count) 
-#                FROM transactions
-#                WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1"""

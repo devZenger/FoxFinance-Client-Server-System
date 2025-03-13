@@ -7,7 +7,9 @@ db_ex = DBExecutor()
 
 def search_order_charges(volumn, date):
     
-    try: 
+    try:
+        db_ex.open_connection_db()
+        
         sql=f"""SELECT * 
                 FROM order_charges
                 WHERE start_validation <= ? AND ? <= end_validation AND ? >= min_volumn 
@@ -15,15 +17,18 @@ def search_order_charges(volumn, date):
                 LIMIT 1"""
         value = (date, date, volumn)
         datas = db_ex.execute(sql, value).fetchall()
-        
-        print(datas)
-        
+                
         names = db_ex.col_names()
         
-        return make_dictionary_one_result(datas[0], names)
+        result = make_dictionary_one_result(datas[0], names)
     
-    except:
-        print("debug nicht gefunden")
+    except Exception as e:
+        print(f"position: search_order_charges, Error: {e}")
+        result = "Kein Eintrag gefunden, Error: {e}"
+    
+    finally:
+        db_ex.close()
+        return result
 
 
 

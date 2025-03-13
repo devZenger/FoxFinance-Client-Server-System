@@ -24,6 +24,8 @@ def key_to_value(to_form:dict):
 def insert_one_table(table, insert:dict):
     
     try:
+        db_ex.open_connection_db()
+        
         key_column = key_to_column(insert)
         key_value = key_to_value(insert)
         
@@ -33,7 +35,11 @@ def insert_one_table(table, insert:dict):
         return execute_id
         
     except Exception as e:
+        print(f"postion: insert_one_tabe, Error: {e}")
         raise Exception(e)
+    
+    finally:
+        db_ex.close
         
 
 

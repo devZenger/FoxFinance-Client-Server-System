@@ -8,6 +8,9 @@ from .db_executor import DBExecutor
 def simple_search(table, column, search_term):
             
     db_ex = DBExecutor()
+    
+    db_ex.open_connection_db()
+    
     try:
         sql= f"""SELECT * FROM {table} WHERE {column} LIKE ?"""
         value = (search_term,)
@@ -41,6 +44,9 @@ def simple_search(table, column, search_term):
     except:
         print("debug none")
         return None
+    
+    finally:
+        db_ex.close()
 
 
 

@@ -14,6 +14,10 @@ class DBExecutor:
         else:
             print("debug keine Datenbank")
             
+        
+
+    
+    def open_connection_db(self):
         try:
             self.connection = sqlite3.connect(self.path)
             self.cursor = self.connection.cursor()
@@ -21,8 +25,32 @@ class DBExecutor:
         except sqlite3.Error as e:
             print(f"Verbindungsprobleme: {str(e)}")
             raise Exception(f"Verbidungsprobleme: {str(e)}")
+    
+    
+    
+    def start_transcation(self):
+        try:
+            self.connection.execute("BEGIN TRANSACTION")
+        except sqlite3.Error as e:
+            print(f"Ausführungsprobleme: {str(e)}")
+            raise Exception(f"Ausführungsprobleme: {str(e)}")
 
-  
+    def connection_commit(self):
+        try:
+            self.connection.commit()
+        except sqlite3.Error as e:
+            print(f"Ausführungsprobleme: {str(e)}")
+            raise Exception(f"Ausführungsprobleme: {str(e)}")
+
+    def rollback(self):
+        try:
+            self.connection.rollback()
+        except sqlite3.Error as e:
+            print(f"Ausführungsprobleme: {str(e)}")
+            raise Exception(f"Ausführungsprobleme: {str(e)}")
+    
+    
+    
     def execute(self, sql, value):
         try:
             self.cursor.execute(sql, value)

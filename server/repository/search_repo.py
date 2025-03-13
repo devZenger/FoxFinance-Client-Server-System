@@ -37,19 +37,24 @@ def make_dictionary_one_result(datas, names):
 def simple_search(table, column, search_term):
     
     try:
+        db_ex.open_connection_db()
+        
         sql= f"""SELECT * FROM {table} WHERE {column} LIKE ?"""
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()
         
         names = db_ex.col_names()
                  
-        search_result= make_dictionary(datas, names)      
-      
-        return search_result
+        result= make_dictionary(datas, names)      
+
         
-    except:
-        print("debug none")
-        return None
+    except Exception as e:
+        print(f"position: search_order_charges, Error: {e}")
+        result = f"Kein Eintrag gefunden, Error: {e}"
+    
+    finally:
+        db_ex.close()
+        return result
 
 
 
