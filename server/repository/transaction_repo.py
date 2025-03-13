@@ -120,6 +120,60 @@ def stock_transactions_overview(customer_id):
         
         
 
+def search_past_transactions(customer_id, search_start, search_end):
+    
+    db_ex.open_connection_db()
+    
+    try: 
+        sql="""SELECT
+                    t.transaction_id,
+                    t.transaction_date,
+                    tt.kind_of_action,
+                    t.isin,
+                    s.company_name,
+                    t.amount,
+                    t.price_per_stock
+                    FROM (
+                        SELECT * 
+                        FROM transactions AS t
+                        WHERE t.customer_id = ? 
+                            AND t.transaction_date >= ?
+                            AND t.transaction_date <= ?
+                        GROUP by t.transaction_date
+                        ORDER BY t.transaction_date ASC
+                    ) AS t
+                    LEFT JOIN (
+                        SELECT s.isin, s.company_name as company_name
+                        FROM stocks AS s
+                        ) AS s
+                        ON t.isin = s.isin
+                    LEFT JOIN (
+                        SELECT tt.transaction_type_id, tt.kind_of_action
+                        FROM transaction_type AS tt
+                        )AS tt
+                        ON t.transaction_type_id = tt.transaction_type_id"""
+        
+
+        value = (customer_id, search_start, search_end,)
+        datas = db_ex.execute(sql, value).fetchall()
+            
+        names = db_ex.col_names()
+        
+        result = make_dictionary(datas, names)
+
+        print(f"result ist : {result}")
+        
+        return result
+
+    except Exception as e:
+        print(f"postion: strock_transaction_overview, Error: {e}")
+        raise e
+
+    finally:
+        db_ex.close()
+        
+
+
 
 if __name__ == "__main__":
 
