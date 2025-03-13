@@ -50,7 +50,7 @@ def insert_stock_transaction(transaction:dict, balance:dict):
         print("Exception bei insert stock transaction")
         db_ex.rollback()
         print("transaktionsprobleme: ", e)
-        raise e
+        raise ValueError(e)
     
     finally:
         print("close transaktion")
@@ -113,7 +113,7 @@ def stock_transactions_overview(customer_id):
     
     except Exception as e:
         print(f"postion: strock_transaction_overview, Error: {e}")
-        raise e
+        raise ValueError(e)
     
     finally:
         db_ex.close()
@@ -167,7 +167,7 @@ def search_past_transactions(customer_id, search_start, search_end):
 
     except Exception as e:
         print(f"postion: strock_transaction_overview, Error: {e}")
-        raise e
+        raise ValueError(e)
 
     finally:
         db_ex.close()

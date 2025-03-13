@@ -2,9 +2,10 @@ from typing import Annotated
 
 from fastapi import Depends,APIRouter, HTTPException
 from pydantic import BaseModel
+from decimal import Decimal
 
 
-from service import User, get_current_active_user, get_customer_balance, get_past_balance_transactions
+from service import User, get_current_active_user, get_customer_balance, get_past_balance_transactions, make_balance_transaction
 
 router = APIRouter()
 
@@ -14,7 +15,7 @@ class User(BaseModel):
     disabled: bool | None = None
 
 class CashTransfer(BaseModel):
-    sum: int
+    balance_sum: Decimal
     transaction_type: str
     
 
@@ -40,9 +41,17 @@ async def get_past_balance_transactions(search_start:str, search_end:str, curren
     except Exception as e:
         
         raise HTTPException(status_code=422, detail=e)
+
     
-#@router.post("/depot/cashtransfer")
-#async def post_cash_transfer(cash_transfer:CashTransfer, current_customer: Annotated[User, Depends(get_current_active_user)]):
+@router.post("/depot/cashtransfer")
+async def post_cash_transfer(cash_transfer:CashTransfer, current_customer: Annotated[User, Depends(get_current_active_user)]):
+    
+    try:     
+        transactions = make_balance_transaction(current_customer.customer_id, cash_transfer)
+        return {"message": transactions}
+
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=e)
     
     
 

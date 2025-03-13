@@ -4,5 +4,5 @@ from .search_repo import simple_search
 from .stock_repo import latest_trade_day_entry, trade_day_by_period, all_stocks_by_customer
 from .order_charges_repo import search_order_charges
 from .insert_repo import insert_one_table
-from .balance_repo import customer_balance, search_past_balance_transactions
+from .balance_repo import customer_balance, search_past_balance_transactions, insert_balance_transaction
 from .transaction_repo import insert_stock_transaction, stock_transactions_overview, search_past_transactions

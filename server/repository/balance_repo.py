@@ -1,4 +1,4 @@
-import sqlite3
+from decimal import Decimal
 
 from .db_executor import DBExecutor
 from .search_repo import make_dictionary_one_result, make_dictionary
@@ -84,10 +84,53 @@ def search_past_balance_transactions(customer_id, search_start, search_end):
 
     except Exception as e:
         print(f"postion: search_past_balance_transactions, Error: {e}")
-        raise e
+        raise ValueError(e)
 
     finally:
         db_ex.close()
+
+
+
+def insert_balance_transaction(b_transaction:dict):
+    
+    db_ex.open_connection_db()
+    
+    db_ex.start_transcation()
+    
+    try:
+        sql= """INSERT INTO balance_transactions(
+                    customer_id,
+                    bank_account,
+                    balance_sum,
+                    balance_transaction_type_id,
+                    usage) VALUES (
+                    :customer_id,
+                    :bank_account,
+                    :balance_sum,
+                    :balance_transaction_type_id,
+                    :usage)"""
+        
+        balance_id = db_ex.execute(sql, b_transaction).lastrowid
+        
+        db_ex.connection_commit()        
+        
+    except Exception as e:
+        print("Exception bei insert_balance_transaction")
+        db_ex.rollback()
+        print("transaktionsprobleme: ", e)
+        raise ValueError(e)
+    
+    finally:
+        print("close transaktion")
+        db_ex.close()
+        
+        return balance_id
+    
+
+
+
+
+
 
 
 
