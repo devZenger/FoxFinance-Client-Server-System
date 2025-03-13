@@ -2,20 +2,28 @@ import sqlite3
 
 from .db_executor import DBExecutor
 
-class InsertCustomer:
+
     
-    def insert(self, input):
-             
-        db_ex = DBExecutor()
+def insert_customer(input):
+            
+    db_ex = DBExecutor()
+    db_ex.open_connection_db()
+    
+    try:
+        db_ex.start_transcation()
 
         sql= """INSERT INTO customers(last_login) VALUES(?)"""
         value = (None,)
-        customer_id = db_ex.execute_and_commit(sql, value).lastrowid
-
+        customer_id = db_ex.execute(sql, value).lastrowid
+        print(customer_id)
         input["customer_id"]=customer_id
         input["disabled"]=False
+        input["bank_account"]=input["reference_account"]
+        input["balance_transaction_type_id"]= 1
+        input["usage"]="Depoteröffnung"
         
-
+        print(input)
+        
 
         sql = """INSERT INTO customer_adresses VALUES(
                     :customer_id,
@@ -26,8 +34,7 @@ class InsertCustomer:
                     :zip_code,
                     :city,
                     :birthday)"""
-        db_ex.execute_and_commit(sql, input)
-
+        db_ex.execute(sql, input)
 
         sql = """INSERT INTO authentication VALUES(
                     :customer_id,
@@ -35,16 +42,43 @@ class InsertCustomer:
                     :phone_number,
                     :password,
                     :disabled)"""
-        db_ex.execute_and_commit(sql, input)
-
+        db_ex.execute(sql, input)
 
         sql = """INSERT INTO financials VALUES(
                     :customer_id,
-                    :reference_account,
-                    :balance)"""
-        db_ex.execute_and_commit(sql, input)
+                    :reference_account)"""
+        db_ex.execute(sql, input)
+        
+        sql = """INSERT INTO balance_transactions
+                    (customer_id,
+                    bank_account,
+                    balance_sum,
+                    balance_transaction_type_id,
+                    usage)    
+                    VALUES(
+                    :customer_id,
+                    :bank_account,
+                    :balance_sum,
+                    :balance_transaction_type_id,
+                    :usage)"""
+        db_ex.execute(sql, input)
+        
+        db_ex.connection_commit()
 
+
+        
+        
+    
+    except Exception as e:
+        db_ex.rollback()
+        print(e)
+        raise f"Error: {e}"
+    
+    finally:
         db_ex.close()
+      
+       
+            
 
 
         
@@ -56,6 +90,6 @@ class InsertCustomer:
 
 if __name__ == "__main__":
 
-    dic = {"first_name": "fdsf", "last_name": "fdsf", "street": "fdsf", "house_number": "fdsfdsf", "zip_code": "fdsfd", "city": "fdfdsf", "birthday": "fdsdsf" }
-    start = InsertCustomer()
-    start.insert(dic)
+    dic = {'last_name': 'zoe', 'first_name': 'zoe', 'street': 'zoe', 'house_number': 'zoe', 'zip_code': 'zoe', 'city': 'zoe', 'birthday': 'zoe', 'email': 'zoe', 'phone_number': 'zoe', 'reference_account': 'zoe', 'balance_sum': '666666666666666', 'password': '$2b$12$D90SkgxkQvGJz5cWW1.bue2nUiPifhP/yMMhPDU8RujSymMjJDfZC', 'customer_id': 1, 'disabled': False, 'bank_account': 'zoe', 'balance_transaction_type_id': 1, 'usage': 'Depoteröffnung'}
+    test = insert_customer(dic)
+    
