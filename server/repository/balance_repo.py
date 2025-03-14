@@ -93,6 +93,8 @@ def search_past_balance_transactions(customer_id, search_start, search_end):
 
 def insert_balance_transaction(b_transaction:dict):
     
+    
+    
     db_ex.open_connection_db()
     
     db_ex.start_transcation()
@@ -144,8 +146,15 @@ if __name__ == "__main__":
     
     isin = "DE0005190003"
     customer_id = 2
+    transfer = {}
     
-    answer = customer_balance(customer_id)
+    transfer["customer_id"]= 1
+    #tranaferbank_account,
+     #               :balance_sum,
+      #              :balance_transaction_type_id,
+        #            :usage]
+    
+    answer = insert_balance_transaction(transfer)
     
     print(" ")
     #for an in answer:
