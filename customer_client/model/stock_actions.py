@@ -38,11 +38,6 @@ class StockActions:
         self.token=token
         
         self.search_term=None
-   
-        
-        
-        
-        
         
         self.stock_list=None
         self.stock_information=None
@@ -51,16 +46,16 @@ class StockActions:
         
         self.search_form_names = {"search_term":"ISIN, Symbol oder Name"}
         
-        self.trade_form_names = {"count":"Anzahl", "type_of_action":"Kaufen oder Verkaufen"}
+        self.trade_form_names = {"amount":"Anzahl", "type_of_action":"Kaufen oder Verkaufen"}
         
         self.form_names = {"stock_name": "Unternehmen", 
                            "isin": "ISIN", 
-                           "count": "Anzahl",
+                           "amount": "Anzahl",
                            "type_of_action": "Kaufen oder Verkaufen"}
         
         self.isin=None
         self.stock_name=None
-        self.count=None
+        self._amount=None
         self._type_of_action=None
     
     
@@ -71,25 +66,32 @@ class StockActions:
     @type_of_action.setter
     def type_of_action(self, input:str):
         input = input.lower()
-        print(input)
-        if input == "kaufen" or input == "kauf":
+        
+        if input == "kaufen" or input == "kauf" or input =="buy":
             self._type_of_action = "buy"
-        elif input == "verkaufen" or "verkauf":
+        elif input == "verkaufen" or "verkauf" or input=="sell":
             self._type_of_action = "sell"
         else:
             raise ValueError("Fehler")
-    
 
+    @property
+    def amount(self):
+        return self._amount
     
-    
-    
-    
+    @amount.setter
+    def amount(self, input):
+        input = int(input)
+        if input > 0:
+            self._amount = input
+        else:
+            raise ValueError("Fehler, keine ganze Zahl größer 0")
+
     
     def stock_search(self):
         
         get_data = self.request_server()
         
-        print(f"get_data= {get_data}")
+        #print(f"get_data= {get_data}")
         
         if get_data == False:
             return f"\tFehler, {self.response.status_code}\n\tÜberprüfen Sie die Verbindung"
@@ -97,7 +99,7 @@ class StockActions:
             results = {}
             results = self.response["message"]
             
-            print(results)
+            #print(results)
             
             if results == "Die Aktien konnte nicht gefunden werden":
                 return  "no_stocks"
@@ -131,7 +133,7 @@ class StockActions:
                 self.isin = results["one"]["latest_day"]["isin"]
                 self.stock_name = results["one"]["stocks_row"]["company_name"]
                 
-                print(f"self.isin = {self.isin}")
+                
                 
                 presantable = performance_data_presentable(results["one"])
                 
@@ -141,9 +143,8 @@ class StockActions:
                     self.stock_information=f"{self.stock_information} {pre}\n"
                 
                 
-                
                 self.stock_information=f"""{self.stock_information}\n
-                \tSollte die Börse geöffnet sein,\n\tist der Schlusskurs der aktuelle Kurs"""
+                Sollte die Börse geöffnet sein,\n\tist der Schlusskurs der aktuelle Kurs"""
                 
                 return "single_stock"
             
@@ -170,11 +171,7 @@ class StockActions:
             return False
     
     
-    
 
-        
-        
-    
     
     def stock_trade(self):
         
@@ -182,20 +179,17 @@ class StockActions:
         
         headers = { "Authorization": f"Bearer {self.token['access_token']}"}
         
-        order = {"isin": self.isin, "count":self.count, "transaction_type": self._type_of_action }
-        
+        order = {"isin": self.isin, "amount":self.amount, "transaction_type": self._type_of_action }
         
         self.response = requests.post(url, json=order, headers=headers)
         
-        
-        
+         
         if self.response.status_code == 200:
             print ("Empfangen:", self.response.json())
             print("suche erfolgreich")
             self.response = self.response.json()
             return "Kauf erfolgreich"
-            
-         
+ 
         else:
             print("Fehler", self.response.status_code)
             return "Fehler"

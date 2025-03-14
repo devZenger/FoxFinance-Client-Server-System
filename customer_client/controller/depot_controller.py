@@ -5,6 +5,7 @@ from .depot_start_menu import DepotStartMenu
 from .depot_stock_search import DepotStockSearch
 from .depot_informationen import DepotInformation
 from .depot_stock_trade import DepotStockTrade
+from .depot_overview import DepotOverview
 
 
 class DepotControl:
@@ -12,7 +13,7 @@ class DepotControl:
         self.token = token
         self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
         
-        self.option ={"1. Depot Übersicht": "depot overview",
+        self.option ={"1. Depot Übersicht": "depot_overview",
                       "2. Aktien suche":"stock_search",
                       "3. Aktien handeln": "stock_trade",
                       "5. Informationen": "information",
@@ -31,33 +32,24 @@ class DepotControl:
                     depot_menu_start = DepotStartMenu(self.token, self.option)
                     choice = depot_menu_start.run()
                 
-                case "depot overview":
-                    title ="Depot"
-                    info = "in Bearbeitung"
-                    display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.option)
-                
+                case "depot_overview":
+                    depot_overview = DepotOverview(self.token)
+                    depot_overview.run()
+                    choice = "start"
+                    
                 case "stock_search":
                     stock_search = DepotStockSearch(self.token, self.option)
                     choice, isin = stock_search.run()
-                    
-                
-                    
+                      
                 case "stock_trade":                    
                     stock_trade = DepotStockTrade(self.token, self.option)
                     choice = stock_trade.run()
-                    
 
-                
-
-                
                 case "information":
                     information = DepotInformation(self.token)
                     information.run()
                     choice = "start"
                     
-                
-                
                 case "loggout":
                     del self.token
                     if isinstance(depot_menu_start, DisplayMenuOption):

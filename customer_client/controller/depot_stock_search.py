@@ -1,5 +1,3 @@
-import requests
-
 from view import DisplayMenuInput2
 from model import StockActions
 

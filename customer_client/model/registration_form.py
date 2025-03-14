@@ -12,7 +12,7 @@ class RegistrationForm:
         self._email = None
         self._phone_number = None
         self._reference_account = None
-        self._balance = None
+        self._balance_sum = None
         self._password = None
         
         
@@ -27,7 +27,7 @@ class RegistrationForm:
             "email" : "E-Mail Adresse",
             "phone_number": "Handynummer",
             "reference_account": "Referenzkonto",
-            "balance": "Startgeld einzahlen",
+            "balance_sum": "Startgeld einzahlen",
             "password": "Passwort"
         }
         
@@ -162,15 +162,15 @@ class RegistrationForm:
 
     # start capital / balance
     @property
-    def balance(self):
-        return self._balance
+    def balance_sum(self):
+        return self._balance_sum
     
-    @balance.setter
-    def balance(self, input):
+    @balance_sum.setter
+    def balance_sum(self, input):
         if len(input) >= 1:
-            self._balance = input
+            self._balance_sum = input
         else:
-            self._balance = 0
+            self._balance_sum = 0
 
 
     # passwort
@@ -198,6 +198,6 @@ class RegistrationForm:
             "email": self.email,
             "phone_number": self.phone_number,
             "reference_account": self.reference_acccount,
-            "balance":self._balance,
+            "balance_sum":self._balance_sum,
             "password": self.password
         }

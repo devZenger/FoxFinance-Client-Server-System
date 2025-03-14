@@ -42,14 +42,10 @@ class DepotStockTrade:
             match choice:
                 
                 case "input_stock":
-                    print("debug start menu")
-                    # if form filled choise = "form_filled"
                     choice = display_menu.execute_form(search_form_names, self.stock_actions)
                     
                 case "form_filled":
                     choice = self.stock_actions.stock_search()
-                    print (choice)
-                    print("debug nächser schritt")
                     
                 
                 case "several_stocks":
@@ -59,7 +55,6 @@ class DepotStockTrade:
                 
                 case "single_stock":
                     display_menu.execute_form(trade_form_names, self.stock_actions)
-                    print("start from names")
                     display_menu.execute_filled_form(self.stock_actions.form_names)
                     
                     choice= display_menu.excute_options(self.options_make_trade)
@@ -73,7 +68,8 @@ class DepotStockTrade:
                     
                 case "make_trade":
                     response = self.stock_actions.stock_trade()
-                    print(f"make trade: {response}")
+                    display_menu.execute(self.title, response)
+                    
                     choice="options"
                         
                     
