@@ -28,11 +28,12 @@ async def get_depot_overview(current_customer: Annotated[User, Depends(get_curre
         raise HTTPException(status_code=422, detail=e)
     
 
-@router.get("/depot/pasttransactions/{search_start}{search_end}")
+@router.get("/depot/pasttransactions/{search_start}/{search_end}")
 async def get_past_transactions(search_start:str, search_end:str, current_customer: Annotated[User, Depends(get_current_active_user)]):
     
     try:     
         transactions = past_transactions(current_customer["customer_id"], search_start, search_end)
+        print(f"get past_transaction: {transactions}")
         return {"message": transactions}
     
     except Exception as e:
