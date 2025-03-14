@@ -2,7 +2,7 @@ from repository import stock_transactions_overview, search_past_transactions
 
 from .utility import date_form_validation
 
-def get_depot_overview(customer_id):
+def depot_overview(customer_id):
     
     try:
         return stock_transactions_overview(customer_id)
@@ -11,7 +11,7 @@ def get_depot_overview(customer_id):
         raise ValueError(e)
     
 
-def get_past_transactions(customer_id, start_date, end_date):
+def past_transactions(customer_id, start_date, end_date):
     
     
     try:

@@ -4,7 +4,7 @@ from fastapi import Depends,APIRouter, HTTPException
 from pydantic import BaseModel
 
 
-from service import User, get_current_active_user, search_stock, buy_stocks, sell_stocks, get_depot_overview
+from service import User, get_current_active_user, search_stock, buy_stocks, sell_stocks
 
 router = APIRouter()
 
@@ -46,28 +46,7 @@ async def trade_stocks(stock_trade: StockTrade, current_customer: Annotated[User
         return {"message": "Konnte Anfrage ich ausführen"}
     
 
-@router.get("/depot/depotoverview/")
-async def get_depot_overview(current_customer: Annotated[User, Depends(get_current_active_user)]):
-    
-    try:     
-        depot = get_depot_overview(current_customer.customer_id)
-        return {"message": depot}
-    
-    except Exception as e:
-        
-        raise HTTPException(status_code=422, detail=e)
-    
-
-@router.get("/depot/pasttransactions/{search_start}{search_end}")
-async def get_past_transactions(search_start:str, search_end:str, current_customer: Annotated[User, Depends(get_current_active_user)]):
-    
-    try:     
-        transactions = get_past_transactions(current_customer.customer_id, search_start, search_end)
-        return {"message": transactions}
-    
-    except Exception as e:
-        
-        raise HTTPException(status_code=422, detail=e)   
+ 
 
         
     

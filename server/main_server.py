@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from api import information, create_customer_accout, customer_depot, authentication, depot_stock_apis, depot_information
+from api import information, create_customer_accout, customer_depot, authentication, depot_stock_apis, depot_information, depot_balance_apis, depot_history_apis
 
 server = FastAPI()
 
@@ -14,7 +14,11 @@ server.include_router(authentication.router)
 server.include_router(customer_depot.router)
 
 server.include_router(depot_stock_apis.router)
+server.include_router(depot_balance_apis.router)
+server.include_router(depot_history_apis.router)
+
 server.include_router(depot_information.router)
+
 
 @server.get("/")
 async def root():

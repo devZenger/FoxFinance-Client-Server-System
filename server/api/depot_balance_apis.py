@@ -15,7 +15,7 @@ class User(BaseModel):
     disabled: bool | None = None
 
 class CashTransfer(BaseModel):
-    balance_sum: Decimal
+    balance_sum: float
     transaction_type: str
     
 

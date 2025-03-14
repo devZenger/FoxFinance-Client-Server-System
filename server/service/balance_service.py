@@ -6,7 +6,7 @@ from repository import customer_balance, search_past_balance_transactions, simpl
 from .utility import date_form_validation
 
 class CashTransfer(BaseModel):
-    balance_sum: float
+    balance_sum: Decimal
     transaction_type: str
     usage: str | None = None
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     customer_id = 1
     
     transfer = CashTransfer(
-        balance_sum = 3400,
+        balance_sum = Decimal(3400.00),
         transaction_type = "withdrawal",
         usage="Test")
     
