@@ -1,12 +1,14 @@
 import decimal
 
-def make_tabelle(input:dict):
+def make_table(input:dict, column_names:dict):
 
     for dic_in in input.values():
+        
         for k,v in dic_in.items():
             
             if isinstance(v, decimal.Decimal):
                 dic_in[k]=str(v.quantize(decimal.Decimal(1.00)))
+                dic_in[k]=f"{dic_in} EUR"
                 
             elif isinstance(v, int):
                 dic_in[k]= str(v)
@@ -16,29 +18,36 @@ def make_tabelle(input:dict):
 
     column_lengths = []
     
+    for v in column_names.values():
+        
+        vol = len(v)
+        column_lengths.append(len(v))
+    
     for dic_in in input.values():
         
-        for i, (k,v) in enumerate(dic_in.items()):
-            column_lengths.append(0)
-            key =len(k); vol = len(v)
+        for i, v in enumerate(dic_in.values()):
             
-            if key > column_lengths[i]:
-                column_lengths[i]=key
+            vol = len(v)
             
             if vol > column_lengths[i]:
                 column_lengths[i]= vol
     
     
-    tabelle = []
+    tabelle = [""]
+    
+    for i, v in enumerate(column_names.values()):
+        
+        tabelle[0] =f"{tabelle[0]} {v.ljust(column_lengths[i])} |"
+        if i == 0:
+            tabelle.append("")
+        tabelle[1]=f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
+
+
     for i, dic_in in enumerate(input.values()):
+
         tabelle.append("")
-        for j, (k,v) in enumerate(dic_in.items()):
-            if i == 0:
-                tabelle[0]= f"{tabelle[0]} {k.ljust(column_lengths[j])} |"
-                tabelle.append("")
-                tabelle[1]=f"{tabelle[1]}{"-"*(column_lengths[j]+3)}"
-                tabelle.append("")
-            
+        for j, v in enumerate(dic_in.values()):
+
             tabelle[i+2] = f"{tabelle[i+2]} {v.ljust(column_lengths[j])} |" 
     
     return tabelle
@@ -76,7 +85,7 @@ if __name__ == "__main__":
                               'actual_price': 31.229999542236328,
                               'performance': 1.0}}            
     
-    tabelle = make_tabelle(result)
+    tabelle = make_table(result)
     
     for tab in tabelle:
         print(tab)               

@@ -1,12 +1,14 @@
 import requests
+
+
 from datetime import datetime, timedelta
 
-from .url import url_server_depot
+from .server_request_depot import ServerRequestDepot
 
 
 
 
-class DepotHistory:
+class FinancialHistory(ServerRequestDepot):
 
     def __init__(self, token):
         
@@ -18,7 +20,14 @@ class DepotHistory:
         
         self.form_names = {"start_time":"Startdatum (jjjj-mm-tt) ",
                            "end_time":"Enddatum (jjjj-mm-tt) "}
-        
+
+        self.column_names = {"fin_transaction_id":"T. Nr.",
+                           "fin_transaction_date":"Datum",
+                           "fin_transaction_types":"Art der T.",
+                           "fin_amount":"Betrag",
+                           "bank_account":"Bankkonto"}
+
+        super().__init__()
     
     @property
     def start_time(self):
@@ -52,71 +61,58 @@ class DepotHistory:
     
     
 
-    def get_all_stocks(self):
+    def get_actual_balance(self):
         
-        url = f'{url_server_depot}depotoverview/'
+        url_part = 'current_balance/'
         
-        headers = {"Authorization": f"Bearer {self.token['access_token']}"}
+        status, self.response = self.get_without_parameters(url_part)
+        print(f"get-acutal_balance: self.response: {self.response}")
         
-        self.response = requests.get(url, headers=headers)
+        if status:
+            1
+            self.response["Aktueller Kontostand: "]=self.response.pop("actual_balance")
+    
         
-        self.status_code=  self.response.status_code
-        self.response = self.response.json()
-        print=f"self.response = {self.response}"
-        if self.status_code == 200:
-
-            return True
-
-        else:
-            return False
+        return status
 
 
-    def get_transaction_by_timespan(self):
 
-        url_depot = f'{url_server_depot}pasttransactions/{self.start_time}/{self.end_time}/'
-        print(f"url get transaction: {url_depot}")
-        headers = {"Authorization": f"Bearer {self.token['access_token']}"}
+    def get_financial_transaction_by_timespan(self):
         
-        self.response = requests.get(url_depot, headers=headers)
+        url_part = 'pastfinancialtransactions/'
         
-        self.status_code=  self.response.status_code
-        self.response = self.response.json()
+        status, self.response = self.get_with_parameters(url_part, self.start_time, self.end_time)
+        
+        return status
 
-        if self.status_code == 200:
-            print(self.status_code)
-            return True
-
-        else:
-            print(self.status_code)
-            return False
     
     
     def get_last_three_months(self):
         
         today =datetime.today()
         three_months_ago = today - timedelta(days=90)
-        print(today)
-        print(three_months_ago)
+
         self.end_time =today.strftime("%Y-%m-%d")
         self.start_time = three_months_ago.strftime("%Y-%m-%d")
         
-        result = self.get_transaction_by_timespan()
+        result = self.get_financial_transaction_by_timespan()
         
         return result
 
     def get_last_twelve_months(self):
         
         today =datetime.today()
-        three_months_ago = today -timedelta(days=365)
+        three_months_ago = today - timedelta(days=365)
+
+        self.end_time =today.strftime("%Y-%m-%d")
+        self.start_time = three_months_ago.strftime("%Y-%m-%d")
         
-        print(today.strftime("%Y-%m-%d"))
-        
-        self.start_time =today.strftime("%Y-%m-%d")
-        self.end_time = three_months_ago.strftime("%Y-%m-%d")
-        
-        result = self.get_transaction_by_timespan()
+        result = self.get_financial_transaction_by_timespan()
         
         return result
+    
+    
+
         
         
         

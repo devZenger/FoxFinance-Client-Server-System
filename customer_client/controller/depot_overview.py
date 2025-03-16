@@ -6,9 +6,7 @@ class DepotOverview:
         
         self.token=token
         self.depot=None
-        
 
-        
         self.title= "Depotübersicht"
         self.option={"1. die letzten drei Monate":"last_three",
                      "2. die letzten zwölf Monate":"last twelve",
@@ -23,11 +21,6 @@ class DepotOverview:
         self.form_names= self.depot.form_names
         
         self.display_menu.display_title(self.title)
-        
-        
-        
-
-        
         
         choice = "start"
         
@@ -50,7 +43,7 @@ class DepotOverview:
                     
                 case "timespan":
                     self.display_menu.display_form(self.form_names, self.depot)
-                    request = self.depot.get_last_three_months()
+                    request = self.depot.get_transaction_by_timespan()
                     self.show_table(request)
                     choice = "option"
                     
@@ -66,7 +59,7 @@ class DepotOverview:
     def show_table(self, input):
 
         if input is True:     
-            self.display_menu.display_tabelle(self.depot.response["message"])
+            self.display_menu.display_table(self.depot.response["message"])
         
         elif input is False:
             self.display_menu.display_info(self.depot.response["detail"])

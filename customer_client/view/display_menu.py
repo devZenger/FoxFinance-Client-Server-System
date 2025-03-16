@@ -1,8 +1,8 @@
-from .utility import make_tabelle
+from .utility import make_table
 
 class DisplayMenu:
     
-    line = "-" * 80
+    line = "-" * 90
 
     def display_title(self, title):
         print(self.line)
@@ -12,6 +12,10 @@ class DisplayMenu:
     def display_info(self, info):
             print(f"\t{info}")
             print(self.line)
+    
+    def display_title_and_infos(self, title, info):
+        self.display_title(title)
+        self.display_info(info)
     
     
     def display_options(self, options):
@@ -59,10 +63,15 @@ class DisplayMenu:
         
         print(self.line)
     
-    def display_tabelle(self, input:dict):
-        transform_input= make_tabelle(input)
+    def display_table(self, input:dict, column_names:dict):
+        transform_input= make_table(input, column_names)
         
         for transform in transform_input:
             print(f"\t{transform}")
+        
+        print("")
+        print(self.line)
+        
+
         
     
