@@ -19,7 +19,7 @@ def insert_customer(input):
         input["customer_id"]=customer_id
         input["disabled"]=False
         input["bank_account"]=input["reference_account"]
-        input["balance_transaction_type_id"]= 1
+        input["fin_transaction_type_id"]= 1
         input["usage"]="Depoteröffnung"
         
         print(input)
@@ -49,17 +49,17 @@ def insert_customer(input):
                     :reference_account)"""
         db_ex.execute(sql, input)
         
-        sql = """INSERT INTO balance_transactions
+        sql = """INSERT INTO financial_transactions
                     (customer_id,
                     bank_account,
-                    balance_sum,
-                    balance_transaction_type_id,
+                    fin_amount,
+                    fin_transaction_type_id,
                     usage)    
                     VALUES(
                     :customer_id,
                     :bank_account,
-                    :balance_sum,
-                    :balance_transaction_type_id,
+                    :fin_amount,
+                    :fin_transaction_type_id,
                     :usage)"""
         db_ex.execute(sql, input)
         
@@ -72,7 +72,7 @@ def insert_customer(input):
     except Exception as e:
         db_ex.rollback()
         print(e)
-        raise f"Error: {e}"
+        raise ValueError("Error: {e}")
     
     finally:
         db_ex.close()

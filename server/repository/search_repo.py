@@ -47,14 +47,16 @@ def simple_search(table, column, search_term):
                  
         result= make_dictionary(datas, names)      
 
+        return result
         
     except Exception as e:
         print(f"position: search_order_charges, Error: {e}")
-        result = f"Kein Eintrag gefunden, Error: {e}"
+        raise ValueError (f"Kein Eintrag gefunden, Error: {e}")
+        
     
     finally:
         db_ex.close()
-        return result
+       
 
 
 

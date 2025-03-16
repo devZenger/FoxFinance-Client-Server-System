@@ -15,7 +15,7 @@ class CustomerRegistration:
         self._email = None
         self._phone_number = None
         self._reference_account = None
-        self._balance_sum = None
+        self._fin_amount = None
         self._password = None
         
     
@@ -140,15 +140,15 @@ class CustomerRegistration:
     
     # balance
     @property
-    def balance_sum(self):
-        return self._balance_sum
+    def fin_amount(self):
+        return self._fin_amount
     
-    @balance_sum.setter
-    def balance_sum(self, input):
+    @fin_amount.setter
+    def fin_amount(self, input):
         if len(input) >= 1:
-            self._balance_sum = input
+            self._fin_amount = input
         else:
-            self._balance_sum = 0
+            self._fin_amount = 0
     
     # passwort
     @property
@@ -176,7 +176,7 @@ class CustomerRegistration:
             "email": self.email,
             "phone_number": self.phone_number,
             "reference_account": self.reference_acccount,
-            "balance_sum": self.balance_sum,
+            "fin_amount": self.fin_amount,
             "password": self.password
         }
     

@@ -60,21 +60,21 @@ sql = """ CREATE TABLE zip_codes(
 cursor.execute(sql)
 
 # balance related:
-sql = """CREATE TABLE balance_transactions(
-            balance_transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+sql = """CREATE TABLE financial_transactions(
+            financial_transfer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER NOT NULL,
             bank_account TEXT NOT NULL,
-            balance_sum REAL NOT NULL,
-            balance_transaction_type_id INTEGER NOT NULL,
+            fin_amount REAL NOT NULL,
+            fin_transaction_type_id INTEGER NOT NULL,
             usage TEXT,
-            balance_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP,
+            fin_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (customer_id) REFERENCES customers,
-            FOREIGN KEY (balance_transaction_type_id) REFERENCES balance_transactions_type)"""
+            FOREIGN KEY (fin_transaction_type_id) REFERENCES fin_transaction_types)"""
 cursor.execute(sql)
 
-sql = """CREATE TABLE balance_transactions_type(
-            balance_transaction_type_id INTEGER PRIMARY KEY,
-            type_of_action TEST NOT NULL)"""
+sql = """CREATE TABLE fin_transaction_types(
+            fin_transaction_type_id INTEGER PRIMARY KEY,
+            fin_transaction_type TEXT NOT NULL)"""
 cursor.execute(sql)
 
 # stock related:
@@ -184,16 +184,16 @@ cursor.execute(sql)
 connection.commit()
 
 
-sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('deposit')"""
+sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('deposit')"""
 cursor.execute(sql)
 
-sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('withdrawal')"""
+sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('withdrawal')"""
 cursor.execute(sql)
 
-sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('buy stocks')"""
+sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('buy stocks')"""
 cursor.execute(sql)
 
-sql = """INSERT INTO balance_transactions_type(type_of_action) VALUES('sell stocks')"""
+sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('sell stocks')"""
 cursor.execute(sql)
 
 
