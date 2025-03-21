@@ -29,14 +29,9 @@ mindmap
 erDiagram
     customers ||--o{ stock_transactions : makes
     customers ||--o{ stock_watch_list : watch
-    customers ||--o{ financial_transactions : makes
+    customers ||--o{ balance_transactions : makes
     customers {
         int customer_id PK
-        string first_name "not null"
-        string last_name "not null"
-        string birthdate "not null"
-        string email "not null"
-        string phone_number "not null"
         string registration_date "not null"
         string last_login "not null"
     }
@@ -44,17 +39,21 @@ erDiagram
     authentication ||--|| customers : use
     authentication {
         int customer_id PK, FK
+        string email "not null"
+        string phone_number "not null"
         string password "not null"
     }
 
     customer_adresses ||--|| customers : owns
     customer_adresses{
         int customer_id PK, FK
+        string first_name "not null"
+        string last_name "not null"
         string street "not null"
         string house_number "not null"
         int zip_coide "not null"
         string city "not null"
-
+        string birthdate "not null"
     }
 
     zip_codes ||--o{ customer_adresses : has
@@ -69,9 +68,9 @@ erDiagram
         string reference_account "not null"
     }
 
-    financial_transactions }o--|| financial_transactions_status : has
-    financial_transactions{
-        int financial_transaction_id PK
+    balance_transactions }o--|| balance_transactions_status : has
+    balance_transactions{
+        int balance_transaction_id PK
         int customer_id FK "not null"
         string bank_account "not null"
         decimal balance_sum "not null"
@@ -79,8 +78,8 @@ erDiagram
         string transaction_date "not null"
     }
 
-    financial_transactions_status {
-        int financial_transaction_status_id PK
+    balance_transactions_status {
+        int balance_transaction_status_id PK
         string type_of_action "not null"
     }
 
