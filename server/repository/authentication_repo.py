@@ -9,13 +9,28 @@ def get_auth_datas(email):
     try:
         db_ex.open_connection_db()
         
-        sql= """SELECT * FROM authentication WHERE email= ?"""
+        sql= """SELECT * FROM customers WHERE email= ?"""
         value = (email,)
         data = db_ex.execute(sql, value).fetchall()
+
         data = data[0]
         names = db_ex.col_names()
         
         auth_dic = {}
+        for i in range (len(data)):
+            auth_dic[names[i]]= data[i]
+            
+        
+
+        
+        sql = """SELECT password FROM authentication WHERE customer_id = ?"""
+        value = (auth_dic["customer_id"],)
+
+        data = db_ex.execute(sql, value).fetchall()
+        
+
+        data = data[0]
+        names = db_ex.col_names()
         for i in range (len(data)):
             auth_dic[names[i]]= data[i]
         
@@ -49,3 +64,26 @@ def insert_login_time(customer_id):
 
 
 
+
+
+
+if __name__ == "__main__":
+    
+    from datetime import datetime, timedelta
+    
+    import sqlite3
+    from datetime import datetime
+
+
+    print("start")
+    email = "zoe"
+    
+    customer_id = 1
+
+    answer = get_auth_datas(email)
+    
+    print(" ")
+
+    print(answer)
+    
+    print(" ")

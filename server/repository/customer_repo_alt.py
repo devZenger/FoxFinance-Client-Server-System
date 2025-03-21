@@ -12,6 +12,11 @@ def insert_customer(input):
     try:
         db_ex.start_transcation()
 
+        sql= """INSERT INTO customers(last_login) VALUES(?)"""
+        value = (None,)
+        customer_id = db_ex.execute(sql, value).lastrowid
+        print(customer_id)
+        input["customer_id"]=customer_id
         input["disabled"]=False
         input["bank_account"]=input["reference_account"]
         input["fin_transaction_type_id"]= 1
@@ -19,36 +24,24 @@ def insert_customer(input):
         
         print(input)
         
-        sql= """INSERT INTO customers(
-                    first_name,
-                    last_name,
-                    email,
-                    phone_number,
-                    birthday)
-                    VALUES(
 
-                    :first_name,
-                    :last_name,
-                    :email,
-                    :phone_number,
-                    :birthday
-            )"""
-        customer_id = db_ex.execute(sql, input).lastrowid
-        input["customer_id"]=customer_id
-        
-        
         sql = """INSERT INTO customer_adresses VALUES(
                     :customer_id,
+                    :first_name,
+                    :last_name,
                     :street,
                     :house_number,
                     :zip_code,
-                    :city)"""
+                    :city,
+                    :birthday)"""
         db_ex.execute(sql, input)
-
 
         sql = """INSERT INTO authentication VALUES(
                     :customer_id,
-                    :password)"""
+                    :email,
+                    :phone_number,
+                    :password,
+                    :disabled)"""
         db_ex.execute(sql, input)
 
         sql = """INSERT INTO financials VALUES(

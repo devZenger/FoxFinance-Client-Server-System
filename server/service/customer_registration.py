@@ -191,7 +191,7 @@ class CustomerRegistration:
         
         except Exception as e:
             print(e)
-            return f"Failure; {e}"
+            raise ValueError(e)
         
             
             

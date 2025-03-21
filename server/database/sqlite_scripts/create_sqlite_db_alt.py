@@ -14,36 +14,37 @@ else:
 connection = sqlite3.connect(path)
 cursor = connection.cursor()
 
-#customer related:
+
+# customer related:
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            
-            email TEXT UNIQUE NOT NULL,
-            phone_number TEXT UNIQUE NOT NULL,
-            birthday TEXT NOT NULL,
-            
             registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
             termination_date TEXT,
-            disabled BOOL DEFAULT TRUE,  
-            
             last_login TEXT DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE (customer_id, registration_date),
-            UNIQUE (first_name, last_name, birthday)
-    
+            UNIQUE (customer_id, registration_date)        
             )"""
-cursor.execute(sql)
+cursor.execute(sql)   
+            
+sql = """CREATE TABLE authentication(
+            customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+            email TEXT UNIQUE NOT NULL,
+            phone_number TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            disabled BOOL DEFAULT TRUE
+            )"""
+cursor.execute(sql)   
 
 sql = """CREATE TABLE customer_adresses(
             customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-
+            first_name TEXT NOT NULL,
+            last_name TEXT NOT NULL,
             street TEXT NOT NULL,
             house_number TEXT NOT NULL,
             zip_code INTEGER NOT NULL,
             city TEXT NOT NULL,
-
-            FOREIGN KEY (zip_code) REFERENCES zip_codes(zip_code)
+            birthday TEXT NOT NULL,
+            FOREIGN KEY (zip_code) REFERENCES zip_codes(zip_code),
+            UNIQUE (first_name, last_name, birthday)
             )"""
 cursor.execute(sql)
 
@@ -54,22 +55,11 @@ sql = """CREATE TABLE financials(
 cursor.execute(sql)
 
 sql = """ CREATE TABLE zip_codes(
-            zip_code_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            zip_code INTEGER,
+            zip_code INTEGER PRIMARY KEY,
             city TEXT NOT NULL)"""
-
 cursor.execute(sql)
 
-
-sql = """CREATE TABLE authentication(
-            customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-            password TEXT NOT NULL
-            )"""
-cursor.execute(sql)  
-
-
-
-# financial related:
+# balance related:
 sql = """CREATE TABLE financial_transactions(
             financial_transfer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER NOT NULL,
