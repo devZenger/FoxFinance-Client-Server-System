@@ -8,6 +8,7 @@ from .depot_stock_trade import DepotStockTrade
 from .depot_overview import DepotOverview
 from .depot_financial_overview import AccountOverview
 from .depot_bank_transfer import DepotBankTransfer
+from .depot_settings import Settings
 
 
 class DepotControl:
@@ -19,10 +20,11 @@ class DepotControl:
                       "2. Aktien suche":"stock_search",
                       "3. Aktien handeln": "stock_trade",
                       "4. Kontoübersicht":"account_overview",
-                      "5. Geld ein-/auszahlen":"bank_transaction",
+                      "5. Geld ein-/auszahlen":"bank_transfer",
                       "6. Informationen": "information",
-                      "7. Abmelden":"loggout",
-                      "8. Abmelden und benden":"loggout_and_exit"}
+                      "7. Daten ändern": "settings",
+                      "8. Abmelden":"loggout",
+                      "9. Abmelden und benden":"loggout_and_exit"}
         
     def run(self):
         
@@ -51,21 +53,20 @@ class DepotControl:
 
                 case "account_overview":
                     account_overview = AccountOverview(self.token)
-                    account_overview.run()
-                    choice = "start"
+                    choice = account_overview.run()
                 
-                case "bank_transaction":
+                case "bank_transfer":
                     bank_transaction = DepotBankTransfer(self.token, self.options)
                     choice = bank_transaction.run()
-                    choice = "start"
-                    
-                    
-                    
-
+              
                 case "information":
                     information = DepotInformation(self.token)
                     information.run()
                     choice = "start"
+                    
+                case "settings":
+                    settings = Settings(self.token, self.options)
+                    choice = settings.run()
                     
                 case "loggout":
                     del self.token

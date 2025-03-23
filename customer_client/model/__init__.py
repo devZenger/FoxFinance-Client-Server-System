@@ -5,4 +5,5 @@ from .information import Information
 from .depot_history import DepotHistory
 from .financial_history import FinancialHistory
 from .bank_transfer import BankTransfer
+from .depot_settings_form import SettingsForm
 from .url import url_server

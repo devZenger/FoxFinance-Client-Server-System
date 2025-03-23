@@ -2,7 +2,8 @@ import requests
 
 
 class ServerRequestDepot:
-    def __init__(self):
+    def __init__(self, token):
+        self.token = token
         self.url='http://127.0.0.1:8000'
         self.url_server_depot =  f'{self.url}/depot/'
         
@@ -15,7 +16,7 @@ class ServerRequestDepot:
             server_response = server_response.json()
             
             return True, server_response["message"] #server_response is dict or string
-        
+
         else:
             try:                       
                 server_response = server_response.json()
@@ -25,12 +26,10 @@ class ServerRequestDepot:
             if "detail" not in server_response:
                 server_response = {}
                 server_response["detail"]= f"Unbekannter Fehler, Status Code: {status_code}"
-            
-            
+
             print(f"server_response: {server_response}")
             print(f"server_response[detail]: {server_response["detail"]}")
-            
-            
+
             return False, server_response["detail"] # server_response is string
         
     
@@ -42,9 +41,7 @@ class ServerRequestDepot:
         server_response = requests.get(url, headers=headers)
         
         return self.process_response(server_response)
-        
-
-        
+ 
 
     def get_without_parameters(self, url_part):
         
