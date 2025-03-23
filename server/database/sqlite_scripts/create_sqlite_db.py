@@ -139,14 +139,13 @@ sql = """ CREATE TABLE transactions(
             transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
             customer_id INTEGER,
             isin NOT NULL,
-            transaction_type_id,
+            transaction_type TEXT NOT NULL CHECK(transaction_type IN ('buy', 'sell')),
             amount INTEGER NOT NULL,
             price_per_stock NOT NULL,
             order_charge_id NOT NULL,
             transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
             FOREIGN KEY (customer_id) REFERENCES customers,
             FOREIGN KEY (isin) REFERENCES stocks,
-            FOREIGN KEY (transaction_type_id) REFERENCES transaction_type,
             FOREIGN KEY (order_charge_id) REFERENCES order_charges
             )"""
 cursor.execute(sql)
@@ -160,12 +159,6 @@ sql = """ CREATE TABLE order_charges(
             UNIQUE (start_validation, min_volumn)
             )"""
 cursor.execute(sql)
-
-sql = """ CREATE TABLE transaction_type(
-            transaction_type_id  INTEGER PRIMARY KEY AUTOINCREMENT,
-            kind_of_action TEXT NOT NULL)"""
-cursor.execute(sql)
-
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('DAX', '^GDAXI')"""
 cursor.execute(sql)
@@ -183,13 +176,6 @@ cursor.execute(sql)
 
 
 sql = """INSERT INTO stock_indexes(name, symbol) VALUES('EURO STOXX 50', '^STOXX50E')"""
-cursor.execute(sql)
-connection.commit()
-
-
-sql = """INSERT INTO transaction_type(kind_of_action) VALUES('buy')"""
-cursor.execute(sql)
-sql = """INSERT INTO transaction_type(kind_of_action) VALUES('sell')"""
 cursor.execute(sql)
 connection.commit()
 

@@ -13,13 +13,13 @@ def insert_stock_transaction(transaction:dict, balance:dict):
         sql= """INSERT INTO transactions(
                 customer_id,
                 isin,
-                transaction_type_id,
+                transaction_type,
                 amount,
                 price_per_stock,
                 order_charge_id) VALUES(
                 :customer_id,
                 :isin,
-                :transaction_type_id,
+                :transaction_type,
                 :amount,
                 :price_per_stock,
                 :order_charge_id
@@ -28,16 +28,16 @@ def insert_stock_transaction(transaction:dict, balance:dict):
         
         balance["usage"]= f"Aktientransaktions Nr.: {transaction_id}"
         
-        sql= """INSERT INTO balance_transactions(
+        sql= """INSERT INTO financial_transactions(
                 customer_id,
                 bank_account,
-                balance_sum,
-                balance_transaction_type_id,
+                fin_amount,
+                fin_transaction_type_id,
                 usage) VALUES (
                 :customer_id,
                 :bank_account,
-                :balance_sum,
-                :balance_transaction_type_id,
+                :fin_amount,
+                :fin_transaction_type_id,
                 :usage)"""
         
         balance_id = db_ex.execute(sql, balance).lastrowid
@@ -77,7 +77,7 @@ def stock_transactions_overview(customer_id):
                             s.company_name AS company_name,
                             (SELECT SUM(t.amount) 
                                     FROM transactions
-                                    WHERE isin=t.isin and transaction_type_id = 1) AS amount,
+                                    WHERE isin=t.isin and transaction_type = 'buy') AS amount,
                             SUM (t.amount * t.price_per_stock) / SUM(t.amount) AS price_per_stock_all,
                             (SELECT sd.close 
                                 FROM stock_data sd
@@ -86,7 +86,7 @@ def stock_transactions_overview(customer_id):
                                 LIMIT 1) AS actual_price
                         FROM transactions t
                         JOIN stocks s ON t.isin = s.isin
-                        WHERE t.customer_id = ? and transaction_type_id = 1
+                        WHERE t.customer_id = ? and transaction_type_id = 'buy'
                         GROUP BY t.isin, s.company_name 
                     ) AS buy
                     LEFT JOIN (
@@ -94,9 +94,9 @@ def stock_transactions_overview(customer_id):
                             t.isin AS isin,
                             (SELECT SUM(t.amount) 
                                     FROM transactions
-                                    WHERE isin=t.isin and transaction_type_id = 2) AS amount
+                                    WHERE isin=t.isin and transaction_type_id = 'sell') AS amount
                         FROM transactions t
-                        WHERE t.customer_id = ? and transaction_type_id = 2
+                        WHERE t.customer_id = ? and transaction_type_id = 'sell'
                         GROUP BY t.isin
                     ) AS sell ON buy.isin = sell.isin"""
             
@@ -128,7 +128,7 @@ def search_past_transactions(customer_id, search_start, search_end):
         sql="""SELECT
                     t.transaction_id,
                     t.transaction_date,
-                    tt.kind_of_action,
+                    t.transaction_type,
                     t.isin,
                     s.company_name,
                     t.amount,
@@ -146,12 +146,7 @@ def search_past_transactions(customer_id, search_start, search_end):
                         SELECT s.isin, s.company_name as company_name
                         FROM stocks AS s
                         ) AS s
-                        ON t.isin = s.isin
-                    LEFT JOIN (
-                        SELECT tt.transaction_type_id, tt.kind_of_action
-                        FROM transaction_type AS tt
-                        )AS tt
-                        ON t.transaction_type_id = tt.transaction_type_id"""
+                        ON t.isin = s.isin"""
         
 
         value = (customer_id, search_start, search_end,)

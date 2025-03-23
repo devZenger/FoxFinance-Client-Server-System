@@ -79,12 +79,9 @@ def stock_performence(stocks_row:dict):
     
     return performance_data
     
-
+    #prepare for database
 def stocks_trade(customer_id, stock_trade:StockTrade):
     
-    transaction_type = simple_search("transaction_type", "kind_of_action",stock_trade.transaction_type)
-    ts_id = transaction_type["row_result0"]["transaction_type_id"]
-
     current_market = latest_trade_day_entry(stock_trade.isin)  
     trade_vol = current_market["close"]* stock_trade.amount
     
@@ -94,20 +91,20 @@ def stocks_trade(customer_id, stock_trade:StockTrade):
     
     trade_charge = trade_vol * current_charges["order_charge"]
 
+    if stock_trade.transaction_type != "buy" and stock_trade.transaction_type != "sell":
+        raise ValueError("transaction_type is wrong")
 
     transaction = {
             "customer_id":customer_id,
             "isin": stock_trade.isin,
-            "transaction_type_id": ts_id,
+            "transaction_type": stock_trade.transaction_type,
             "amount":stock_trade.amount,
             "price_per_stock":current_market["close"],
             "order_charge_id":current_charges["order_charge_id"]    
         }
-    
-    
-    
 
     return transaction, trade_charge, trade_vol#, customer_finance, balance
+
 
 def customer_finance_data(customer_id, kind_of):
     
@@ -116,9 +113,9 @@ def customer_finance_data(customer_id, kind_of):
     account = simple_search("financials","customer_id", customer_id)
     
     
-    balance_transaction_type = simple_search("balance_transactions_type", "type_of_action",kind_of)
-    bts_id = balance_transaction_type["row_result0"]["balance_transaction_type_id"]
-    
+    fin_transaction_type = simple_search("fin_transaction_types", "fin_transaction_type",kind_of)
+    bts_id = fin_transaction_type["row_result0"]["fin_transaction_type_id"]
+    print("bts_id:", bts_id)
     print(f"balance: {account}")
     
     bank_account = account["row_result0"]["reference_account"]
@@ -126,7 +123,7 @@ def customer_finance_data(customer_id, kind_of):
     balance = {
             "customer_id":customer_id,
             "bank_account": bank_account,
-            "balance_transaction_type_id": bts_id
+            "fin_transaction_type_id": bts_id
         }
     
     return customer_finance, balance
@@ -157,12 +154,12 @@ def buy_stocks(customer_id, stock_trade:StockTrade):
         print("Guthaben reicht aus")
 
 
-        balance["balance_sum"]=total
+        balance["fin_amount"]=total
         
         return trade_transaction(transaction, balance)
 
 
-
+    #input in database
 def trade_transaction(transaction:dict, balance:dict):
     
     print("start trade_transaction")
@@ -172,8 +169,10 @@ def trade_transaction(transaction:dict, balance:dict):
     try: 
         transaction_id, balance_id = insert_stock_transaction(transaction, balance)
         
+        print("report anfrage")
+        
         transaction_insert = simple_search("transactions","transaction_id", transaction_id)
-        balance_insert = simple_search("balance_transactions","balance_transaction_id", balance_id)
+        balance_insert = simple_search("financial_transactions","financial_transfer_id", balance_id)
         
         validation["stock_trade"] = transaction_insert["row_result0"]
         validation["balance_statement"] = balance_insert["row_result0"]
@@ -202,10 +201,35 @@ def sell_stocks(customer_id, stock_trade:StockTrade):
         
         customer_finance, balance =customer_finance_data(customer_id, "sell stocks")
         
-        balance["balance_sum"]= (trade_vol - trade_charge)
+        balance["fin_amount"]= (trade_vol - trade_charge)
         
         
         return trade_transaction(transaction, balance)
+    
+
+
+def start_stock_transaction(customer_id, stock_trade:StockTrade):
+    
+    try:
+        if stock_trade.transaction_type == "buy":
+     
+            validation = buy_stocks(customer_id, stock_trade)
+
+            return validation
+    
+        elif stock_trade.transaction_type == "sell":
+        
+            validation = sell_stocks(customer_id, stock_trade)
+            
+            return validation
+    
+        else:
+            raise ValueError("Anfrage muss buy oder sell enthalten")
+    
+    
+    except Exception as e:
+        print(f"Error at start_stock_transaction, Error: {e}\n")
+        raise Exception(e)
         
         
  

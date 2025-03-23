@@ -4,7 +4,7 @@ from fastapi import Depends,APIRouter, HTTPException
 from pydantic import BaseModel
 
 
-from service import User, get_current_active_user, search_stock, buy_stocks, sell_stocks
+from service import User, get_current_active_user, search_stock, start_stock_transaction
 
 router = APIRouter()
 
@@ -32,19 +32,13 @@ async def get_stock_search(search_term:str, current_customer: Annotated[User, De
 async def trade_stocks(stock_trade: StockTrade, current_customer: Annotated[User, Depends(get_current_active_user)]):
     
     
-    if stock_trade.transaction_type == "buy":
-     
-        validation = buy_stocks(current_customer["customer_id"], stock_trade)
-
-        return {"message": validation}
-    
-    elif stock_trade.transaction_type == "sell":
+    try:
         
-        validation = sell_stocks(current_customer["customer_id"], stock_trade)
+        start_stock_transaction(current_customer["customer_id"], stock_trade)
     
-    else:
-        return {"message": "Konnte Anfrage ich ausführen"}
-    
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=e)
+        
 
  
 

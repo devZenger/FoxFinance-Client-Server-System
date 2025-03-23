@@ -70,10 +70,10 @@ def all_stocks_by_customer(customer_id, isin):
         sql="""SELECT
                     COALESCE((SELECT SUM(amount) 
                         FROM transactions
-                        WHERE customer_id = ? AND isin = ? AND transaction_type_id = 1), 0) -
+                        WHERE customer_id = ? AND isin = ? AND transaction_type = 'buy'), 0) -
                     COALESCE((SELECT SUM(amount) 
                         FROM transactions
-                        WHERE customer_id = ? AND isin = ? AND transaction_type_id = 2), 0)
+                        WHERE customer_id = ? AND isin = ? AND transaction_type = 'sell'), 0)
                 AS DIFFERENCE"""
         
         value = (customer_id,isin, customer_id,isin,)
