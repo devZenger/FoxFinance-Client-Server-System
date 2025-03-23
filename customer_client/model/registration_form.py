@@ -63,7 +63,7 @@ class RegistrationForm:
     def street(self):
         return self._street
     
-    @last_name.setter
+    @street.setter
     def street(self, input):
         if len(input) >= 2:
             self._street = input
