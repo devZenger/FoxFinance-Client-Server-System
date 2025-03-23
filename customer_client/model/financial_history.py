@@ -1,14 +1,10 @@
 import requests
 
-
 from datetime import datetime, timedelta
 
 from .server_request_depot import ServerRequestDepot
 
-
-
-
-class FinancialHistory(ServerRequestDepot):
+class FinancialHistory:
 
     def __init__(self, token):
         
@@ -27,7 +23,7 @@ class FinancialHistory(ServerRequestDepot):
                            "fin_amount":"Betrag",
                            "bank_account":"Bankkonto"}
 
-        super().__init__()
+        self.server_request = ServerRequestDepot(self.token)
     
     @property
     def start_time(self):
@@ -65,13 +61,11 @@ class FinancialHistory(ServerRequestDepot):
         
         url_part = 'current_balance/'
         
-        status, self.response = self.get_without_parameters(url_part)
+        status, self.response = self.server_request.get_without_parameters(url_part)
         print(f"get-acutal_balance: self.response: {self.response}")
         
         if status:
-            1
             self.response["Aktueller Kontostand: "]=self.response.pop("actual_balance")
-    
         
         return status
 
@@ -81,7 +75,7 @@ class FinancialHistory(ServerRequestDepot):
         
         url_part = 'pastfinancialtransactions/'
         
-        status, self.response = self.get_with_parameters(url_part, self.start_time, self.end_time)
+        status, self.response = self.server_request.get_with_parameters(url_part, self.start_time, self.end_time)
         
         return status
 
