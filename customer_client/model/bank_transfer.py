@@ -4,7 +4,7 @@ from .server_request_depot import ServerRequestDepot
 
 from .financial_history import FinancialHistory
 
-class BankTransfer(ServerRequestDepot):
+class BankTransfer:
     def __init__(self, token):
         
         self.token = token
@@ -17,7 +17,7 @@ class BankTransfer(ServerRequestDepot):
                             "transaction_type":"Einzahlen oder Auszahlen ",
                             "usage":"Verwendungszweck "}
         
-        super().__init__()
+        self.server_request = ServerRequestDepot(self.token)
     
     @property
     def fin_amount(self):
@@ -79,7 +79,7 @@ class BankTransfer(ServerRequestDepot):
                        "transfer_type":self.transaction_type,
                        "usage":self.usage}
         
-        return self.make_post_request(url_part, to_transmit)
+        return self.server_request.make_post_request(url_part, to_transmit)
         
         
     
