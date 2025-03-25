@@ -11,11 +11,6 @@ class StockTrade(BaseModel):
     transaction_type: str
 
 
-def get_transaction_type(input):
-        transaction_type = simple_search("transaction_type", "kind_of_action",input)
-        return transaction_type["row_result0"]["transaction_type_id"]
-
-
 def search_stock(search_input):
     
     search_term = f"%{search_input}%"
@@ -128,9 +123,6 @@ def customer_finance_data(customer_id, kind_of):
     
     return customer_finance, balance
 
-
-
- 
  
 def buy_stocks(customer_id, stock_trade:StockTrade):
     
@@ -183,8 +175,6 @@ def trade_transaction(transaction:dict, balance:dict):
     
     finally:
         return validation
-      
-
 
 
 def sell_stocks(customer_id, stock_trade:StockTrade):
@@ -205,7 +195,6 @@ def sell_stocks(customer_id, stock_trade:StockTrade):
         
         
         return trade_transaction(transaction, balance)
-    
 
 
 def start_stock_transaction(customer_id, stock_trade:StockTrade):
@@ -225,23 +214,18 @@ def start_stock_transaction(customer_id, stock_trade:StockTrade):
     
         else:
             raise ValueError("Anfrage muss buy oder sell enthalten")
-    
-    
+
     except Exception as e:
         print(f"Error at start_stock_transaction, Error: {e}\n")
         raise Exception(e)
-        
-        
- 
+
+
+
+
+
+
     
-    
-    
-    
-   
-    
-    
-    
-    
+
     
 if __name__ == "__main__":
     
