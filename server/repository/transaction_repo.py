@@ -86,7 +86,7 @@ def stock_transactions_overview(customer_id):
                                 LIMIT 1) AS actual_price
                         FROM transactions t
                         JOIN stocks s ON t.isin = s.isin
-                        WHERE t.customer_id = ? and transaction_type_id = 'buy'
+                        WHERE t.customer_id = ? and transaction_type = 'buy'
                         GROUP BY t.isin, s.company_name 
                     ) AS buy
                     LEFT JOIN (
@@ -94,9 +94,9 @@ def stock_transactions_overview(customer_id):
                             t.isin AS isin,
                             (SELECT SUM(t.amount) 
                                     FROM transactions
-                                    WHERE isin=t.isin and transaction_type_id = 'sell') AS amount
+                                    WHERE isin=t.isin and transaction_type = 'sell') AS amount
                         FROM transactions t
-                        WHERE t.customer_id = ? and transaction_type_id = 'sell'
+                        WHERE t.customer_id = ? and transaction_type = 'sell'
                         GROUP BY t.isin
                     ) AS sell ON buy.isin = sell.isin"""
             
