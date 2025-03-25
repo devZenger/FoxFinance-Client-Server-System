@@ -41,7 +41,7 @@ async def get_settings(current_customer: Annotated[User, Depends(get_current_act
     
 
 @router.post("/depot/changesettings/")
-async def trade_stocks(settings: Settings, current_customer: Annotated[User, Depends(get_current_active_user)]):
+async def change_settings(settings: Settings, current_customer: Annotated[User, Depends(get_current_active_user)]):
  
     try:
         settings_service = SettingsService()
@@ -49,4 +49,5 @@ async def trade_stocks(settings: Settings, current_customer: Annotated[User, Dep
         return {"message":"Updated"}
     
     except Exception as e:
-        raise HTTPException(status_code=422, detail=e)
+        print("Fehler bei change_settings (depot_settings_api Z:52)", e)
+        raise HTTPException(status_code=422, detail=str(e))
