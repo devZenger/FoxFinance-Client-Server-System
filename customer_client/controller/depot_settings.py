@@ -33,12 +33,24 @@ class Settings:
             
         display_menu.display_title_and_infos(self.title, self.information)
         
+        current_settings = self.settings.current_settings()
+        
+        display_menu.display_info(current_settings)
+        
         choice = "start"
         
         while True:
             match choice:
                 
                 case "start":
+                    display_menu.display_title(self.title)
+                    choice = "information"
+                
+                case "information":
+                    display_menu.display_info(self.information)
+                    choice = "options"
+                
+                case "options":
                     choice = display_menu.display_options(self.options_settings)
                     
                 case "adress":
@@ -56,7 +68,7 @@ class Settings:
                 case "email_adress":
                     display_menu.display_form(self.settings.form_names_email_adress, self.settings)
                     display_menu.display_filled_form()
-                    setting_type = "emial_adress"
+                    setting_type = "email"
                     choice = "conform_hange"
 
                 case "reference_account":
@@ -75,7 +87,14 @@ class Settings:
                    choice = display_menu.display_options(self.options_make_change)
                 
                 case "make_change":
-                    self.settings.transmit_changes(setting_type)
+                    response = self.settings.transmit_changes(setting_type)
+                    print(response)
+                    choice = "options"
+                
+                case "error":
+                    display_menu.display_info(SettingsForm.error)
+                    choice = "options"
+                    
                     
                 
                 case "discountinue":

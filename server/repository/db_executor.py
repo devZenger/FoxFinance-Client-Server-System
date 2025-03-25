@@ -13,10 +13,7 @@ class DBExecutor:
             print("debug db_executer Datenbank vorhanden")
         else:
             print("debug keine Datenbank")
-            
-        
 
-    
     def open_connection_db(self):
         try:
             self.connection = sqlite3.connect(self.path)
@@ -25,9 +22,7 @@ class DBExecutor:
         except sqlite3.Error as e:
             print(f"Verbindungsprobleme: {str(e)}")
             raise Exception(f"Verbidungsprobleme: {str(e)}")
-    
-    
-    
+        
     def start_transcation(self):
         try:
             self.connection.execute("BEGIN TRANSACTION")
@@ -49,8 +44,7 @@ class DBExecutor:
             print(f"Ausführungsprobleme: {str(e)}")
             raise Exception(f"Ausführungsprobleme: {str(e)}")
     
-    
-    
+
     def execute(self, sql, value):
         try:
             self.cursor.execute(sql, value)

@@ -71,10 +71,7 @@ def insert_customer(input):
         db_ex.execute(sql, input)
         
         db_ex.connection_commit()
-
-
-        
-        
+  
     
     except Exception as e:
         db_ex.rollback()
@@ -86,17 +83,40 @@ def insert_customer(input):
       
        
             
+def update_customer_settings(table, customer_id, insert:dict):
+    
+    db_ex = DBExecutor()
+    db_ex.open_connection_db() 
+    
+    columns = ""
+    for k in insert.keys():
+        columns=f"{columns}{k}=:{k}, "
+    
+    
+    print(columns)
+    
+    columns = columns[:-2]
+    
+    try:
+        sql = f"""UPDATE {table}
+                    SET {columns} 
+                    WHERE customer_id={customer_id}"""
 
-
+        db_ex.execute_and_commit(sql, insert)
         
-
-
-
-
-
+        
+        
+    except Exception as e:
+        raise ValueError(f"Fehler bei update_customer_ettings, Error {e}")
+    
+    finally:
+        db_ex.close()
 
 if __name__ == "__main__":
 
-    dic = {'last_name': 'zoe', 'first_name': 'zoe', 'street': 'zoe', 'house_number': 'zoe', 'zip_code': 'zoe', 'city': 'zoe', 'birthday': 'zoe', 'email': 'zoe', 'phone_number': 'zoe', 'reference_account': 'zoe', 'balance_sum': '666666666666666', 'password': '$2b$12$D90SkgxkQvGJz5cWW1.bue2nUiPifhP/yMMhPDU8RujSymMjJDfZC', 'customer_id': 1, 'disabled': False, 'bank_account': 'zoe', 'balance_transaction_type_id': 1, 'usage': 'Depoteröffnung'}
-    test = insert_customer(dic)
+    dic = {
+           'reference_account': 'z-bank'
+          }
+    table = "financials"
+    test = update_customer_settings(table, 1, dic)
     

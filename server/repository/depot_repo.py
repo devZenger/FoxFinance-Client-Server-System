@@ -29,9 +29,9 @@ def customer_balance(customer_id):
         
         return dic
         
-    except:
+    except Exception as e:
         print(f"position: customer_balance, Error {e}")
-        return None
+        raise ValueError(e)
     
     finally:
         db_ex.close()

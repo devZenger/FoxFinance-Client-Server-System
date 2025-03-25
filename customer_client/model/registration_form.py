@@ -15,6 +15,8 @@ class RegistrationForm:
         self._fin_amount = None
         self._password = None
         
+        self.error = None
+        
         
         self.form_names = {
             "last_name": "Familiennamen",
@@ -74,7 +76,7 @@ class RegistrationForm:
     # house number
     @property
     def house_number(self):
-        return self._street
+        return self._house_number
     
     @house_number.setter
     def house_number(self, input):

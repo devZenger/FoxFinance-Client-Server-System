@@ -5,15 +5,16 @@ class SettingsForm(RegistrationForm):
     def __init__(self, token):
         self.token = token
         
-        self._last_name = None
-        self._street = None
-        self._house_number = None
-        self._zip_code = None
-        self._city = None
-        self._email = None
-        self._phone_number = None
-        self._reference_account = None
-        self._password = None
+        
+        #self._last_name = None
+        #self._street = None
+        #self._house_number = None
+        #self._zip_code = None
+        #self._city = None
+        #self._email = None
+        #self._phone_number = None
+        #self._reference_account = None
+        #self._password = None
         
         
         self.form_names_adress = {
@@ -39,10 +40,14 @@ class SettingsForm(RegistrationForm):
 
         self.form_names_password = {
             "password": "Passwort"
-        }       
+        }
+  
 
         super().__init__()
-      
+              
+                
+        self.name_settings = self.form_names
+        del self.name_settings["fin_amount"] 
 
     def transmit_changes(self, type:str):
         
@@ -76,9 +81,34 @@ class SettingsForm(RegistrationForm):
         
         url_part = "changesettings/"
         
+        print(f"to transmit is {to_transmit}")
+        
         response = server_request.make_post_request(url_part, to_transmit)
         
+        del server_request
+        
+        if response == "Updated":
+            return "start"
+        else:
+            self.error = response
+            return "error"
+            
+        
         return response
+    
+    def current_settings(self):
+        
+        server_request = ServerRequestDepot(self.token)
+        
+        url_part = "settings/"
+        
+        response = server_request.get_with_parameters(url_part)
+        
+        del server_request
+        
+        return response
+        
+          
           
             
             

@@ -4,7 +4,7 @@ from fastapi import Depends,APIRouter, HTTPException
 from pydantic import BaseModel
 
 
-from service import User, Settings, get_current_active_user
+from service import User, SettingsService, get_current_active_user
 
 router = APIRouter()
 
@@ -27,13 +27,26 @@ class Settings(BaseModel):
 
 
 @router.get("/depot/settings/")
-async def get_settings(search_term:str, current_customer: Annotated[User, Depends(get_current_active_user)]):
+async def get_settings(current_customer: Annotated[User, Depends(get_current_active_user)]):
     
-    pass
+    try:
+        settings_service = SettingsService()
+        current_settings =settings_service.search_current_settings(current_customer["customer_id"])
+        
+        return {"message": current_settings}
+        
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=e)
      
     
 
 @router.post("/depot/changesettings/")
 async def trade_stocks(settings: Settings, current_customer: Annotated[User, Depends(get_current_active_user)]):
  
-    pass
+    try:
+        settings_service = SettingsService()
+        settings_service.update_service(current_customer["customer_id"], settings)
+        return {"message":"Updated"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=e)

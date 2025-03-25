@@ -31,8 +31,7 @@ def make_table(input:dict, column_names:dict):
             
             if vol > column_lengths[i]:
                 column_lengths[i]= vol
-    
-    
+     
     tabelle = [""]
     
     for i, v in enumerate(column_names.values()):
@@ -51,8 +50,24 @@ def make_table(input:dict, column_names:dict):
             tabelle[i+2] = f"{tabelle[i+2]} {v.ljust(column_lengths[j])} |" 
     
     return tabelle
-            
 
+
+
+def make_list_from_dic(input:dict, listpoints:dict):
+    
+    length_left = 0
+    for k in listpoints.keys():
+        if len(k) > length_left:
+            length_left = len(k)
+    length_right = 0
+    for v in input.values():
+        
+        if isinstance(v, str):
+            v = str(v)
+        
+        if len(v) > length_right:
+            length_right = len(v)
+        
 
 
 

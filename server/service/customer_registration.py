@@ -47,7 +47,7 @@ class CustomerRegistration:
     def street(self):
         return self._street
     
-    @last_name.setter
+    @street.setter
     def street(self, input):
         if len(input) >= 2:
             self._street = input
@@ -57,7 +57,7 @@ class CustomerRegistration:
     # house number
     @property
     def house_number(self):
-        return self._street
+        return self._house_number
     
     @house_number.setter
     def house_number(self, input):
