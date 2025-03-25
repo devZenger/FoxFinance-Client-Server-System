@@ -25,7 +25,7 @@ async def get_depot_overview(current_customer: Annotated[User, Depends(get_curre
     
     except Exception as e:
         
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
     
 
 @router.get("/depot/pasttransactions/{search_start}/{search_end}")
@@ -38,4 +38,4 @@ async def get_past_transactions(search_start:str, search_end:str, current_custom
     
     except Exception as e:
         
-        raise HTTPException(status_code=422, detail=e)   
+        raise HTTPException(status_code=422, detail=str(e))   

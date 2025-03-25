@@ -27,7 +27,7 @@ async def get_current_balance(current_customer: Annotated[User, Depends(get_curr
     
     except Exception as e:
         
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
     
 
 @router.get("/depot/pastfinancialtransactions/{search_start}/{search_end}")
@@ -39,7 +39,7 @@ async def get_past_financial_transactions(search_start:str, search_end:str, curr
     
     except Exception as e:
         
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
 
     
 @router.post("/depot/banktransfer/")
@@ -52,7 +52,7 @@ async def post_bank_transfer(bank_transfer:BankTransfer, current_customer: Annot
         return {"message": transfer}
 
     except Exception as e:
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
     
     
 

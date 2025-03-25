@@ -36,7 +36,7 @@ async def get_settings(current_customer: Annotated[User, Depends(get_current_act
         return {"message": current_settings}
         
     except Exception as e:
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
      
     
 

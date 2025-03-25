@@ -38,14 +38,14 @@ async def create_account(accountform: AccountForm):
          errors.append(f"Fehlerhafte eingabe für {key}: {e}")
    
    if errors:
-      raise HTTPException(status_code=422, detail=errors)
+      raise HTTPException(status_code=422, detail=str(errors))
    
    
    try:
       customer_datas.insert_db()
       
    except Exception as e:
-      raise HTTPException(status_code=422, detail=e)
+      raise HTTPException(status_code=422, detail=str(e))
    
    
   

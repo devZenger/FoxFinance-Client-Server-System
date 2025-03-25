@@ -37,7 +37,7 @@ async def trade_stocks(stock_trade: StockTrade, current_customer: Annotated[User
         start_stock_transaction(current_customer["customer_id"], stock_trade)
     
     except Exception as e:
-        raise HTTPException(status_code=422, detail=e)
+        raise HTTPException(status_code=422, detail=str(e))
         
 
  
