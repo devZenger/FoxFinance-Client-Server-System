@@ -52,7 +52,7 @@ def make_table(input:dict, column_names:dict):
     return tabelle
 
 
-
+# nicht fertig
 def make_list_from_dic(input:dict, listpoints:dict):
     
     length_left = 0

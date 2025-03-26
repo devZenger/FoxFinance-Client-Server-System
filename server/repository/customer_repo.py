@@ -94,7 +94,7 @@ def update_customer_settings(table, customer_id, insert:dict):
     
     
     print(columns)
-    
+    print("insert bei update_customer_settings", insert)
     columns = columns[:-2]
     
     try:
@@ -107,10 +107,14 @@ def update_customer_settings(table, customer_id, insert:dict):
         
         
     except Exception as e:
+        print("Fehler bei update_customer_settings (customer_repo Z:110)", e)
         raise ValueError(f"Fehler bei update_customer_ettings, Error {e}")
     
     finally:
         db_ex.close()
+
+
+
 
 if __name__ == "__main__":
 

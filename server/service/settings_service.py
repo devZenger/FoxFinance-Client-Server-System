@@ -60,7 +60,7 @@ class SettingsService(CustomerRegistration):
                 }
                 
             case "reference_account":
-                self.table="finacials"
+                self.table="financials"
                 self.reference_acccount = new_settings.reference_account
                 
                 self.insert_dic={
@@ -80,6 +80,7 @@ class SettingsService(CustomerRegistration):
             update_customer_settings(self.table, self.customer_id, self.insert_dic)
             
         except Exception as e:
+            print("Fehler bei update:service (settings_service Z:83)")
             raise Exception(e)
     
     def search_current_settings(self, customer_id):

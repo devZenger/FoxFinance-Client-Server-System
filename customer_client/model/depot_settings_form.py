@@ -25,9 +25,7 @@ class SettingsForm(RegistrationForm):
         }
 
         self.form_names_phone_number = {
-            "email" : "E-Mail Adresse",
-            "reference_account": "Referenzkonto",
-            "password": "Passwort"
+            "phone_number" : "Telefonnummer"
         }
 
         self.form_names_email_adress = {
@@ -67,13 +65,13 @@ class SettingsForm(RegistrationForm):
                                "phone_number":self.phone_number}
             case "email":
                 to_transmit = {"transmission_type":"email",
-                               "phone_number":self.email}
+                               "email":self.email}
             case "reference_account":
                 to_transmit = {"transmission_type":"reference_account",
-                               "phone_number":self.reference_acccount}
+                               "reference_account":self.reference_account}
             case "password":
                 to_transmit = {"transmission_type":"password",
-                               "phone_number":self.password}
+                               "password":self.password}
             case _:
                 return print("fehler")
             

@@ -152,13 +152,13 @@ class RegistrationForm:
 
     # reference account
     @property
-    def reference_acccount(self):
-        return self._birthday
-    
-    @reference_acccount.setter
-    def reference_acccount(self, input):
+    def reference_account(self):
+        return self._reference_account
+            
+    @reference_account.setter
+    def reference_account(self, input):
         if len(input) >= 2:
-            self._reference_acccount = input
+            self._reference_account = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
@@ -199,7 +199,7 @@ class RegistrationForm:
             "birthday": self.birthday,
             "email": self.email,
             "phone_number": self.phone_number,
-            "reference_account": self.reference_acccount,
+            "reference_account": self.reference_account,
             "fin_amount":self._fin_amount,
             "password": self.password
         }

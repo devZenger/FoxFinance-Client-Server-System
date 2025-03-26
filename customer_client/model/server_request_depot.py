@@ -20,6 +20,7 @@ class ServerRequestDepot:
         else:
             try:                       
                 server_response = server_response.json()
+                print("Ausgabe von server_response (server_request_depot: z23)", server_response)
             except:
                 pass
             
@@ -27,8 +28,8 @@ class ServerRequestDepot:
                 server_response = {}
                 server_response["detail"]= f"Unbekannter Fehler, Status Code: {status_code}"
 
-            print(f"server_response: {server_response}")
-            print(f"server_response[detail]: {server_response["detail"]}")
+            print(f"server_response (server_request_depot: z31): {server_response}")
+            print(f"server_response[detail] (server_request_depot: z32): {server_response["detail"]}")
 
             return False, server_response["detail"] # server_response is string
         

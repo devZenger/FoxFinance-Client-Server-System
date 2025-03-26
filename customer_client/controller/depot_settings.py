@@ -14,6 +14,7 @@ class Settings:
         
 
         self.information= "Was möchten Sie ändern?"
+        self.information_2time = "Möchten Sie noch weiteres ändern ?"
         
         self.options_settings = {"1. Adresse":"adress",
                                  "2. Telefonnummer":"phone_number",
@@ -30,35 +31,36 @@ class Settings:
         
         display_menu = DisplayMenu()
         self.settings = SettingsForm(self.token)
-            
-        display_menu.display_title_and_infos(self.title, self.information)
         
         current_settings = self.settings.current_settings()
         
         display_menu.display_info(current_settings)
         
         choice = "start"
+        first = True
         
         while True:
             match choice:
                 
                 case "start":
                     display_menu.display_title(self.title)
-                    choice = "information"
-                
-                case "information":
-                    display_menu.display_info(self.information)
+                    if first == True:
+                        display_menu.display_info(self.information)
+                        first = False
+                    else:
+                        display_menu.display_info(self.information_2time)
+
                     choice = "options"
-                
+
                 case "options":
                     choice = display_menu.display_options(self.options_settings)
-                    
+
                 case "adress":
                     display_menu.display_form(self.settings.form_names_adress, self.settings)
                     display_menu.display_filled_form()
                     setting_type = "adress"
                     choice = "conform_change"
-                
+
                 case "phone_number":
                     display_menu.display_form(self.settings.form_names_phone_number, self.settings)
                     display_menu.display_filled_form()
