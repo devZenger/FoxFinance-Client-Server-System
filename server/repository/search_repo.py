@@ -1,20 +1,15 @@
 import sqlite3
 
 from .db_executor import DBExecutor
-
-# if used main
-#from db_executor_for_test import DBExecutor
  
 
 db_ex = DBExecutor()
-
 
 def make_dictionary(datas, names):
     
     search_result = {}
     i = 0
     for data in datas:
-        print(f"data: {data}")
         row_data = {}
         for j in range (len(data)):
             row_data[names[j]] = data[j]
@@ -25,13 +20,11 @@ def make_dictionary(datas, names):
     return search_result
 
 def make_dictionary_one_result(datas, names):
-
     row_data = {}
     for j in range (len(datas)):
         row_data[names[j]] = datas[j]
     
     return row_data
-    
 
    
 def simple_search(table, column, search_term):
@@ -50,10 +43,10 @@ def simple_search(table, column, search_term):
         return result
         
     except Exception as e:
-        print(f"position: search_order_charges, Error: {e}")
-        raise ValueError (f"Kein Eintrag gefunden, Error: {e}")
+        error=f"Fehler bei simple_search, table:{table},"\
+              f"column:{column}, search_term:{search_term}.\nError:{e}"
+        raise Exception (error)
         
-    
     finally:
         db_ex.close()
        
