@@ -22,26 +22,24 @@ def key_to_value(to_form:dict):
 
 
 def insert_one_table(table, insert:dict):
-    
+
     try:
         db_ex.open_connection_db()
-        
+
         key_column = key_to_column(insert)
         key_value = key_to_value(insert)
-        
+
         sql=f"""INSERT INTO {table} ({key_column}) VALUES({key_value})"""
         execute_id = db_ex.execute_and_commit(sql, insert).lastrowid
 
         return execute_id
-        
+
     except Exception as e:
-        print(f"postion: insert_one_tabe, Error: {e}")
-        raise Exception(e)
-    
+        error = f"Position: insert_one_table, table: {table}, insert: {insert}.\nError: {e}\n"
+        raise Exception(error)
+
     finally:
         db_ex.close
-        
-
 
 
 
