@@ -16,7 +16,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-
 class User(BaseModel):
     #username: str
     email: str 
@@ -31,7 +30,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
    email: str | None = None
     
-
   
 #def get_costumer_data(email: str):
  #       search = AuthData()
@@ -40,7 +38,6 @@ class TokenData(BaseModel):
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
 
 
 class Authentication: 
@@ -62,8 +59,7 @@ class Authentication:
             return False
         
         #login time to database
-        insert_login_time(db_query["customer_id"])
-        
+        insert_login_time(db_query["customer_id"])        
         
         return db_query
 
@@ -118,8 +114,3 @@ async def create_access_token(user:dict):
     to_encode.update({"exp": expire})
     
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    
-  
-        
-        
-        
