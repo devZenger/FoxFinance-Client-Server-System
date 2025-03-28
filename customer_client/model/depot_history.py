@@ -4,8 +4,6 @@ from datetime import datetime, timedelta
 from .url import url_server_depot
 
 
-
-
 class DepotHistory:
 
     def __init__(self, token):
@@ -48,8 +46,6 @@ class DepotHistory:
             self._end_time=input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
-    
-    
     
 
     def get_all_stocks(self):
@@ -117,7 +113,3 @@ class DepotHistory:
         result = self.get_transaction_by_timespan()
         
         return result
-        
-        
-        
-        

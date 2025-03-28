@@ -2,7 +2,7 @@ import requests
 
 from .url import url_server
 
-class Depot:
+#class Depot:
     def __init__(self, token):
         self.title="Depot"
         self.token = token

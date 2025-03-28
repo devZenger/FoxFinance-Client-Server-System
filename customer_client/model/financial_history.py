@@ -104,10 +104,3 @@ class FinancialHistory:
         result = self.get_financial_transaction_by_timespan()
         
         return result
-    
-    
-
-        
-        
-        
-        

@@ -10,20 +10,21 @@ class ServerRequestDepot:
 
     def process_response (self, server_response):   
 
-        status_code = server_response.status_code         
+        status_code = server_response.status_code
+        
+        try:                       
+            server_response = server_response.json()
+        except:
+            pass        
     
         if status_code >= 200 and status_code <= 300:
-            server_response = server_response.json()
-            
-            return True, server_response["message"] #server_response is dict or string
 
-        else:
-            try:                       
-                server_response = server_response.json()
-                print("Ausgabe von server_response (server_request_depot: z23)", server_response)
-            except:
-                pass
-            
+            if "message" not in server_response:
+                return True, server_response
+            else:
+                return True, server_response["message"] #server_response is dict or string
+
+        else:            
             if "detail" not in server_response:
                 server_response = {}
                 server_response["detail"]= f"Unbekannter Fehler, Status Code: {status_code}"
@@ -33,8 +34,7 @@ class ServerRequestDepot:
 
             return False, server_response["detail"] # server_response is string
         
-    
-        
+            
     def _make_get_request(self, url):
 
         headers = { "Authorization": f"Bearer {self.token['access_token']}"}
@@ -61,7 +61,6 @@ class ServerRequestDepot:
     
         url = f"{self.url_server_depot}{url_part}{parameters}"
         
-
         print(f"url in get_with_parameters: {url}")
         
         return self._make_get_request(url)

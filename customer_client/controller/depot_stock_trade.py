@@ -17,20 +17,16 @@ class DepotStockTrade:
         
         self.options_make_trade ={"1. Handel abschließen":"make_trade", "2. Abrechen":"options"}
         
-        
-    
-    
+
     def run(self, isin=""):
-        
-        
         
         display_menu = DisplayMenuInput2()
         self.stock_actions = StockActions(self.token)
         
         search_form_names = self.stock_actions.search_form_names
         trade_form_names = self.stock_actions.trade_form_names
-     
-        
+
+
         display_menu.execute(self.title, self.information)
         
         if isin == "":           
@@ -71,16 +67,11 @@ class DepotStockTrade:
                     display_menu.execute(self.title, response)
                     
                     choice="options"
-                        
-                    
-                    
-                    
-                
+
+
                 case "options":
                     print("debug options")
                     choice = display_menu.excute_options(self.options)
-                
-  
                 
                 case _:
                     return choice

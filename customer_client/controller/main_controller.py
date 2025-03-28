@@ -5,7 +5,6 @@ from .main_create_account import CreateAccountMenu
 from .main_login import LoginMenu
 from .depot_controller import DepotControl
 
-
 class MainControll:
     def __init__(self):
         self.option ={"1. Start": "start",
@@ -31,42 +30,29 @@ class MainControll:
                     title = "Hauptmenü"
                     display_menu = DisplayMenuOption(title, info)
                     choice = display_menu.execute(self.option)
-                    
                 
                 case "a_form":
                     create_account = CreateAccountMenu()
                     choice = create_account.run()
-                
-                
+
                 case "login":
                     login_menu = LoginMenu()
-                    token = login_menu.run()
-                    depot_controller = DepotControl(token)
-                    depot_controller.run()
+                    success, token = login_menu.run()
+                    if success:
+                        depot_controller = DepotControl(token)
+                        depot_controller.run()
                     
-                    del depot_controller
-                    del token
+                        del depot_controller
+                        del token
+                        
                     choice = "start"
 
-                
                 case "information":
                     title ="Informationen"
                     info = "in Bearbeitung"
                     display_menu = DisplayMenuOption(title, info)
                     choice = display_menu.execute(self.option)
-                
-                
+                    
+
                 case "exit":
                     sys.exit(0)
-            
-            
-            
-
-
-
-
-
-
-
-#start = main()
-#start.start()

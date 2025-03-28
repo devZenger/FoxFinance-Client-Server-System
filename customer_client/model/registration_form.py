@@ -1,4 +1,4 @@
-
+from .server_request import ServerRequest
 
 class RegistrationForm:
     def __init__(self):
@@ -15,9 +15,10 @@ class RegistrationForm:
         self._fin_amount = None
         self._password = None
         
-        self.error = None
-        
-        
+        #self.error = None
+
+        self.response= None
+                
         self.form_names = {
             "last_name": "Familiennamen",
             "first_name": "Vorname",
@@ -32,7 +33,6 @@ class RegistrationForm:
             "fin_amount": "Startgeld einzahlen",
             "password": "Passwort"
         }
-        
     
     # last name
     @property
@@ -46,7 +46,6 @@ class RegistrationForm:
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
-
     # first name
     @property
     def first_name(self):
@@ -58,7 +57,6 @@ class RegistrationForm:
             self._first_name = input  
         else:
              raise ValueError("Mindestens zwei Zeichen")
-
 
     #  street
     @property
@@ -72,7 +70,6 @@ class RegistrationForm:
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
-
     # house number
     @property
     def house_number(self):
@@ -84,7 +81,6 @@ class RegistrationForm:
             self._house_number = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
 
     # city
     @property
@@ -98,7 +94,6 @@ class RegistrationForm:
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
-
     # zip code
     @property
     def zip_code(self):
@@ -110,7 +105,6 @@ class RegistrationForm:
             self._zip_code = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
 
     # birthday
     @property
@@ -124,7 +118,6 @@ class RegistrationForm:
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
-
     # email
     @property
     def email(self):
@@ -136,7 +129,7 @@ class RegistrationForm:
             self._email = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-    
+
     # phone number
     @property
     def phone_number(self):
@@ -148,7 +141,6 @@ class RegistrationForm:
             self._phone_number = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-
 
     # reference account
     @property
@@ -173,7 +165,6 @@ class RegistrationForm:
             self._fin_amount = input
         else:
             self._fin_amount = 0
-
 
     # passwort
     @property
@@ -203,3 +194,17 @@ class RegistrationForm:
             "fin_amount":self._fin_amount,
             "password": self.password
         }
+    
+    def post_registration_form(self):
+        
+        to_transmit = self.to_dict()
+        
+        server_request = ServerRequest()
+        
+        url_part = "create_costumer_account/"
+        
+        success, self.response = server_request.make_post_request(url_part, to_transmit)
+        
+        del server_request
+        
+        return success

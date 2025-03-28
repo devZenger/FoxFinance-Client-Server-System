@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from .server_request_depot import ServerRequestDepot
 
 from .financial_history import FinancialHistory
@@ -53,7 +51,7 @@ class BankTransfer:
         else:
             raise ValueError("Fehlerhafte Eingabe")
 
-    
+
     @property
     def usage(self):
         return self._usage
@@ -80,9 +78,3 @@ class BankTransfer:
                        "usage":self.usage}
         
         return self.server_request.make_post_request(url_part, to_transmit)
-        
-        
-    
-    
-        
-    

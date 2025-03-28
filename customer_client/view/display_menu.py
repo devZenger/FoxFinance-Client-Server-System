@@ -1,8 +1,9 @@
-from .utility import make_table
+from .utility import make_table, make_list_from_dic
 
 class DisplayMenu:
-    
-    line = "-" * 90
+    line = "-" * 90 
+    #def __init__(self, title):
+    #    self.title = title   
 
     def display_title(self, title):
         print(self.line)
@@ -16,8 +17,7 @@ class DisplayMenu:
     def display_title_and_infos(self, title, info):
         self.display_title(title)
         self.display_info(info)
-    
-    
+        
     def display_options(self, options):
         count = 1
         for key in options:
@@ -30,6 +30,7 @@ class DisplayMenu:
                 test = False
                 for key in options:
                     if choice in key:
+                        print("")
                         return options[key]
             
                 if test is False:
@@ -73,5 +74,11 @@ class DisplayMenu:
         print(self.line)
         
 
+    def display_list(self, input:dict, listpoints:dict):
         
-    
+        make_list_from_dic(input, listpoints)
+        print("")
+        for k,v in listpoints.items():
+            print(f"\t{k}:{input[v]}")
+        print("")
+        print(self.line)

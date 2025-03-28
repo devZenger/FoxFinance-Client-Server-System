@@ -193,10 +193,3 @@ class StockActions:
         else:
             print("Fehler", self.response.status_code)
             return "Fehler"
-
-        
-       
-        
-
-        
-    
