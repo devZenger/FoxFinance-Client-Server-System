@@ -17,8 +17,6 @@ def insert_customer(input):
         input["fin_transaction_type_id"]= 1
         input["usage"]="Depoteröffnung"
         
-        print(input)
-        
         sql= """INSERT INTO customers(
                     first_name,
                     last_name,
@@ -36,7 +34,6 @@ def insert_customer(input):
         customer_id = db_ex.execute(sql, input).lastrowid
         input["customer_id"]=customer_id
         
-        
         sql = """INSERT INTO customer_adresses VALUES(
                     :customer_id,
                     :street,
@@ -44,7 +41,6 @@ def insert_customer(input):
                     :zip_code,
                     :city)"""
         db_ex.execute(sql, input)
-
 
         sql = """INSERT INTO authentication VALUES(
                     :customer_id,
@@ -75,8 +71,8 @@ def insert_customer(input):
     
     except Exception as e:
         db_ex.rollback()
-        print(e)
-        raise ValueError("Error: {e}")
+        error = f"Fehler bei insert_customer, input:{input}.\nEorror: {e}\n"
+        raise Exception(error)
     
     finally:
         db_ex.close()
@@ -104,11 +100,11 @@ def update_customer_settings(table, customer_id, insert:dict):
 
         db_ex.execute_and_commit(sql, insert)
         
-        
-        
+    
     except Exception as e:
-        print("Fehler bei update_customer_settings (customer_repo Z:110)", e)
-        raise ValueError(f"Fehler bei update_customer_ettings, Error {e}")
+        error=f"Fehler bei update_customer_settings, table:{table}, customer_id{customer_id}"\
+              f", insert:{insert}.\nError:{e}\n"
+        raise Exception(error)
     
     finally:
         db_ex.close()
@@ -123,4 +119,3 @@ if __name__ == "__main__":
           }
     table = "financials"
     test = update_customer_settings(table, 1, dic)
-    
