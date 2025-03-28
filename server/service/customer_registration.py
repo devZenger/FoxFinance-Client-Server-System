@@ -1,10 +1,25 @@
 from passlib.context import CryptContext
+from pydantic import BaseModel
 
 from repository import insert_customer
 
+class AccountForm(BaseModel):
+   last_name: str
+   first_name: str
+   street: str
+   house_number: str
+   zip_code: str
+   city: str
+   birthday: str
+   email: str
+   phone_number: str
+   reference_account: str
+   fin_amount: str
+   password: str
+
 
 class CustomerRegistration:
-    def __init__(self):
+    def __init__(self, account_form:AccountForm):
         self._last_name = None
         self._first_name = None
         self._street = None
@@ -17,6 +32,21 @@ class CustomerRegistration:
         self._reference_account = None
         self._fin_amount = None
         self._password = None
+        
+        errors = []
+        
+        for key, value in account_form.model_dump().items():
+            try:
+                setattr(self, key, value)
+         
+            except Exception as e:
+                print(f"Fehlerhafte eingabe für {key}: {e}")
+                errors.append(f"Fehlerhafte eingabe für {key}: {e}")
+        
+        
+        if errors:
+            raise Exception(errors)
+        
         
     
     # last name
@@ -132,7 +162,7 @@ class CustomerRegistration:
         return self._reference_account
     
     @reference_account.setter
-    def reference_acccount(self, input):
+    def reference_account(self, input):
         if len(input) >= 2:
             self._reference_account = input
         else:
@@ -191,11 +221,7 @@ class CustomerRegistration:
         
         except Exception as e:
             print(e)
-            raise ValueError(e)
-        
-            
-            
-        
+            raise ValueError(e)        
                 
         
         
