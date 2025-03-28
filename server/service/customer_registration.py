@@ -43,12 +43,10 @@ class CustomerRegistration:
                 print(f"Fehlerhafte eingabe für {key}: {e}")
                 errors.append(f"Fehlerhafte eingabe für {key}: {e}")
         
-        
         if errors:
             raise Exception(errors)
-        
-        
-    
+
+
     # last name
     @property
     def last_name(self):
@@ -211,14 +209,11 @@ class CustomerRegistration:
         }
     
     def insert_db(self):
-        
-        
         as_dic = self.to_dict()
         
         try:
             insert_customer(as_dic)
-   
-        
+           
         except Exception as e:
             print(e)
             raise ValueError(e)        

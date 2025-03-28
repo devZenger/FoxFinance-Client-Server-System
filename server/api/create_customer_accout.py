@@ -23,25 +23,11 @@ class AccountForm(BaseModel):
     
 
 @router.post("/create_costumer_account/")
-async def create_account(accountform: AccountForm):   
-   data = accountform.model_dump()
-   customer_datas = CustomerRegistration()
+async def create_account(account_form: AccountForm):   
    
-   errors = [] 
-   
-   for key, value in data.items():
-      try :
-         setattr(customer_datas, key, value)
-         
-      except Exception as e:
-         print(f"Fehlerhafte eingabe für {key}: {e}")
-         errors.append(f"Fehlerhafte eingabe für {key}: {e}")
-   
-   if errors:
-      raise HTTPException(status_code=422, detail=str(errors))
-   
-   
-   try:
+
+   try :
+      customer_datas = CustomerRegistration(account_form)
       customer_datas.insert_db()
       
    except Exception as e:
