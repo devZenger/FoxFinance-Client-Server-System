@@ -133,7 +133,7 @@ class CustomerRegistration:
     # email
     @property
     def email(self):
-        return self._birthday
+        return self._email
     
     @email.setter
     def email(self, input):

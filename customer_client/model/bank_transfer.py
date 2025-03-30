@@ -27,7 +27,7 @@ class BankTransfer:
             input = input.replace("",","".")
         input = float(input) 
         
-        print(f"input= {input}")
+
             
         if input >= 0:
             self._fin_amount = input

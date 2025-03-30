@@ -1,5 +1,7 @@
 import requests
 
+from .server_request import ServerRequest
+
 from .url import url_server
 
 
@@ -36,6 +38,8 @@ class StockActions:
     def __init__(self, token):
         
         self.token=token
+        
+        self.server_request = ServerRequest(token)
         
         self.search_term=None
         
@@ -88,18 +92,20 @@ class StockActions:
 
     
     def stock_search(self):
+        url_part = "stocksearch/"
         
-        get_data = self.request_server()
+        get_data, response = self.server_request.get_with_parameters(url_part, self.search_term)
         
-        #print(f"get_data= {get_data}")
-        
+        print("##############")
+        print(f"get_data= {get_data}\t")
+        print("++++++++++++++++++++")
         if get_data == False:
             return f"\tFehler, {self.response.status_code}\n\tÜberprüfen Sie die Verbindung"
         else:
             results = {}
-            results = self.response["message"]
+            results = response
             
-            #print(results)
+            print(results)
             
             if results == "Die Aktien konnte nicht gefunden werden":
                 return  "no_stocks"
@@ -147,6 +153,11 @@ class StockActions:
                 Sollte die Börse geöffnet sein,\n\tist der Schlusskurs der aktuelle Kurs"""
                 
                 return "single_stock"
+    
+    
+    
+    
+    
             
         
     def request_server(self):

@@ -1,13 +1,5 @@
-import requests
-
 from view import  DisplayMenu, display_response
-from model import RegistrationForm
-
-from model import Validation
-
-#from .server_url import server_URL
-#from .login_menu import LoginMenu
-
+from model import RegistrationForm, Validation
 
 class CreateAccountMenu:         
     def __init__(self):
@@ -24,21 +16,21 @@ class CreateAccountMenu:
         
     def run(self):
         display_menu = DisplayMenu()
-        self.regis_form = RegistrationForm()
-        form_names = self.regis_form.form_names
-
+        regis_form = RegistrationForm()
+        form_names = regis_form.form_names
+        validation= Validation()
 
         choice = "start"
         while True:
             match choice:
                 case "start":
                     display_menu.display_title_and_infos(self.title, self.information)
-                    display_menu.display_form(form_names, self.regis_form)
+                    display_menu.display_form(form_names, regis_form)
                     display_menu.display_filled_form()
                     choice = display_menu.display_options(self.options)
                 
                 case "create_account":
-                    if self.regis_form.post_registration_form():
+                    if regis_form.post_registration_form():
                         choice = "validation"
                     else:
                         choice = "options"
@@ -47,9 +39,24 @@ class CreateAccountMenu:
                     choice = display_menu.display_options(self.options_failure)
                 
                 case "validation":
-                    validate = ValidationControl()
+                    success, code = validation.get_activate_code(regis_form.email)
                     
+                    if success:
+                        display_menu.display_dict(code)
+                    else: 
+                        display_menu.display_info(code)
                     
+                    display_menu.display_form(validation.form_name, validation)
+                    
+                    success = validation.send_activate_code()
+                    
+                    display_menu.display_info(validation.response)
+                    
+                    if success:
+                        return "start"
+                    
+                    else:
+                        choice = "options"   
 
                 case "discontinue":
                     return "start"

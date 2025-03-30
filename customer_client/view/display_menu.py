@@ -82,3 +82,9 @@ class DisplayMenu:
             print(f"\t{k}:{input[v]}")
         print("")
         print(self.line)
+    
+    
+    def display_dict(self, input:dict):
+        for v in input.values():
+            print(f"\t{v}")
+        print(self.line)

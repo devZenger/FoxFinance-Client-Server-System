@@ -78,7 +78,6 @@ class DBExecutor:
         
         return self.cursor
     
-    
         
     def col_names(self):
         col_name=[]

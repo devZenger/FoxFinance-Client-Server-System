@@ -1,13 +1,29 @@
 import random
 from pydantic import BaseModel
+from datetime import datetime, timezone, timedelta
 
 from repository import simple_search, insert_one_table, update_one_table
 
 class Code(BaseModel):
-    code:int
+    validation_number:int = 0
+
+
+
+def find_customer_id(search):
+    
+    result = simple_search("validation", "customer_id", search)
+    print("result", result)
+    #result = result["row_result0"]
+    print("result ohne 0", result)
+    if bool(result):
+        return True
+    else:
+        return False
+
+
 
 def create_validation(email):
-    
+
     try: 
         result = simple_search("customers", "email", email)
 
@@ -15,42 +31,73 @@ def create_validation(email):
         print("result")
         print(result)
     except:
-        return "Email Addresse konnte nicht gefunden werden"
+        error = "Email Addresse konnte nicht gefunden werden"
+        print(error)
+        raise Exception(error)
+
+    print("test")
     
-    
+    print(result["customer_id"])
+
     check = find_customer_id(result["customer_id"])
     
+    print("check", check)
+
     code = random.randint(100_000, 999_999)
-    
+
     update = {"validation_number": code}
     condition = {"customer_id":result["customer_id"]}
 
     if check:
+        print("update:", update)
+        print("condition", condition)
         update_one_table("validation", update, condition)
-            
+
     else:
         condition.update(update)
+        print("condition", condition)
         insert_one_table("validation", condition)
-        
+
+    
     return {"validation_number":code}
 
 
-
-def find_customer_id(search):
-    
-    result = simple_search("validation", "customer_id", search)
-    result = result["row_result0"]
-    if bool(result):
-        return True
-    else:
-        return False
 
 def activate_account(code:Code):
     
     code_dic = code.model_dump()
     
-    result = simple_search("validation", "validation_number", code_dic)
-    result = result["row_result0"]
+    print("code_dic", code_dic)
+    
+    result = simple_search("validation", "validation_number", code_dic["validation_number"])
+    
+    try:
+        result = result["row_result0"]
+
+        if result["validation_number"] == code_dic["validation_number"]:
+            
+            current_time = datetime.now(timezone.utc)
+            validation_time_code = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+            
+            five_min = timedelta(minutes=5)
+            
+            time_dif = current_time-validation_time_code
+            
+            if time_dif <= five_min:
+                condition_dic={"customer_id":result["customer_id"]}
+                print("condition", condition_dic)
+                update={"disabled":False}
+                print("update", update)
+                update_one_table("customers", update, condition_dic)
+                return "Ihr Konto wurde aktiviert"
+            else:
+                return "Aktivierungscode abgelaufen"
+        
+    except:
+        error="Der Aktivierungscode ist Fehlerhaft"
+        raise Exception(error)
+        
+        
     
     
     
@@ -61,10 +108,15 @@ def activate_account(code:Code):
 
 if __name__ == "__main__":
     
-
-    email = "zoe"
-
-    answer = create_validation(email)
+    code = Code()
     
-    print("answer ist ", answer)
+    code.validation_number = 772220
+
+    email = "toe"
+
+    answer = activate_account(code)
+    
+    print("answer", answer)
+    
+
     

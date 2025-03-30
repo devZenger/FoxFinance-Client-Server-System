@@ -14,6 +14,7 @@ from .depot_settings import Settings
 class DepotControl:
     def __init__(self, token):
         self.token = token
+        print("token", token)
         self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
         
         self.options ={"1. Depot Übersicht": "depot_overview",

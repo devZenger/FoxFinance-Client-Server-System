@@ -45,6 +45,7 @@ def simple_search(table, column, search_term):
     except Exception as e:
         error=f"Fehler bei simple_search, table:{table},"\
               f"column:{column}, search_term:{search_term}.\nError:{e}"
+        print(error)
         raise Exception (error)
         
     finally:
