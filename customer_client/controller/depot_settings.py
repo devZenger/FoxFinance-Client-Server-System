@@ -1,50 +1,46 @@
-
 from view import DisplayMenu
 from model import SettingsForm
 
 
-
 class Settings:
     def __init__(self, token, options):
-        
-        self.token=token
-        self.options = options
-        
-        self.title="Kontoeinstelungen ändern"
-        
 
-        self.information= "Was möchten Sie ändern?"
+        self.token = token
+        self.options = options
+
+        self.title ="Kontoeinstelungen ändern"
+
+        self.information = "Was möchten Sie ändern?"
         self.information_2time = "Möchten Sie noch weiteres ändern ?"
-        
+
         self.options_settings = {"1. Adresse":"adress",
                                  "2. Telefonnummer":"phone_number",
                                  "3. Email Adresse": "email_adress",
                                  "4. Referenzkonto": "reference_account",
                                  "5. Passwort" : "password",
                                  "6. abbrechen": "discountinue"}
-        
+
         self.options_make_change = {"1. Änderungen vornehmen": "make_change",
                                     "2. abbrechen": "start"}
-        
-    
+
     def run(self):
-        
+
         display_menu = DisplayMenu()
         self.settings = SettingsForm(self.token)
-        
+
         current_settings = self.settings.current_settings()
-        
+
         display_menu.display_info(current_settings)
-        
+
         choice = "start"
         first = True
-        
+
         while True:
             match choice:
-                
+
                 case "start":
                     display_menu.display_title(self.title)
-                    if first == True:
+                    if first is True:
                         display_menu.display_info(self.information)
                         first = False
                     else:
@@ -87,23 +83,18 @@ class Settings:
 
                 case "conform_change":
                    choice = display_menu.display_options(self.options_make_change)
-                
+
                 case "make_change":
                     response = self.settings.transmit_changes(setting_type)
                     print(response)
                     choice = "options"
-                
+
                 case "error":
                     display_menu.display_info(SettingsForm.error)
                     choice = "options"
-                    
-                    
-                
+
                 case "discountinue":
                     return "start"
-  
-                
+
                 case _:
                     choice = "options"
-    
-  

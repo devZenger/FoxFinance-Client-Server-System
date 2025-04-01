@@ -16,7 +16,7 @@ class DepotControl:
         self.token = token
         print("token", token)
         self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
-        
+
         self.options ={"1. Depot Übersicht": "depot_overview",
                       "2. Aktien suche":"stock_search",
                       "3. Aktien handeln": "stock_trade",
@@ -26,28 +26,28 @@ class DepotControl:
                       "7. Daten ändern": "settings",
                       "8. Abmelden":"loggout",
                       "9. Abmelden und benden":"loggout_and_exit"}
-        
+
     def run(self):
-        
+
         choice = "start"
-        
+
         while True:
-            
+
             match choice:
-                    
+
                 case "start":
                     depot_menu_start = DepotStartMenu(self.token, self.options)
                     choice = depot_menu_start.run()
-                
+
                 case "depot_overview":
                     depot_overview = DepotOverview(self.token)
                     depot_overview.run()
                     choice = "start"
-                    
+
                 case "stock_search":
                     stock_search = DepotStockSearch(self.token, self.options)
                     choice, isin = stock_search.run()
-                      
+
                 case "stock_trade":                    
                     stock_trade = DepotStockTrade(self.token, self.options)
                     choice = stock_trade.run()
@@ -55,32 +55,30 @@ class DepotControl:
                 case "account_overview":
                     account_overview = AccountOverview(self.token)
                     choice = account_overview.run()
-                
+
                 case "bank_transfer":
                     bank_transaction = DepotBankTransfer(self.token, self.options)
                     choice = bank_transaction.run()
-              
+
                 case "information":
                     information = DepotInformation(self.token)
                     information.run()
                     choice = "start"
-                    
+
                 case "settings":
                     settings = Settings(self.token, self.options)
                     choice = settings.run()
-                    
+
                 case "loggout":
                     del self.token
                     if isinstance(depot_menu_start, DisplayMenuOption):
                         del display_menu
-                    
+
                     return
-                
+
                 case "loggout_and_exit":
                     del self.token
                     if isinstance(depot_menu_start, DisplayMenuOption):
                         del display_menu
-                    
+
                     sys.exit(0)
-                    
-                    

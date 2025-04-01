@@ -1,89 +1,79 @@
 from model import FinancialHistory
 from view import DisplayMenu
 
+
 class AccountOverview:
     def __init__(self, token):
-        
-        self.token=token
-        self.depot=None
 
-        self.title= "Kontoübersicht"
-        self.option={"1. Die letzten drei Monate":"last_three",
-                     "2. Die letzten zwölf Monate":"last_twelve",
-                     "3. Zeitraum einbegen":"timespan",
-                     "4. Konto anzeigen": "start",
-                     "5. zurück":"back"}
-    
+        self.token = token
+        self.depot = None
+
+        self.title = "Kontoübersicht"
+        self.option = {"1. Die letzten drei Monate": "last_three",
+                      "2. Die letzten zwölf Monate": "last_twelve",
+                      "3. Zeitraum einbegen": "timespan",
+                      "4. Konto anzeigen": "start",
+                      "5. zurück": "back"}
+
     def run(self):
         self.display_menu = DisplayMenu()
         self.account = FinancialHistory(self.token)
-        self.form_names= self.account.form_names
-        
+        self.form_names = self.account.form_names
+
         self.display_menu.display_title(self.title)
-        
+
         choice = "start"
-        
+
         while True:
             match choice:
                 case "start":
                     request = self.account.get_actual_balance()
                     self.show_info(request)
-                    choice= "option"
-                
+                    choice = "option"
+
                 case "last_three":
                     request = self.account.get_last_three_months()
                     self.show_table(request)
                     choice = "option"
-                    
+
                 case "last_twelve":
                     request = self.account.get_last_twelve_months()
                     self.show_table(request)
                     choice = "option"
-                    
+
                 case "timespan":
                     self.display_menu.display_form(self.form_names, self.account)
                     request = self.account.get_financial_transaction_by_timespan()
                     self.show_table(request)
                     choice = "option"
-                    
+
                 case "back":
                     return "start"
-                
+
                 case "option":
                     choice = self.display_menu.display_options(self.option)
-                    
+
                 case _:
                     choice = "option"
-    
-    
+
     def show_info(self, input):
 
-        if input == True:     
+        if input is True:
             self.display_menu.display_info(self.account.response)
-        
-        elif input == False:
+
+        elif input is False:
             self.display_menu.display_info(self.account.response)
         else:
             self.display_menu.display_info("unbekannter Fehler")
-    
-    
-    
+
     def show_table(self, input):
 
         print(f"input = {input}")
-        
-        if input == True:     
+
+        if input is True:    
             self.display_menu.display_table(self.account.response, self.account.column_names)
-        
-        elif input == False:
+
+        elif input is False:
             self.display_menu.display_info(self.account.response)
         else:
             self.display_menu.display_info("keine Verbindung")
-            
-
-        
-        
-        
-        
-        
-        
