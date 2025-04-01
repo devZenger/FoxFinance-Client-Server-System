@@ -1,5 +1,6 @@
 from .server_request import ServerRequest
 
+
 class RegistrationForm:
     def __init__(self):
         self._last_name = None
@@ -14,11 +15,9 @@ class RegistrationForm:
         self._reference_account = None
         self._fin_amount = None
         self._password = None
-        
-        #self.error = None
 
-        self.response= None
-                
+        self.response = None
+
         self.form_names = {
             "last_name": "Familiennamen",
             "first_name": "Vorname",
@@ -33,12 +32,12 @@ class RegistrationForm:
             "fin_amount": "Startgeld einzahlen",
             "password": "Passwort"
         }
-    
+
     # last name
     @property
     def last_name(self):
         return self._last_name
-    
+
     @last_name.setter
     def last_name(self, input):
         if len(input) >= 2:
@@ -50,7 +49,7 @@ class RegistrationForm:
     @property
     def first_name(self):
         return self._first_name
-    
+
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:
@@ -62,7 +61,7 @@ class RegistrationForm:
     @property
     def street(self):
         return self._street
-    
+
     @street.setter
     def street(self, input):
         if len(input) >= 2:
@@ -74,7 +73,7 @@ class RegistrationForm:
     @property
     def house_number(self):
         return self._house_number
-    
+
     @house_number.setter
     def house_number(self, input):
         if len(input) >= 1:
@@ -86,7 +85,7 @@ class RegistrationForm:
     @property
     def city(self):
         return self._city
-    
+
     @city.setter
     def city(self, input):
         if len(input) >= 2:
@@ -98,7 +97,7 @@ class RegistrationForm:
     @property
     def zip_code(self):
         return self._zip_code
-    
+
     @zip_code.setter
     def zip_code(self, input):
         if len(input) >= 2:
@@ -110,7 +109,7 @@ class RegistrationForm:
     @property
     def birthday(self):
         return self._birthday
-    
+
     @birthday.setter
     def birthday(self, input):
         if len(input) >= 2:
@@ -122,7 +121,7 @@ class RegistrationForm:
     @property
     def email(self):
         return self._email
-    
+
     @email.setter
     def email(self, input):
         if len(input) >= 2:
@@ -134,7 +133,7 @@ class RegistrationForm:
     @property
     def phone_number(self):
         return self._phone_number
-    
+
     @phone_number.setter
     def phone_number(self, input):
         if len(input) >= 2:
@@ -146,7 +145,7 @@ class RegistrationForm:
     @property
     def reference_account(self):
         return self._reference_account
-            
+
     @reference_account.setter
     def reference_account(self, input):
         if len(input) >= 2:
@@ -158,7 +157,7 @@ class RegistrationForm:
     @property
     def fin_amount(self):
         return self._fin_amount
-    
+
     @fin_amount.setter
     def fin_amount(self, input):
         if len(input) >= 1:
@@ -170,14 +169,13 @@ class RegistrationForm:
     @property
     def password(self):
         return self._password
-    
+
     @password.setter
     def password(self, input):
         if len(input) >= 2:
             self._password = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
-        
 
     def to_dict(self):
         return {
@@ -194,17 +192,17 @@ class RegistrationForm:
             "fin_amount":self._fin_amount,
             "password": self.password
         }
-    
+
     def post_registration_form(self):
-        
+
         to_transmit = self.to_dict()
-        
+
         server_request = ServerRequest()
-        
+
         url_part = "create_costumer_account/"
-        
+
         success, self.response = server_request.make_post_request(url_part, to_transmit)
-        
+
         del server_request
-        
+
         return success

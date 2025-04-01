@@ -2,8 +2,6 @@ import requests
 
 from .server_request import ServerRequest
 
-from .url import url_server
-
 
 def performance_data_presentable(performance_data):
     
@@ -138,9 +136,7 @@ class StockActions:
                 
                 self.isin = results["one"]["latest_day"]["isin"]
                 self.stock_name = results["one"]["stocks_row"]["company_name"]
-                
-                
-                
+                                
                 presantable = performance_data_presentable(results["one"])
                 
                 self.stock_information= ""
@@ -155,11 +151,6 @@ class StockActions:
                 return "single_stock"
     
     
-    
-    
-    
-            
-        
     def request_server(self):
         
         url = f'{url_server}/depot/stocksearch/{self.search_term}'
@@ -181,8 +172,6 @@ class StockActions:
             print("Fehler", self.response.status_code)
             return False
     
-    
-
     
     def stock_trade(self):
         
