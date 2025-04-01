@@ -1,97 +1,94 @@
-import sqlite3
-
 from .db_executor import DBExecutor
 from .search_repo import make_dictionary_one_result
 
 db_ex = DBExecutor()
 
+
 def latest_trade_day_entry(search_term):
-    
-    try:
-        
+
+    try:        
         db_ex.open_connection_db()
-        
-        sql=f"""SELECT * 
-                FROM stock_data 
-                WHERE isin = ? 
-                ORDER BY date DESC LIMIT 1"""
-                
+
+        sql = """SELECT *
+                 FROM stock_data
+                 WHERE isin = ? 
+                 ORDER BY date DESC LIMIT 1"""
+
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()
 
         names = db_ex.col_names()
 
-        result= make_dictionary_one_result(datas[0], names)
+        result = make_dictionary_one_result(datas[0], names)
 
-
-        
     except Exception as e:
-        print(f"position: latest_trade_day_entry, Error: {e}")
+        error = f"Fehler bei latest_trade_day_entry(" \
+                f"search_term: {search_term})" \
+                f".\nError: {e}"
+        print(error)
         result = "Kein Eintrag gefunden, Error: {e}"
-    
+
     finally:
         db_ex.close()
         return result
 
+
 def trade_day_by_period(search_term, time):
-    
+
     try:
-        
         db_ex.open_connection_db()
-        
-        sql=f"""SELECT * 
+
+        sql = f"""SELECT *
                 FROM stock_data 
                 WHERE isin = ? AND date <= DATE('now', '-{time}') 
                 ORDER BY date DESC LIMIT 1"""
-                
+
         value = (search_term,)
         datas = db_ex.execute(sql, value).fetchall()
         names = db_ex.col_names()
-        
-        
+
         result = make_dictionary_one_result(datas[0], names)
-    
+
     except Exception as e:
-        print(f"position: trade_day_by_period, Error: {e}")
+        error = f"Fehler bei trade_day_by_period(" \
+                f"search_term: {search_term}, time: {time}).\nError: {e}"
+        print(error)
         result = "Kein Eintrag gefunden, Error: {e}"
-    
+
     finally:
         db_ex.close()
         return result
-
-    
 
 
 def all_stocks_by_customer(customer_id, isin):
-    
+
     try:
         db_ex.open_connection_db()
-        
-        sql="""SELECT
-                    COALESCE((SELECT SUM(amount) 
+
+        sql = """SELECT
+                    COALESCE((SELECT SUM(amount)
                         FROM transactions
-                        WHERE customer_id = ? AND isin = ? AND transaction_type = 'buy'), 0) -
-                    COALESCE((SELECT SUM(amount) 
+                        WHERE customer_id = ?
+                            AND isin = ?
+                            AND transaction_type = 'buy'), 0) -
+                    COALESCE((SELECT SUM(amount)
                         FROM transactions
-                        WHERE customer_id = ? AND isin = ? AND transaction_type = 'sell'), 0)
+                        WHERE customer_id = ? 
+                            AND isin = ? 
+                            AND transaction_type = 'sell'), 0)
                 AS DIFFERENCE"""
-        
-        value = (customer_id,isin, customer_id,isin,)
+
+        value = (customer_id, isin, customer_id, isin,)
         datas = db_ex.execute(sql, value).fetchall()
-        
+
         result = datas[0][0]
-        
+
     except Exception as e:
-        print(f"postion: all_stock_by_customer, Error: {e}")
+        error = f"Fehler bei all_stocks_by_customer(" \
+                f"customer_id: {customer_id}, isin: {isin}).\nError: {e}"
+        print(error)
         result = "Kein Eintrag gefunden, Error: {e}"
 
     finally:
         db_ex.close()
         return result
-
-
-
-
-
-
-    

@@ -1,30 +1,26 @@
-import sqlite3
-
 from .db_executor import DBExecutor
 
 
-    
 def insert_customer(input):
-            
+
     db_ex = DBExecutor()
     db_ex.open_connection_db()
-    
+
     try:
         db_ex.start_transcation()
 
-        input["disabled"]=False
-        input["bank_account"]=input["reference_account"]
-        input["fin_transaction_type_id"]= 1
-        input["usage"]="Depoteröffnung"
-        
-        sql= """INSERT INTO customers(
+        input["disabled"] = False
+        input["bank_account"] = input["reference_account"]
+        input["fin_transaction_type_id"] = 1
+        input["usage"] = "Depoteröffnung"
+
+        sql = """INSERT INTO customers(
                     first_name,
                     last_name,
                     email,
                     phone_number,
                     birthday)
                     VALUES(
-
                     :first_name,
                     :last_name,
                     :email,
@@ -33,7 +29,7 @@ def insert_customer(input):
             )"""
         customer_id = db_ex.execute(sql, input).lastrowid
         input["customer_id"]=customer_id
-        
+
         sql = """INSERT INTO customer_adresses VALUES(
                     :customer_id,
                     :street,
@@ -51,7 +47,7 @@ def insert_customer(input):
                     :customer_id,
                     :reference_account)"""
         db_ex.execute(sql, input)
-        
+
         sql = """INSERT INTO financial_transactions
                     (customer_id,
                     bank_account,
@@ -65,51 +61,44 @@ def insert_customer(input):
                     :fin_transaction_type_id,
                     :usage)"""
         db_ex.execute(sql, input)
-        
+
         db_ex.connection_commit()
-  
-    
+
     except Exception as e:
         db_ex.rollback()
         error = f"Fehler bei insert_customer, input:{input}.\nEorror: {e}\n"
         raise Exception(error)
-    
+
     finally:
         db_ex.close()
-      
-       
-            
-def update_customer_settings(table, customer_id, insert:dict):
-    
+
+
+def update_customer_settings(table, customer_id, insert: dict):
+
     db_ex = DBExecutor()
     db_ex.open_connection_db() 
-    
+
     columns = ""
     for k in insert.keys():
-        columns=f"{columns}{k}=:{k}, "
-    
-    
-    print(columns)
-    print("insert bei update_customer_settings", insert)
+        columns = f"{columns}{k}=:{k}, "
+
     columns = columns[:-2]
-    
+
     try:
         sql = f"""UPDATE {table}
                     SET {columns} 
                     WHERE customer_id={customer_id}"""
 
         db_ex.execute_and_commit(sql, insert)
-        
-    
+
     except Exception as e:
-        error=f"Fehler bei update_customer_settings, table:{table}, customer_id{customer_id}"\
-              f", insert:{insert}.\nError:{e}\n"
+        error = f"Fehler bei update_customer_settings, table:{table}," \
+                f"customer_id{customer_id}, insert:{insert}.\nError:{e}\n"
+        print(error)
         raise Exception(error)
-    
+
     finally:
         db_ex.close()
-
-
 
 
 if __name__ == "__main__":
