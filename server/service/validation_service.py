@@ -58,31 +58,29 @@ def create_validation(email):
         print("condition", condition)
         insert_one_table("validation", condition)
 
-    
     return {"validation_number":code}
 
 
-
 def activate_account(code:Code):
-    
+
     code_dic = code.model_dump()
-    
+
     print("code_dic", code_dic)
-    
+
     result = simple_search("validation", "validation_number", code_dic["validation_number"])
-    
+
     try:
         result = result["row_result0"]
 
         if result["validation_number"] == code_dic["validation_number"]:
-            
+
             current_time = datetime.now(timezone.utc)
             validation_time_code = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
-            
+
             five_min = timedelta(minutes=5)
-            
+
             time_dif = current_time-validation_time_code
-            
+
             if time_dif <= five_min:
                 condition_dic={"customer_id":result["customer_id"]}
                 print("condition", condition_dic)
@@ -92,31 +90,20 @@ def activate_account(code:Code):
                 return "Ihr Konto wurde aktiviert"
             else:
                 return "Aktivierungscode abgelaufen"
-        
+
     except:
-        error="Der Aktivierungscode ist Fehlerhaft"
+        error = "Der Aktivierungscode ist Fehlerhaft"
         raise Exception(error)
-        
-        
-    
-    
-    
-    
 
-
-        
 
 if __name__ == "__main__":
-    
+
     code = Code()
-    
+
     code.validation_number = 772220
 
     email = "toe"
 
     answer = activate_account(code)
-    
-    print("answer", answer)
-    
 
-    
+    print("answer", answer)

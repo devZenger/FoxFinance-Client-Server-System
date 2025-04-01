@@ -123,39 +123,36 @@ def customer_finance_data(customer_id, kind_of):
     
     return customer_finance, balance
 
- 
-def buy_stocks(customer_id, stock_trade:StockTrade):
-    
+
+def buy_stocks(customer_id, stock_trade: StockTrade):
+
     transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
-    
+
     customer_finance, balance =customer_finance_data(customer_id, "buy stocks")
-        
+
     total = trade_vol+trade_charge
-    
+
     print(f"customer finance: {customer_finance}")
-    
+
     print(f"customer blanance: {customer_finance["actual_balance"]}")
     print(f"total = {total}")
-    
+
     if customer_finance["actual_balance"] < total:
         print("Guthaben reicht nicht aus")
         return ("Guthaben reicht nicht aus")
-    
-    else:
 
+    else:
         print("Guthaben reicht aus")
 
-
         balance["fin_amount"]=total
-        
+
         return trade_transaction(transaction, balance)
 
-
     #input in database
-def trade_transaction(transaction:dict, balance:dict):
-    
+def trade_transaction(transaction: dict, balance: dict):
+
     print("start trade_transaction")
-    
+
     validation={}
 
     try: 
@@ -220,50 +217,26 @@ def start_stock_transaction(customer_id, stock_trade:StockTrade):
         raise Exception(e)
 
 
-
-
-
-
-    
-
-    
 if __name__ == "__main__":
-    
+
     from pydantic import BaseModel
 
     class StockTrade(BaseModel):
         isin: str
         amount: int
         transaction_type: str
-    
-    
-    stock_trade = StockTrade(isin = "DE0005190003", amount=10, transaction_type="sell")
-    
-    
+
+    stock_trade = StockTrade(isin="DE0005190003", amount=10, transaction_type="sell")
+
     print("start")
     table = "stocks"
     column = "isin"
     search_term = "DE0005190003"
     time = "6 months"
-    
-    performance_data = buy_stocks(1, stock_trade)
 
+    performance_data = buy_stocks(1, stock_trade)
 
     print("--------------------------")    
     print(performance_data)
 
     print("---------------------------")
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-            
-            
-    
-    
