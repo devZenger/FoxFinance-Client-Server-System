@@ -1,6 +1,3 @@
-from datetime import datetime, timedelta, timezone
-from typing import Annotated
-
 import jwt
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -22,25 +19,27 @@ router = APIRouter()
 class LoginForm(BaseModel):
     email: str
     password: str
-    
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class Code(BaseModel):
-    validation_number:int
+    validation_number: int
 
 
-    
+
 
 @router.post("/token")
 async def customer_login_for_access_token(
     login_form: EmailOAuth2PasswordRequestForm) -> Token:
-    
+
     authentication = Authentication()
-    
+
     customer = authentication.authenticate_customer(login_form.email, login_form.password)
-    
+
     if not customer:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -53,9 +52,9 @@ async def customer_login_for_access_token(
 
 @router.get("/startvalidation/{email}/")
 async def get_validation(email:str):
-    
+
     print("email", email)
-    
+
     try:
         validation = create_validation(email)
         return {"message":validation}
@@ -63,15 +62,14 @@ async def get_validation(email:str):
     except Exception as e:
         print(f"HTTPException detail: {e}")
         raise HTTPException(status_code=422, detail=str(e))
-    
+
 @router.post("/activateaccount/")
 async def post_activate_account(code:Code):
-    
-    try: 
+
+    try:
         transmission = activate_account(code)
         return {"message":transmission}
-    
+
     except Exception as e:    
         print(f"HTTPException detail: {e}")
-        raise HTTPException(status_code=422, detail=str(e))  
-        
+        raise HTTPException(status_code=422, detail=str(e))

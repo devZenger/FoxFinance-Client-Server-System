@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends,APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException
 from pydantic import BaseModel
 
 
@@ -8,8 +8,9 @@ from service import User, SettingsService, get_current_active_user
 
 router = APIRouter()
 
+
 class User(BaseModel):
-    email: str 
+    email: str
     customer_id: int | None = None
     disabled: bool | None = None
 
@@ -28,26 +29,24 @@ class Settings(BaseModel):
 
 @router.get("/depot/settings/")
 async def get_settings(current_customer: Annotated[User, Depends(get_current_active_user)]):
-    
+
     try:
         settings_service = SettingsService()
-        current_settings =settings_service.search_current_settings(current_customer["customer_id"])
-        
+        current_settings = settings_service.search_current_settings(current_customer["customer_id"])
+
         return {"message": current_settings}
-        
+
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
-     
-    
 
 @router.post("/depot/changesettings/")
 async def change_settings(settings: Settings, current_customer: Annotated[User, Depends(get_current_active_user)]):
- 
+
     try:
         settings_service = SettingsService()
         settings_service.update_service(current_customer["customer_id"], settings)
         return {"message":"Updated"}
-    
+
     except Exception as e:
         print("Fehler bei change_settings (depot_settings_api Z:52)", e)
         raise HTTPException(status_code=422, detail=str(e))

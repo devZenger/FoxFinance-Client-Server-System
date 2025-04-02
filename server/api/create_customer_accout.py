@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 
 from pydantic import BaseModel
 
-
 from service import CustomerRegistration
 
 router = APIRouter()
@@ -20,20 +19,14 @@ class AccountForm(BaseModel):
    reference_account: str
    fin_amount: str
    password: str
-    
+
 
 @router.post("/create_costumer_account/")
 async def create_account(account_form: AccountForm):   
-   
 
    try :
       customer_datas = CustomerRegistration(account_form)
       customer_datas.insert_db()
-      
+
    except Exception as e:
       raise HTTPException(status_code=422, detail=str(e))
-   
-   
-  
-   
-          

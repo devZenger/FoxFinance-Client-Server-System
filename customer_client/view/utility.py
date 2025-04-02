@@ -1,46 +1,45 @@
 import decimal
 
-def make_table(input:dict, column_names:dict):
+
+def make_table(input: dict, column_names: dict):
 
     for dic_in in input.values():
-        
-        for k,v in dic_in.items():
-            
+
+        for k, v in dic_in.items():
+
             if isinstance(v, decimal.Decimal):
                 dic_in[k]=str(v.quantize(decimal.Decimal(1.00)))
                 dic_in[k]=f"{dic_in} EUR"
-                
+
             elif isinstance(v, int):
-                dic_in[k]= str(v)
+                dic_in[k] = str(v)
             elif isinstance(v, float):
-                dic_in[k]=str(round(v,2))
-            
+                dic_in[k] = str(round(v,2))
 
     column_lengths = []
-    
+
     for v in column_names.values():
-        
+
         vol = len(v)
         column_lengths.append(len(v))
-    
+
     for dic_in in input.values():
-        
+
         for i, v in enumerate(dic_in.values()):
-            
+
             vol = len(v)
-            
+
             if vol > column_lengths[i]:
                 column_lengths[i]= vol
-     
+
     tabelle = [""]
-    
+
     for i, v in enumerate(column_names.values()):
-        
-        tabelle[0] =f"{tabelle[0]} {v.ljust(column_lengths[i])} |"
+
+        tabelle[0] = f"{tabelle[0]} {v.ljust(column_lengths[i])} |"
         if i == 0:
             tabelle.append("")
-        tabelle[1]=f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
-
+        tabelle[1] = f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
 
     for i, dic_in in enumerate(input.values()):
 
@@ -48,30 +47,23 @@ def make_table(input:dict, column_names:dict):
         for j, v in enumerate(dic_in.values()):
 
             tabelle[i+2] = f"{tabelle[i+2]} {v.ljust(column_lengths[j])} |" 
-    
+
     return tabelle
 
 
-# nicht fertig
-def make_list_from_dic(input:dict, listpoints:dict):
-    
-    length_left = 0
-    for k in listpoints.keys():
-        if len(k) > length_left:
-            length_left = len(k)
-    length_right = 0
-    for v in input.values():
-        
-        if isinstance(v, str):
-            v = str(v)
-        
-        if len(v) > length_right:
-            length_right = len(v)
-        
+def get_length_from_subdic(input: dict):
 
+    length_keys = 0
+    length_values = 0
+    for dic in input.values():
+        for k, v in dic.items():
+            if len(k) > length_keys:
+                length_keys = len(k)
 
+            if len(v) > length_values:
+                length_values = len(v)
 
-
+    return length_keys, length_values
 
 
 if __name__ == "__main__":
@@ -98,15 +90,9 @@ if __name__ == "__main__":
                               'amount': 54,
                               'price_per_stock': 31.229999542236328,
                               'actual_price': 31.229999542236328,
-                              'performance': 1.0}}            
-    
+                              'performance': 1.0}}
+
     tabelle = make_table(result)
-    
+
     for tab in tabelle:
-        print(tab)               
-                
-                
-            
-        
-        
-        
+        print(tab)

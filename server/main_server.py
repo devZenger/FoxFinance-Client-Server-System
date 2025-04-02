@@ -6,8 +6,6 @@ from api import depot_financial_apis, depot_settings_api
 
 server = FastAPI()
 
-
-
 server.include_router(information.router)
 server.include_router(create_customer_accout.router)
 
@@ -35,9 +33,6 @@ def start_server():
         reload=True)
 
 
-
 if __name__ == "__main__":
 
     start_server()
-    
-    
