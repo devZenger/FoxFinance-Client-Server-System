@@ -38,6 +38,8 @@ erDiagram
         string email "not null"
         string phone_number "not null"
         string registration_date "not null"
+        text termination_date
+        text disabled
         string last_login "not null"
     }
 
@@ -57,12 +59,6 @@ erDiagram
 
     }
 
-    zip_codes ||--o{ customer_adresses : has
-    zip_codes {
-        int zip_code PK
-        string city
-    }
-
     financials ||--|| customers : has
     financials {
         int costumer_id PK, FK
@@ -74,33 +70,28 @@ erDiagram
         int financial_transaction_id PK
         int customer_id FK "not null"
         string bank_account "not null"
-        decimal balance_sum "not null"
-        string kind_of_action "not null"
-        string transaction_date "not null"
+        decimal fin_amount "not null"
+        string fin_transaction_type "not null"
+        text usage 
+        string fin_transaction_date "not null"
     }
 
-    financial_transactions_status {
-        int financial_transaction_status_id PK
-        string type_of_action "not null"
+    fin_transactions_types {
+        int fin_transaction_type_id PK
+        string fin_transaction_type "not null"
     }
 
-    stock_transactions ||--|| order_charges : contains
-    stock_transactions ||--o{ stocks : contains
-    stock_transactions {
-        int stock_transaction_id PK
+    transactions ||--|| order_charges : contains
+    transactions ||--o{ stocks : contains
+    transactions {
+        int transaction_id PK
         int customer_id FK "not null"
         string isin FK "not null"
-        int transactions_status_id FK "not null"
-        int count "not null"
+        text transactions_type FK "not null"
+        int amount "not null"
         decimal price_per_stock "not null"
-        decimal order_charge "not null"
+        decimal order_charge_id "not null"
         string transaction_date "not null"
-    }
-
-    transaction_status ||--o{ stock_transactions : has
-    transaction_status{
-        int transactions_status_id PK
-        string kind_of_action "not null"
     }
 
     stocks ||--o{ stock_data : has
@@ -124,13 +115,13 @@ erDiagram
         decimal stock_splits "not null"
     }
 
-    stock_watch_list ||--o{ stocks : contains
-    stock_watch_list {
+    stock_watchlist ||--o{ stocks : contains
+    stock_watchlist {
         int watchlist_id PK
         int customer_id FK "not null"
         string isin FK "not null"
         decimal price_per_stock "not null"
-        string transaction_date "not null"
+        string date "not null"
     }
         
 
@@ -150,7 +141,12 @@ erDiagram
     int order_charge_id PK
     string start_validation "not null"
     string end_validation "not null"
-    decimal min_stock_vol "not null"
-    decimal order_charge_base "not null"
-    decimal order_charge_provision "not null"
-}
+    decimal min_volumn "not null"
+    decimal order_charge "not null"
+    }
+
+    validation {
+        int customer_id PK, FK
+        int validation_number "NOT NULL"
+        text date "NOT NULL"
+    }
