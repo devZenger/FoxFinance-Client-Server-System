@@ -43,7 +43,7 @@ class SettingsForm(RegistrationForm):
         match type:
 
             case "adress":
-                to_transmit = {"transmission_type":"adress",
+                to_transmit = {"transmission_type": "adress",
                                "street": self.street,
                                "house_number": self.house_number,
                                "city": self.city,
@@ -70,7 +70,8 @@ class SettingsForm(RegistrationForm):
 
         print(f"to transmit is {to_transmit}")
 
-        status, self.response = server_request.make_post_request(url_part, to_transmit)
+        status, self.response = server_request.make_post_request(
+            url_part, to_transmit)
 
         del server_request
 

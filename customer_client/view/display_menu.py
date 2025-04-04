@@ -1,9 +1,8 @@
 from .utility import make_table, get_length_from_subdic, get_key_value_max_length
 
+
 class DisplayMenu:
     line = "-" * 90
-    #def __init__(self, title):
-    #    self.title = title
 
     def display_title(self, title):
         print(self.line)
@@ -77,16 +76,6 @@ class DisplayMenu:
         print("")
         print(self.line)
 
-    #= löschen
-    def _display_list(self, input: dict, listpoints: dict):
-
-        make_list_from_dic(input, listpoints)
-        print("")
-        for k, v in listpoints.items():
-            print(f"\t{k}:{input[v]}")
-        print("")
-        print(self.line)
-
     def display_dict(self, input: dict):
         for v in input.values():
             print(f"\t{v}")
@@ -113,4 +102,3 @@ class DisplayMenu:
                 print(f"\t{k.ljust(length_keys)}:{v.rjust(length_values)}")
         print(self.line)
         print("")
-

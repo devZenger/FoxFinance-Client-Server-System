@@ -1,5 +1,4 @@
 from typing import Annotated
-
 from fastapi import Depends, APIRouter
 from pydantic import BaseModel
 
@@ -10,15 +9,15 @@ router = APIRouter()
 
 
 class User(BaseModel):
-    #username: str
     email: str
     customer_id: int | None = None
     disabled: bool | None = None
 
+
 @router.get("/depot/information/")
-async def get_information( current_customer: Annotated[User, Depends(get_current_active_user)]):
+async def get_information(current_customer: Annotated[User, Depends(get_current_active_user)]):
 
     useremail = current_customer
     print(f"usermail: {useremail}")
 
-    return {"message":"Fox Finance offers great service from /depot/"}
+    return {"message": "Fox Finance offers great service from /depot/"}

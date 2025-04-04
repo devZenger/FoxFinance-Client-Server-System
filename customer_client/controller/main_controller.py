@@ -8,11 +8,10 @@ from .depot_controller import DepotControl
 
 class MainControll:
     def __init__(self):
-        self.option = {"1. Start": "start",
-                       "2. Login": "login",
-                       "3. Login erstellen": "a_form",
-                       "4. Informationen": "information",
-                       "5. Beenden": "exit"}
+        self.option = {"1. Login": "login",
+                       "2. Login erstellen": "a_form",
+                       "3. Informationen": "information",
+                       "4. Beenden": "exit"}
 
     def run(self):
 
@@ -49,7 +48,7 @@ class MainControll:
                     choice = "start"
 
                 case "information":
-                    title ="Informationen"
+                    title = "Informationen"
                     info = "in Bearbeitung"
                     display_menu = DisplayMenuOption(title, info)
                     choice = display_menu.execute(self.option)

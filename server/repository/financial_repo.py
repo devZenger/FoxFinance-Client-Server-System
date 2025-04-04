@@ -60,9 +60,9 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
                     ft.fin_amount,
                     ft.bank_account
                     FROM (
-                        SELECT * 
+                        SELECT *
                         FROM financial_transactions AS ft
-                        WHERE ft.customer_id = ? 
+                        WHERE ft.customer_id = ?
                             AND DATE(ft.fin_transaction_date) >= ?
                             AND DATE(ft.fin_transaction_date) <= ?
                         ORDER BY ft.fin_transaction_date ASC
