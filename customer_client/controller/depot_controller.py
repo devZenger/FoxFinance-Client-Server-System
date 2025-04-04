@@ -9,23 +9,24 @@ from .depot_overview import DepotOverview
 from .depot_financial_overview import AccountOverview
 from .depot_bank_transfer import DepotBankTransfer
 from .depot_settings import Settings
-
+from .depot_watchlist import DepotWatchlist
 
 class DepotControl:
     def __init__(self, token):
         self.token = token
         print("token", token)
-        self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
+        self.headers = {"Authorization": f"Bearer {self.token['access_token']}"}
 
-        self.options ={"1. Depot Übersicht": "depot_overview",
-                      "2. Aktien suche":"stock_search",
-                      "3. Aktien handeln": "stock_trade",
-                      "4. Kontoübersicht":"account_overview",
-                      "5. Geld ein-/auszahlen":"bank_transfer",
-                      "6. Informationen": "information",
-                      "7. Daten ändern": "settings",
-                      "8. Abmelden":"loggout",
-                      "9. Abmelden und benden":"loggout_and_exit"}
+        self.options ={" 1. Depot Übersicht": "depot_overview",
+                       " 2. Aktien suche": "stock_search",
+                       " 3. Aktien handeln": "stock_trade",
+                       " 4. Watchlist" : "watchlist",
+                       " 5. Kontoübersicht": "account_overview",
+                       " 6. Geld ein-/auszahlen": "bank_transfer",
+                       " 7. Informationen": "information",
+                       " 8. Daten ändern": "settings",
+                       " 9. Abmelden": "loggout",
+                       "10. Abmelden und benden": "loggout_and_exit"}
 
     def run(self):
 
@@ -51,6 +52,10 @@ class DepotControl:
                 case "stock_trade":                    
                     stock_trade = DepotStockTrade(self.token, self.options)
                     choice = stock_trade.run()
+                    
+                case "watchlist":
+                    watchlist = DepotWatchlist(self.token)
+                    choice = watchlist.run()
 
                 case "account_overview":
                     account_overview = AccountOverview(self.token)
@@ -73,7 +78,6 @@ class DepotControl:
                     del self.token
                     if isinstance(depot_menu_start, DisplayMenuOption):
                         del display_menu
-
                     return
 
                 case "loggout_and_exit":
