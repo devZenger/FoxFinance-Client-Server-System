@@ -2,7 +2,7 @@ from view import DisplayMenu
 from model import RegistrationForm, Validation
 
 
-class CreateAccountMenu:     
+class CreateAccountMenu:
     def __init__(self):
         self.title = "Konto erstellen"
         self.information = "Bitte Ausfüllen"
@@ -57,7 +57,7 @@ class CreateAccountMenu:
                         return "start"
 
                     else:
-                        choice = "options"   
+                        choice = "options"
 
                 case "discontinue":
                     return "start"

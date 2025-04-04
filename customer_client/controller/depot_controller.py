@@ -1,4 +1,5 @@
 import sys
+
 from view import DisplayMenuOption
 
 from .depot_start_menu import DepotStartMenu
@@ -11,22 +12,23 @@ from .depot_bank_transfer import DepotBankTransfer
 from .depot_settings import Settings
 from .depot_watchlist import DepotWatchlist
 
+
 class DepotControl:
     def __init__(self, token):
         self.token = token
         print("token", token)
         self.headers = {"Authorization": f"Bearer {self.token['access_token']}"}
 
-        self.options ={" 1. Depot Übersicht": "depot_overview",
-                       " 2. Aktien suche": "stock_search",
-                       " 3. Aktien handeln": "stock_trade",
-                       " 4. Watchlist" : "watchlist",
-                       " 5. Kontoübersicht": "account_overview",
-                       " 6. Geld ein-/auszahlen": "bank_transfer",
-                       " 7. Informationen": "information",
-                       " 8. Daten ändern": "settings",
-                       " 9. Abmelden": "loggout",
-                       "10. Abmelden und benden": "loggout_and_exit"}
+        self.options = {" 1. Depot Übersicht": "depot_overview",
+                        " 2. Aktien suche": "stock_search",
+                        " 3. Aktien handeln": "stock_trade",
+                        " 4. Watchlist": "watchlist",
+                        " 5. Kontoübersicht": "account_overview",
+                        " 6. Geld ein-/auszahlen": "bank_transfer",
+                        " 7. Informationen": "information",
+                        " 8. Daten ändern": "settings",
+                        " 9. Abmelden": "loggout",
+                        "10. Abmelden und benden": "loggout_and_exit"}
 
     def run(self):
 
@@ -62,7 +64,8 @@ class DepotControl:
                     choice = account_overview.run()
 
                 case "bank_transfer":
-                    bank_transaction = DepotBankTransfer(self.token, self.options)
+                    bank_transaction = DepotBankTransfer(
+                        self.token, self.options)
                     choice = bank_transaction.run()
 
                 case "information":

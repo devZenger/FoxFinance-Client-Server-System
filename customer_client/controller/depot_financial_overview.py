@@ -6,14 +6,12 @@ class AccountOverview:
     def __init__(self, token):
 
         self.token = token
-        self.depot = None
-
         self.title = "Kontoübersicht"
         self.option = {"1. Die letzten drei Monate": "last_three",
-                      "2. Die letzten zwölf Monate": "last_twelve",
-                      "3. Zeitraum einbegen": "timespan",
-                      "4. Konto anzeigen": "start",
-                      "5. zurück": "back"}
+                       "2. Die letzten zwölf Monate": "last_twelve",
+                       "3. Zeitraum einbegen": "timespan",
+                       "4. Konto anzeigen": "start",
+                       "5. zurück": "back"}
 
     def run(self):
         self.display_menu = DisplayMenu()
@@ -42,8 +40,9 @@ class AccountOverview:
                     choice = "option"
 
                 case "timespan":
-                    self.display_menu.display_form(self.form_names, self.account)
-                    request = self.account.get_financial_transaction_by_timespan()
+                    self.display_menu.display_form(
+                        self.form_names, self.account)
+                    request = self.account.get_fin_transaction_by_timespan()
                     self.show_table(request)
                     choice = "option"
 
@@ -71,7 +70,8 @@ class AccountOverview:
         print(f"input = {input}")
 
         if input is True:    
-            self.display_menu.display_table(self.account.response, self.account.column_names)
+            self.display_menu.display_table(
+                self.account.response, self.account.column_names)
 
         elif input is False:
             self.display_menu.display_info(self.account.response)

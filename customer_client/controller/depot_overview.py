@@ -13,7 +13,7 @@ class DepotOverview:
                        "2. die letzten zwölf Monate": "last twelve",
                        "3. Zeitraum einbegen": "timespan",
                        "4. Depot anzeigen": "start",
-                       "4. zurück": "back"}
+                       "5. zurück": "back"}
 
     def run(self):
         self.display_menu = DisplayMenu()
@@ -33,18 +33,18 @@ class DepotOverview:
 
                 case "last_three":
                     request = self.depot.get_last_three_months()
-                    self.show_table(request)
+                    self.show_table_timespan(request)
                     choice = "option"
 
                 case "last_twelve":
                     request = self.depot.get_last_twelve_months()
-                    self.show_table(request)
+                    self.show_table_timespan(request)
                     choice = "option"
 
                 case "timespan":
-                    self.display_menu.display_form(self.form_names, self.depot)
+                    self.display_menu.display_form(self.form_names)
                     request = self.depot.get_transaction_by_timespan()
-                    self.show_table(request)
+                    self.show_table_timespan(request)
                     choice = "option"
 
                 case "back":
@@ -59,9 +59,17 @@ class DepotOverview:
     def show_table(self, input):
 
         if input is True:
-            self.display_menu.display_table(self.depot.response["message"])
+            self.display_menu.display_table(
+                self.depot.response, self.depot.column_names)
 
-        elif input is False:
-            self.display_menu.display_info(self.depot.response["detail"])
         else:
-            self.display_menu.display_info("keine Verbindung")
+            self.display_menu.display_info(self.depot.response)
+
+    def show_table_timespan(self, input):
+
+        if input is True:
+            self.display_menu.display_table(
+                self.depot.response, self.depot.column_names_timespan)
+
+        else:
+            self.display_menu.display_info(self.depot.response)

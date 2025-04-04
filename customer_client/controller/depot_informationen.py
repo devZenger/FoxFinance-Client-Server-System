@@ -1,17 +1,14 @@
-import requests
-
 from view import DisplayMenuInput2
 from model import Information
 
 
-
 class DepotInformation:
     def __init__(self, token):
-        self.title="Informationen"
-        self.information="Erstellt für tests"
-        self.token=token
+        self.title = "Informationen"
+        self.information = "Erstellt für tests"
+        self.token = token
 
-        self.options = {"1. Server anfragen: ":"stock_search"}
+        self.options = {"1. Server anfragen: ": "stock_search"}
 
     def run(self):
         display_menu = DisplayMenuInput2(self.title)
@@ -27,7 +24,8 @@ class DepotInformation:
 
                 case "stock_search":
                     print("debug start menu")
-                    choice = display_menu.execute_form(form_names, self.information)
+                    choice = display_menu.execute_form(
+                        form_names, self.information)
 
                 case "form_filled":
                     self.send_search_request()

@@ -11,7 +11,7 @@ class DepotStartMenu:
 
     def run(self):
 
-        headers = { "Authorization": f"Bearer {self.token['access_token']}"}
+        headers = {"Authorization": f"Bearer {self.token['access_token']}"}
 
         print(self.token)
 

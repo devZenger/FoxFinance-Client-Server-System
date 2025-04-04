@@ -1,4 +1,4 @@
-from view import DisplayMenuInput2
+from view import DisplayMenu
 from model import StockActions
 
 
@@ -12,19 +12,19 @@ class DepotStockTrade:
 
         self.options = options
 
-        self.options_make_trade = {"1. Handel abschließen":"make_trade", "2. Abrechen":"options"}
+        self.options_make_trade = {"1. Handel abschließen": "make_trade", "2. Abrechen": "options"}
 
     def run(self, isin=""):
 
-        display_menu = DisplayMenuInput2()
-        self.stock_actions = StockActions(self.token)
+        display_menu = DisplayMenu()
+        stock_actions = StockActions(self.token)
 
-        search_form_names = self.stock_actions.search_form_names
-        trade_form_names = self.stock_actions.trade_form_names
+        search_form_names = stock_actions.search_form_names
+        trade_form_names = stock_actions.trade_form_names
 
-        display_menu.execute(self.title, self.information)
+        display_menu.display_title_and_infos(self.title, self.information)
 
-        if isin == "":           
+        if isin == "":
             choice = "input_stock"
         else:
             choice = "single_stock"
@@ -33,21 +33,25 @@ class DepotStockTrade:
             match choice:
 
                 case "input_stock":
-                    choice = display_menu.execute_form(search_form_names, self.stock_actions)
+                    choice = display_menu.display_form(
+                        search_form_names, stock_actions)
 
                 case "form_filled":
-                    choice = self.stock_actions.stock_search()
+                    choice = stock_actions.stock_search()
 
                 case "several_stocks":
-                    self.stock_information=self.stock_actions.stock_list
-                    display_menu.execute(self.title2, self.stock_information)
+                    stock_information = stock_actions.stock_list
+                    display_menu.display_title_and_infos(
+                        self.title2, stock_information)
                     choice = "input_stock"
 
                 case "single_stock":
-                    display_menu.execute_form(trade_form_names, self.stock_actions)
-                    display_menu.execute_filled_form(self.stock_actions.form_names)
+                    display_menu.display_form(trade_form_names, stock_actions)
+                    
+                    display_menu.display_dic(stock_actions.to_dict())
 
-                    choice = display_menu.excute_options(self.options_make_trade)
+                    choice = display_menu.display_options(
+                        self.options_make_trade)
 
                 case "no_stocks":
                     title_no_stocks = "Ergebnis"
@@ -56,13 +60,13 @@ class DepotStockTrade:
                     choice = "options"
 
                 case "make_trade":
-                    response = self.stock_actions.stock_trade()
-                    display_menu.execute(self.title, response)
+                    response = stock_actions.stock_trade()
+                    display_menu.display_title_and_infos(self.title, response)
                     choice = "options"
 
                 case "options":
                     print("debug options")
-                    choice = display_menu.excute_options(self.options)
+                    choice = display_menu.display_options(self.options)
 
                 case _:
                     return choice
