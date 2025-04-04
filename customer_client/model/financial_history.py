@@ -18,11 +18,10 @@ class FinancialHistory:
                            "end_time": "Enddatum (jjjj-mm-tt) "}
 
         self.column_names = {"fin_transaction_id": "T. Nr.",
-                            "fin_transaction_date": "Datum",
-                            "fin_transaction_types": "Art der T.",
-                            "fin_amount": "Betrag",
-                            "bank_account": "Bankkonto"}
-
+                             "fin_transaction_date": "Datum",
+                             "fin_transaction_types": "Art der T.",
+                             "fin_amount": "Betrag",
+                             "bank_account": "Bankkonto"}
 
     @property
     def start_time(self):
@@ -33,7 +32,7 @@ class FinancialHistory:
         print(f"input = {input}")
         split = input.split("-")
         print(f"split= {len(split[0])}    split= {split[0]}")
-        if len(split[0]) == 4 and len(split[1])==2 and len(split[2])==2:
+        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
             print(f"start time. {input}")
             self._start_time = input
         else:
@@ -47,7 +46,7 @@ class FinancialHistory:
     def end_time(self, input: str):
         split = input.split("-")
 
-        if len(split[0]) == 4 and len(split[1])==2 and len(split[2])==2:
+        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
             print(f"end_time = {input}")
             self._end_time = input
         else:
@@ -65,11 +64,12 @@ class FinancialHistory:
 
         return status
 
-    def get_financial_transaction_by_timespan(self):
+    def get_fin_transaction_by_timespan(self):
 
         url_part = 'pastfinancialtransactions/'
 
-        status, self.response = self.server_request.get_with_parameters(url_part, self.start_time, self.end_time)
+        status, self.response = self.server_request.get_with_parameters(
+            url_part, self.start_time, self.end_time)
 
         return status
 
@@ -81,7 +81,7 @@ class FinancialHistory:
         self.end_time = today.strftime("%Y-%m-%d")
         self.start_time = three_months_ago.strftime("%Y-%m-%d")
 
-        result = self.get_financial_transaction_by_timespan()
+        result = self.get_fin_transaction_by_timespan()
 
         return result
 
@@ -93,6 +93,6 @@ class FinancialHistory:
         self.end_time = today.strftime("%Y-%m-%d")
         self.start_time = three_months_ago.strftime("%Y-%m-%d")
 
-        result = self.get_financial_transaction_by_timespan()
+        result = self.get_fin_transaction_by_timespan()
 
         return result

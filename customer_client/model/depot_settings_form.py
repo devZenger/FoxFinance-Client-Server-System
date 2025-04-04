@@ -6,16 +6,6 @@ class SettingsForm(RegistrationForm):
     def __init__(self, token):
         self.token = token
 
-        #self._last_name = None
-        #self._street = None
-        #self._house_number = None
-        #self._zip_code = None
-        #self._city = None
-        #self._email = None
-        #self._phone_number = None
-        #self._reference_account = None
-        #self._password = None
-
         self.form_names_adress = {
             "street": "Straße (ohne Hausnummer)",
             "house_number": "Hausnummer",
@@ -31,7 +21,7 @@ class SettingsForm(RegistrationForm):
             "email": "E-Mail Adresse",
         }
 
-        self.form_names_reference_account = {
+        self.form_names_ref_account = {
             "reference_account": "Referenzkonto",
         }
 
@@ -40,9 +30,9 @@ class SettingsForm(RegistrationForm):
         }
 
         super().__init__()
-                
+
         self.name_settings = self.form_names
-        del self.name_settings["fin_amount"] 
+        del self.name_settings["fin_amount"]
 
     def transmit_changes(self, type: str):
 

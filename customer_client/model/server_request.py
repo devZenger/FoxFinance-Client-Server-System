@@ -11,7 +11,8 @@ class ServerRequest:
             self.headers = None
 
         else:
-            self.headers = { "Authorization": f"Bearer {self.token['access_token']}"}
+            self.headers = {"Authorization":
+                            f"Bearer {self.token['access_token']}"}
             self.url_server = f"{self.url_server}depot/"
 
     def process_response(sef, server_response):
@@ -21,6 +22,7 @@ class ServerRequest:
         try:
             server_response = server_response.json()
             print("server_response", server_response)
+
         except:
             pass
 
@@ -28,13 +30,14 @@ class ServerRequest:
 
         if status_code >= 200 and status_code <= 300:
 
-            if server_response is None: #or "message" not in server_response:
+            if server_response is None:
                 return True, None
             elif "access_token" in server_response:
                 return True, server_response
 
             else:
-                return True, server_response["message"] #server_response is dict or string
+                # server_response is dict or string
+                return True, server_response["message"]
 
         else:
             try:
@@ -84,6 +87,8 @@ class ServerRequest:
 
         print(f"to_transmit = {to_transmit}")
 
-        server_response = requests.post(url, json=to_transmit, headers=self.headers)
+        server_response = requests.post(url,
+                                        json=to_transmit,
+                                        headers=self.headers)
 
         return self.process_response(server_response)

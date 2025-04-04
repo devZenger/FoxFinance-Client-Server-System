@@ -53,7 +53,7 @@ class RegistrationForm:
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:
-            self._first_name = input  
+            self._first_name = input
         else:
              raise ValueError("Mindestens zwei Zeichen")
 
@@ -189,7 +189,7 @@ class RegistrationForm:
             "email": self.email,
             "phone_number": self.phone_number,
             "reference_account": self.reference_account,
-            "fin_amount":self._fin_amount,
+            "fin_amount": self._fin_amount,
             "password": self.password
         }
 
@@ -201,7 +201,8 @@ class RegistrationForm:
 
         url_part = "create_costumer_account/"
 
-        success, self.response = server_request.make_post_request(url_part, to_transmit)
+        success, self.response = server_request.make_post_request(url_part,
+                                                                  to_transmit)
 
         del server_request
 

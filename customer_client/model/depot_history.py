@@ -14,21 +14,36 @@ class DepotHistory:
         self._start_time = None
         self._end_time = None
 
-        self.form_names = {"start_time":"Startdatum (jjjj-mm-tt) ",
-                           "end_time":"Enddatum (jjjj-mm-tt) "}
+        self.form_names = {"start_time": "Startdatum (jjjj-mm-tt) ",
+                           "end_time": "Enddatum (jjjj-mm-tt) "}
+
+        self.column_names = {"isin": "ISIN",
+                             "company_name": "Unternehmen",
+                             "amount": "Anzahl",
+                             "price_per_stock": "Durchschnittspreis",
+                             "actual_price": "Aktueller Preis",
+                             "performance": "Kursentwicklung"}
+
+        self.column_names_timespan = {"transaction_id": "T.Nr.",
+                                      "transaction_date": "Datum",
+                                      "transaction_type": "T. Art.",
+                                      "isin": "ISIN",
+                                      "company_name": "Unternehmen",
+                                      "amount": "Anzahl",
+                                      "price_per_stock": "Preis"}
 
     @property
     def start_time(self):
         return self._start_time
 
     @start_time.setter
-    def start_time(self, input:str):
+    def start_time(self, input: str):
         print(f"input = {input}")
         split = input.split("-")
         print(f"split= {len(split[0])}    split= {split[0]}")
-        if len(split[0]) == 4 and len(split[1])==2 and len(split[2])==2:
+        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
             print(f"start time. {input}")
-            self._start_time=input
+            self._start_time = input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
 
@@ -50,7 +65,8 @@ class DepotHistory:
 
         url_part = "depotoverview/"
 
-        success, self.response = self.server_request.get_without_parameters(url_part)
+        success, self.response = self.server_request.get_without_parameters(
+            url_part)
 
         return success
 
@@ -58,7 +74,8 @@ class DepotHistory:
 
         url_part = "pasttransactions/"
 
-        success, self.response = self.server_request.get_with_parameters(url_part, self.start_time, self.end_time)
+        success, self.response = self.server_request.get_with_parameters(
+            url_part, self.start_time, self.end_time)
 
         return success
 

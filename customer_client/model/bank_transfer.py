@@ -5,18 +5,14 @@ from .financial_history import FinancialHistory
 
 class BankTransfer:
     def __init__(self, token):
-
         self.token = token
-
         self._fin_amount = None
         self._transaction_type = None
         self._usage = None
 
-        self.form_names = {"fin_amount":"Betrag (. statt ,) ",
-                            "transaction_type":"Einzahlen oder Auszahlen ",
-                            "usage":"Verwendungszweck "}
-
-        self.server_request = ServerRequest(self.token)
+        self.form_names = {"fin_amount": "Betrag (. statt ,) ",
+                           "transaction_type": "Einzahlen oder Auszahlen ",
+                           "usage": "Verwendungszweck "}
 
     @property
     def fin_amount(self):
@@ -25,8 +21,8 @@ class BankTransfer:
     @fin_amount.setter
     def fin_amount(self, input: str):
         if "," in input:
-            input = input.replace("",","".")
-        input = float(input) 
+            input = input.replace("", ","".")
+        input = float(input)
 
         if input >= 0:
             self._fin_amount = input
@@ -38,16 +34,25 @@ class BankTransfer:
         return self._transaction_type
 
     @transaction_type.setter
-    def transaction_type(self, input:str):
+    def transaction_type(self, input: str):
 
         input = input.lower()
 
         if input == "einzahlen" or input == "deposit":
-            self._transaction_type = "deposit"
+            self._transaction_type = "einzahlen"
         elif input == "auszahlen" or input == "withdrawal":
-            self._transaction_type = "withdrawal"
+            self._transaction_type = "auszahlen"
         else:
             raise ValueError("Fehlerhafte Eingabe")
+
+    @property
+    def transaction_type_en(self):
+        if self.transaction_type == "einzahlen":
+            return "deposit"
+        elif self.transaction_type == "auszahlen":
+            return "withdrawal"
+        else:
+            raise ValueError("Fehlende Eingabe")
 
     @property
     def usage(self):
@@ -67,8 +72,34 @@ class BankTransfer:
     def make_transfer(self):
         url_part = 'banktransfer/'
 
+        server_request = ServerRequest(self.token)
+
         to_transmit = {"fin_amount": self.fin_amount,
-                       "transfer_type": self.transaction_type,
+                       "transfer_type": self.transaction_type_en,
                        "usage": self.usage}
 
-        return self.server_request.make_post_request(url_part, to_transmit)
+        self.success, response = server_request.make_post_request(
+            url_part, to_transmit)
+
+        if self.success:
+            response = response["row_result0"]
+
+            if response["fin_transaction_type_id"] == 1:
+                transaction_type = "einzahlen"
+            elif response["fin_transaction_type_id"] == 2:
+                transaction_type = "auszahlen"
+            else:
+                transaction_type = "Fehler"
+
+            transfer_data = {"Bankkonto": f"{response["bank_account"]}",
+                             "Betrag": f"{response["fin_amount"]} Euro",
+                             "Verwendungszweck": f"{response["usage"]}",
+                             "T.Art": f"{transaction_type}",
+                             "Datum": f"{response["fin_transaction_date"]}"
+                             }
+
+            transfer = {"Überweisung": transfer_data}
+
+            return True, transfer
+        else:
+            return False, response

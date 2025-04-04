@@ -1,85 +1,100 @@
-import requests
-
 from .server_request import ServerRequest
 
 
-def performance_data_presentable(performance_data):
-    
-    data_presentable = {}
-    
-    data_presentable["name"]= f'Name: {performance_data["stocks_row"]["company_name"]}'
-    data_presentable["symbol"]=f"\tSymbol: {performance_data["stocks_row"]["ticker_symbol"]}"
-    data_presentable["isin"]=f"\tISIN: {performance_data["stocks_row"]["isin"]}"
-    
-    data_presentable["trade_day"]=f"\tAktuellster Handelstag: {performance_data["latest_day"]["date"]}"
-    data_presentable["open"]=f"\tÖffnungskurs:\t {performance_data["latest_day"]["open"]:.2f} €"
-    data_presentable["high"]=f"\thöchster Kurs:\t {performance_data["latest_day"]["high"]:.2f} €"
-    data_presentable["low"]=f"\ttiefster Kurs:\t {performance_data["latest_day"]["low"]:.2f} €"
-    data_presentable["close"]=f"\tSchlusskurs:\t {performance_data["latest_day"]["close"]:.2f} €"
+def match_server_response(input: dict):
 
-    data_presentable["time0"]="\tPerformance über 6 Monate: "
-    data_presentable["price0"]=f"\tKurs:\t\t {performance_data["6 months"]["price"]:.2f} €"
-    data_presentable["perform0"]=f"\tVeränderung:\t {performance_data["6 months"]["performance"]:.2f}%"
- 
-    data_presentable["time1"]="\tPerformance über ein Jahr: "
-    data_presentable["price1"]=f"\tKurs:\t\t {performance_data["1 years"]["price"]:.2f} €"
-    data_presentable["perform1"]=f"\tVeränderung:\t {performance_data["1 years"]["performance"]:.2f}%"
+    data_dict = {}
 
-    data_presentable["time2"]="\tPerformance über zwei Jahre: "
-    data_presentable["price2"]=f"\tKurs:\t\t {performance_data["2 years"]["price"]:.2f} €"
-    data_presentable["perfom2"]=f"\tVeränderung:\t {performance_data["2 years"]["performance"]:.2f}%"
-    
-    return data_presentable
+    dic_info = {"Name": f"{input["stocks_row"]["company_name"]}",
+                "Symbol": f"{input["stocks_row"]["ticker_symbol"]}",
+                "ISIN": f"{input["stocks_row"]["isin"]}"}
+
+    data_dict["Informationen"] = dic_info
+
+    dic_lastest_day = {"Datum": f"{input["latest_day"]["date"]}",
+                       "Öffnungskurs": f"{input["latest_day"]["open"]:.2f} €",
+                       "höchster Kurs": f"{input["latest_day"]["high"]:.2f} €",
+                       "tiefster Kurs": f"{input["latest_day"]["low"]:.2f} €",
+                       "Schlusskurs": f"{input["latest_day"]["close"]:.2f} €"}
+
+    data_dict["Aktuellster Handelstag"] = dic_lastest_day
+
+    dic_six_months = {"Kurs": f"{input["6 months"]["price"]:.2f} €",
+                      "Veränderung": f"{input["6 months"]["performance"]:.2f}%"}
+
+    data_dict["Performance über 6 Monate"] = dic_six_months
+
+    dic_one_year = {"Kurs": f"{input["1 years"]["price"]:.2f} €",
+                    "Veränderung": f"{input["1 years"]["performance"]:.2f}%"}
+
+    data_dict["Performance über ein Jahr"] = dic_one_year
+
+    dic_two_year = {"Kurs": f"{input["2 years"]["price"]:.2f} €",
+                    "Veränderung": f"{input["2 years"]["performance"]:.2f}%"}
+
+    data_dict["Performance über ein Jahr"] = dic_two_year
+
+    return data_dict
 
 
 class StockActions:
     def __init__(self, token):
-        
-        self.token=token
-        
+
         self.server_request = ServerRequest(token)
-        
-        self.search_term=None
-        
-        self.stock_list=None
-        self.stock_information=None
-        
+
+        self._search_term = None
+        self.stock_list = None
+        self.stock_information = None
+
         self.response = None
-        
-        self.search_form_names = {"search_term":"ISIN, Symbol oder Name"}
-        
-        self.trade_form_names = {"amount":"Anzahl", "type_of_action":"Kaufen oder Verkaufen"}
-        
-        self.form_names = {"stock_name": "Unternehmen", 
-                           "isin": "ISIN", 
-                           "amount": "Anzahl",
-                           "type_of_action": "Kaufen oder Verkaufen"}
-        
-        self.isin=None
-        self.stock_name=None
-        self._amount=None
-        self._type_of_action=None
-    
-    
+
+        self.search_form_names = {"search_term": "ISIN, Symbol oder Name"}
+
+        self.trade_form_names = {"amount": "Anzahl",
+                                 "type_of_action": "Kaufen oder Verkaufen"}
+
+        self.isin = None
+        self.stock_name = None
+        self._amount = None
+        self._type_of_action = None
+        self._type_of_action_en = None
+
+    @property
+    def search_term(self):
+        return self._search_term
+
+    @search_term.setter
+    def search_term(self, input):
+        if len(input) >= 2:
+            self._search_term = input
+        else:
+            raise ValueError("Mindestens zwei Zeichen")
+
     @property
     def type_of_action(self):
         return self._type_of_action
-    
+
+    @property
+    def type_of_action_en(self):
+        return self._type_of_action_en
+
     @type_of_action.setter
-    def type_of_action(self, input:str):
+    def type_of_action(self, input: str):
         input = input.lower()
-        
-        if input == "kaufen" or input == "kauf" or input =="buy":
-            self._type_of_action = "buy"
-        elif input == "verkaufen" or "verkauf" or input=="sell":
-            self._type_of_action = "sell"
+
+        if input == "kaufen" or input == "kauf" or input == "buy":
+            self._type_of_action = "kaufen"
+            self._type_of_action_en = "buy"
+        elif input == "verkaufen" or input == "verkauf" or input == "sell":
+            self._type_of_action = "verkaufen"
+            self._type_of_action_en = "sell"
         else:
             raise ValueError("Fehler")
 
     @property
     def amount(self):
         return self._amount
-    
+
     @amount.setter
     def amount(self, input):
         input = int(input)
@@ -88,108 +103,72 @@ class StockActions:
         else:
             raise ValueError("Fehler, keine ganze Zahl größer 0")
 
-    
     def stock_search(self):
         url_part = "stocksearch/"
-        
-        get_data, response = self.server_request.get_with_parameters(url_part, self.search_term)
-        
+
+        get_data, response = self.server_request.get_with_parameters(
+            url_part, self.search_term)
+
         print("##############")
         print(f"get_data= {get_data}\t")
         print("++++++++++++++++++++")
-        if get_data == False:
-            return f"\tFehler, {self.response.status_code}\n\tÜberprüfen Sie die Verbindung"
+        if get_data is False:
+            return f"\tFehler, {self.response.status_code}\n\t" \
+                    "Überprüfen Sie die Verbindung"
         else:
             results = {}
             results = response
-            
+
             print(results)
-            
+
             if results == "Die Aktien konnte nicht gefunden werden":
-                return  "no_stocks"
-        
-            elif len(results) > 1:      
+                self.stock_information = results
+                return "no_stocks"
+
+            elif len(results) > 1: 
                 result_str = "ISIN\t\t | Ticker Symbol | Firmenname\n"
-                
+
                 for result in results.values():
-                
-                    result_str=f"{result_str}\t"
+
+                    result_str = f"{result_str}\t"
                     for value in result.values():
                         if len(value) < 4:
                             add = "\t"
                         else:
                             add = ""
-                            
+
                         result_str = f"{result_str}{value}{add}\t | "
-                    
-                    
-                    result_str= result_str[:-2]
-                    result_str= f"{result_str}\n"
-                
+
+                    result_str = result_str[:-2]
+                    result_str = f"{result_str}\n"
+
                 self.stock_list = f"{result_str}\n\tEs wurden mehrere gefunden"
 
-            
-            
-                return "several_stocks"  
+                return "several_stocks"
 
             else:
-                
                 self.isin = results["one"]["latest_day"]["isin"]
                 self.stock_name = results["one"]["stocks_row"]["company_name"]
-                                
-                presantable = performance_data_presentable(results["one"])
-                
-                self.stock_information= ""
-                
-                for pre in presantable.values():
-                    self.stock_information=f"{self.stock_information} {pre}\n"
-                
-                
-                self.stock_information=f"""{self.stock_information}\n
-                Sollte die Börse geöffnet sein,\n\tist der Schlusskurs der aktuelle Kurs"""
-                
+
+                self.stock_information = match_server_response(results["one"])
+
                 return "single_stock"
-    
-    
-    def request_server(self):
-        
-        url = f'{url_server}/depot/stocksearch/{self.search_term}'
-        
-        headers = { "Authorization": f"Bearer {self.token['access_token']}"}
-        
-        self.response = requests.get(url, headers=headers)
-        
-        
-        
-        if self.response.status_code == 200:
-            print ("Empfangen:", self.response.json())
-            print("suche erfolgreich")
-            self.response = self.response.json()
-            return True
-            
-         
-        else:
-            print("Fehler", self.response.status_code)
-            return False
-    
-    
+
+    def to_dict(self):
+        return {"Unternehmen": f"{self.stock_name}",
+                "ISIN": f"{self.isin}",
+                "Anzahl": f"{self.amount}",
+                "Kaufen oder Verkaufen": f"{self.type_of_action}"}
+
     def stock_trade(self):
-        
-        url = f'{url_server}/depot/tradestocks/'
-        
-        headers = { "Authorization": f"Bearer {self.token['access_token']}"}
-        
-        order = {"isin": self.isin, "amount":self.amount, "transaction_type": self._type_of_action }
-        
-        self.response = requests.post(url, json=order, headers=headers)
-        
-         
-        if self.response.status_code == 200:
-            print ("Empfangen:", self.response.json())
-            print("suche erfolgreich")
-            self.response = self.response.json()
-            return "Kauf erfolgreich"
- 
-        else:
-            print("Fehler", self.response.status_code)
-            return "Fehler"
+
+        url_part = "tradestocks"
+
+        order = {"isin": self.isin,
+                 "amount": self.amount,
+                 "transaction_type": self.type_of_action_en}
+
+        success, self.response = self.server_request.make_post_request(
+            url_part, order)
+
+        return success

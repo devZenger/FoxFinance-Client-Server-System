@@ -7,7 +7,7 @@ class LoginForm:
         self._password = None
         self.response = None
 
-        self.form_names = {"email":"Email Adresse",
+        self.form_names = {"email": "Email Adresse",
                            "password": "Passwort"}
 
     @property
@@ -46,6 +46,7 @@ class LoginForm:
 
         server_request = ServerRequest()
 
-        success, self.response = server_request.make_post_request(url_part, to_transmit)
+        success, self.response = server_request.make_post_request(url_part,
+                                                                  to_transmit)
 
         return success

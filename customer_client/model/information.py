@@ -23,7 +23,7 @@ class Information:
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            print ("Empfangen:", response.json())
+            print("Empfangen:", response.json())
             print("Informationen für alle")
 
         else:

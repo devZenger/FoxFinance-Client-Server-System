@@ -35,15 +35,15 @@ class Validation:
 
         if success is True:
 
-            handy = {"line1":"          #",
-                     "line2":"          #",
-                    "line3":" __________#___",
-                    "line4":"/     :::::    \\",
-                    "line5":"|  ___________ |",
-                    "line6":"| |~       --| |",
-                    "line7":f"| |  {code['validation_number']}  | |",
-                    "line8":"| |__________| |",
-                    "line9":"|              |\n"}
+            handy = {"line1": "          #",
+                     "line2": "          #",
+                     "line3": " __________#___",
+                     "line4": "/     :::::    \\",
+                     "line5": "|  ___________ |",
+                     "line6": "| |~       --| |",
+                     "line7": f"| |  {code['validation_number']}  | |",
+                     "line8": "| |__________| |",
+                     "line9": "|              |\n"}
 
             return True, handy
 
@@ -52,9 +52,10 @@ class Validation:
 
     def send_activate_code(self):
 
-        url_part="/activateaccount/"
+        url_part = "/activateaccount/"
         to_transmit = self.to_dict()
 
-        success, self.response = self.server_request.make_post_request(url_part, to_transmit)
+        success, self.response = self.server_request.make_post_request(
+            url_part, to_transmit)
 
         return success
