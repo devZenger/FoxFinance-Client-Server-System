@@ -65,9 +65,10 @@ class BankTransfer:
 
     def actual_balance(self):
         balance = FinancialHistory(self.token)
-        actual_balance = balance.get_actual_balance()
+        balance.get_actual_balance()
+        result = balance.response
         del balance
-        return actual_balance
+        return result
 
     def make_transfer(self):
         url_part = 'banktransfer/'

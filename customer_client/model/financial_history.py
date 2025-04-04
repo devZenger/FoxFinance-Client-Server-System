@@ -56,11 +56,13 @@ class FinancialHistory:
 
         url_part = 'current_balance/'
 
-        status, self.response = self.server_request.get_without_parameters(url_part)
+        status, self.response = self.server_request.get_without_parameters(
+            url_part)
         print(f"get-acutal_balance: self.response: {self.response}")
 
         if status:
-            self.response["Aktueller Kontostand: "]=self.response.pop("actual_balance")
+            current_balance = str(round(self.response["actual_balance"], 2))
+            self.response = f"AKtueller Kontostand: {current_balance} EUR"
 
         return status
 

@@ -39,7 +39,7 @@ class DepotControl:
             match choice:
 
                 case "start":
-                    depot_menu_start = DepotStartMenu(self.token, self.options)
+                    depot_menu_start = DepotStartMenu(self.options)
                     choice = depot_menu_start.run()
 
                 case "depot_overview":
@@ -51,10 +51,10 @@ class DepotControl:
                     stock_search = DepotStockSearch(self.token, self.options)
                     choice, isin = stock_search.run()
 
-                case "stock_trade":                    
+                case "stock_trade":
                     stock_trade = DepotStockTrade(self.token, self.options)
                     choice = stock_trade.run()
-                    
+
                 case "watchlist":
                     watchlist = DepotWatchlist(self.token)
                     choice = watchlist.run()

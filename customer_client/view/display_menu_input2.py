@@ -21,8 +21,7 @@ class DisplayMenuInput2(DisplayMenuBase):
         self.to_fill=to_fill
         
         return self.display_form()    
-    
-    
+
     def execute_filled_form(self, form_names):
         self.form_names=form_names
         self.display_filled_form()

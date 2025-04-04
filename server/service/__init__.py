@@ -5,3 +5,4 @@ from .depot_service import depot_overview, past_transactions
 from .financial_service import get_customer_balance, do_past_fin_transactions, make_bank_transfer
 from .settings_service import SettingsService
 from .validation_service import create_validation, activate_account
+from .watchlist_service import load_watchlist, editing_watchlist

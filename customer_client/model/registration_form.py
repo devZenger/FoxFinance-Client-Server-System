@@ -26,7 +26,7 @@ class RegistrationForm:
             "city": "Stadt",
             "zip_code": "Postleitzahl",
             "birthday": "Geburtstag",
-            "email" : "E-Mail Adresse",
+            "email": "E-Mail Adresse",
             "phone_number": "Handynummer",
             "reference_account": "Referenzkonto",
             "fin_amount": "Startgeld einzahlen",

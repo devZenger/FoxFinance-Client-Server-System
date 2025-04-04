@@ -20,7 +20,7 @@ class AccountForm(BaseModel):
 
 
 class CustomerRegistration:
-    def __init__(self, account_form: AccountForm):
+    def __init__(self):
         self._last_name = None
         self._first_name = None
         self._street = None
@@ -34,6 +34,7 @@ class CustomerRegistration:
         self._fin_amount = None
         self._password = None
 
+    def fill_in(self, account_form: AccountForm):
         errors = []
 
         for key, value in account_form.model_dump().items():
@@ -63,6 +64,7 @@ class CustomerRegistration:
     @property
     def first_name(self):
         return self._first_name
+
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:
@@ -186,7 +188,8 @@ class CustomerRegistration:
     @password.setter
     def password(self, input):
         if len(input) >= 2:
-            password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            password_context = CryptContext(schemes=["bcrypt"],
+                                            deprecated="auto")
             self._password = password_context.hash(input)
         else:
             raise ValueError("Mindestens zwei Zeichen")

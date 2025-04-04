@@ -12,7 +12,8 @@ class DepotStockTrade:
 
         self.options = options
 
-        self.options_make_trade = {"1. Handel abschließen": "make_trade", "2. Abrechen": "options"}
+        self.options_make_trade = {"1. Handel abschließen": "make_trade",
+                                   "2. Abrechen": "options"}
 
     def run(self, isin=""):
 
@@ -24,10 +25,7 @@ class DepotStockTrade:
 
         display_menu.display_title_and_infos(self.title, self.information)
 
-        if isin == "":
-            choice = "input_stock"
-        else:
-            choice = "single_stock"
+        choice = "input_stock"
 
         while True:
             match choice:
@@ -47,7 +45,7 @@ class DepotStockTrade:
 
                 case "single_stock":
                     display_menu.display_form(trade_form_names, stock_actions)
-                    
+
                     display_menu.display_dic(stock_actions.to_dict())
 
                     choice = display_menu.display_options(

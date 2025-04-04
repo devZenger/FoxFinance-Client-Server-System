@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from .customer_registration import CustomerRegistration
 from repository import update_customer_settings, simple_search
 
+
 class Settings(BaseModel):
     transmission_type: str
     street: str | None = None
@@ -21,15 +22,15 @@ class SettingsService(CustomerRegistration):
 
         super().__init__()
 
-    def update_service(self, customer_id, new_settings:Settings):
+    def update_service(self, customer_id, new_settings: Settings):
         self.customer_id = customer_id
-        self.insert_dic= {}
+        self.insert_dic = {}
         self.table = ""
 
         match new_settings.transmission_type:
 
             case "adress":
-                self.table="customer_adresses"
+                self.table = "customer_adresses"
                 self.street = new_settings.street
                 self.house_number = new_settings.house_number
                 self.city = new_settings.city
@@ -37,46 +38,47 @@ class SettingsService(CustomerRegistration):
 
                 self.insert_dic = {
                     "street": self.street,
-                    "house_number":self.house_number,
-                    "zip_code":self.zip_code,
-                    "city":self.city
+                    "house_number": self.house_number,
+                    "zip_code": self.zip_code,
+                    "city": self.city
                 }
 
             case "phone_number":
-                self.table="customers"
+                self.table = "customers"
                 self.phone_number = new_settings.phone_number
 
                 self.insert_dic = {
-                    "phone_number":self.phone_number
+                    "phone_number": self.phone_number
                 }
 
             case "email":
-                self.table="customers"
+                self.table = "customers"
                 self.email = new_settings.email
 
-                self.insert_dic={
-                    "email":self.email
+                self.insert_dic = {
+                    "email": self.email
                 }
 
             case "reference_account":
-                self.table="financials"
+                self.table = "financials"
                 self.reference_acccount = new_settings.reference_account
 
-                self.insert_dic={
-                    "reference_account":self.reference_acccount
+                self.insert_dic = {
+                    "reference_account": self.reference_acccount
                 }
 
             case "password":
-                self.table="authentication"
+                self.table = "authentication"
                 self.password = new_settings.password
 
                 self.insert_dic = {
-                    "password":self.password
+                    "password": self.password
                 }
 
         print("inser_dic", self.insert_dic)
         try:
-            update_customer_settings(self.table, self.customer_id, self.insert_dic)
+            update_customer_settings(self.table, self.customer_id,
+                                     self.insert_dic)
 
         except Exception as e:
             print("Fehler bei update:service (settings_service Z:83)")

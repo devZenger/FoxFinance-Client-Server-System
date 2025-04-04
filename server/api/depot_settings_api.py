@@ -37,6 +37,7 @@ async def get_settings(current_customer: Annotated[User, Depends(get_current_act
         return {"message": current_settings}
 
     except Exception as e:
+        print(f"Fehler bei get_settings. Error: {e}")
         raise HTTPException(status_code=422, detail=str(e))
 
 @router.post("/depot/changesettings/")
@@ -45,7 +46,7 @@ async def change_settings(settings: Settings, current_customer: Annotated[User, 
     try:
         settings_service = SettingsService()
         settings_service.update_service(current_customer["customer_id"], settings)
-        return {"message":"Updated"}
+        return {"message": "Updated"}
 
     except Exception as e:
         print("Fehler bei change_settings (depot_settings_api Z:52)", e)

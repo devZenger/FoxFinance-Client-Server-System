@@ -1,28 +1,16 @@
-import requests
-
-from view import DisplayMenuOption
+from view import DisplayMenu
 
 
 class DepotStartMenu:
-    def __init__(self, token, option):
+    def __init__(self, options):
         self.title = "Willkommen in ihren Depot"
-        self.token = token
-        self.option = option
+        self.options = options
 
     def run(self):
 
-        headers = {"Authorization": f"Bearer {self.token['access_token']}"}
+        display_menu = DisplayMenu()
 
-        print(self.token)
+        display_menu.display_title(self.title)
+        choice = display_menu.display_options(self.options)
 
-        url = 'http://127.0.0.1:8000/depot/'
-
-        response = requests.get(url, headers=headers)
-
-        info = response.json()
-        print(f"info: {info}")
-        info_sub = info["message"]
-
-        display = DisplayMenuOption(self.title, info_sub)
-
-        return display.execute(self.option)
+        return choice

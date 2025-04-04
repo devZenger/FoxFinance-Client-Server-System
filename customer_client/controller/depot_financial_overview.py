@@ -69,7 +69,7 @@ class AccountOverview:
 
         print(f"input = {input}")
 
-        if input is True:    
+        if input is True:
             self.display_menu.display_table(
                 self.account.response, self.account.column_names)
 

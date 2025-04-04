@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException
-
 from pydantic import BaseModel
 
 from service import CustomerRegistration
 
 router = APIRouter()
+
 
 class AccountForm(BaseModel):
    last_name: str
@@ -22,10 +22,11 @@ class AccountForm(BaseModel):
 
 
 @router.post("/create_costumer_account/")
-async def create_account(account_form: AccountForm):   
+async def create_account(account_form: AccountForm):
 
-   try :
-      customer_datas = CustomerRegistration(account_form)
+   try:
+      customer_datas = CustomerRegistration()
+      customer_datas.fill_in(account_form)
       customer_datas.insert_db()
 
    except Exception as e:

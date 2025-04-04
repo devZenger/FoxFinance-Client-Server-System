@@ -28,10 +28,6 @@ class Settings:
         display_menu = DisplayMenu()
         self.settings = SettingsForm(self.token)
 
-        current_settings = self.settings.current_settings()
-
-        display_menu.display_info(current_settings)
-
         choice = "start"
         first = True
 
@@ -40,11 +36,18 @@ class Settings:
 
                 case "start":
                     display_menu.display_title(self.title)
-                    if first is True:
-                        display_menu.display_info(self.information)
-                        first = False
+
+                    status = self.settings.current_settings()
+                    if status:
+                        display_menu.display_dic_in_dic(self.settings.data)
+
+                        if first is True:
+                            display_menu.display_info(self.information)
+                            first = False
+                        else:
+                            display_menu.display_info(self.information_2time)
                     else:
-                        display_menu.display_info(self.information_2time)
+                        display_menu.display_info(self.settings.response)
 
                     choice = "options"
 
@@ -93,11 +96,11 @@ class Settings:
 
                 case "make_change":
                     response = self.settings.transmit_changes(setting_type)
-                    print(response)
-                    choice = "options"
+                    choice = response
 
                 case "error":
-                    display_menu.display_info(SettingsForm.error)
+                    display_menu.display_title(self.title)
+                    display_menu.display_info(self.settings.response)
                     choice = "options"
 
                 case "discountinue":

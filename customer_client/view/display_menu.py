@@ -1,4 +1,4 @@
-from .utility import make_table, get_length_from_subdic
+from .utility import make_table, get_length_from_subdic, get_key_value_max_length
 
 class DisplayMenu:
     line = "-" * 90
@@ -11,14 +11,15 @@ class DisplayMenu:
         print(self.line)
 
     def display_info(self, info):
-            print(f"\t{info}")
-            print(self.line)
+        print(f"\t{info}")
+        print(self.line)
 
     def display_title_and_infos(self, title, info):
         self.display_title(title)
         self.display_info(info)
 
     def display_options(self, options):
+        print("")
         count = 1
         for key in options:
             print(f"\t{key}")
@@ -26,7 +27,7 @@ class DisplayMenu:
         print(self.line)
         while True:
             choice = input(f"\tbitte Menüpunkt auswählen (1-{count-1} eingeben): ")
-            if choice.isdigit() == True:
+            if choice.isdigit() is True:
                 test = False
                 for key in options:
                     if choice in key:
@@ -36,7 +37,7 @@ class DisplayMenu:
                 if test is False:
                     print("\tFehlerhafte eingabe")
             else:
-                 print("\tFehlerhafte eingabe")
+                print("\tFehlerhafte eingabe")
 
     def display_form(self, form_names: dict, to_fill):
         self.form_names = form_names
@@ -53,12 +54,17 @@ class DisplayMenu:
         print(self.line)
         return "form_filled"
 
-    def display_filled_form(self):
+    def display_filled_form(self, form_names_input=None):
+        if form_names_input is None:
+            form_names_input = self.form_names
+
+        length_keys, length_values = get_key_value_max_length(form_names_input)
+
         print(" ")
         print("\tBitte Eingaben überprüfen:")
         print(self.line)
-        for key, value in self.form_names.items():
-            print(f"\t{value}: {getattr(self.to_fill, key)}")
+        for key, value in form_names_input.items():
+            print(f"\t{value.ljust(length_values)} : {getattr(self.to_fill, key)}")
 
         print(self.line)
 
@@ -72,7 +78,7 @@ class DisplayMenu:
         print(self.line)
 
     #= löschen
-    def display_list(self, input: dict, listpoints: dict):
+    def _display_list(self, input: dict, listpoints: dict):
 
         make_list_from_dic(input, listpoints)
         print("")
@@ -86,9 +92,16 @@ class DisplayMenu:
             print(f"\t{v}")
         print(self.line)
 
+    def display_dic(self, input: dict):
+        length_key, length_values = get_key_value_max_length(input)
+
+        for k, v in input.items():
+            print(f"\t{k.ljust(length_key)} : {v.rjust(length_values)}")
+        print(" ")
+
     def display_dic_in_dic(self, input: dict):
 
-        length_values, length_keys = get_length_from_subdic(input)
+        length_keys, length_values = get_length_from_subdic(input)
 
         line = f"\t{"-" * (length_keys + length_values + 1)}"
 
@@ -100,3 +113,4 @@ class DisplayMenu:
                 print(f"\t{k.ljust(length_keys)}:{v.rjust(length_values)}")
         print(self.line)
         print("")
+

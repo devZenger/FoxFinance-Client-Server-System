@@ -5,6 +5,8 @@ from .server_request import ServerRequest
 class SettingsForm(RegistrationForm):
     def __init__(self, token):
         self.token = token
+        
+        self.data = None
 
         self.form_names_adress = {
             "street": "Straße (ohne Hausnummer)",
@@ -68,17 +70,14 @@ class SettingsForm(RegistrationForm):
 
         print(f"to transmit is {to_transmit}")
 
-        response = server_request.make_post_request(url_part, to_transmit)
+        status, self.response = server_request.make_post_request(url_part, to_transmit)
 
         del server_request
 
-        if response == "Updated":
+        if status:
             return "start"
         else:
-            self.error = response
             return "error"
-
-        return response
 
     def current_settings(self):
 
@@ -86,8 +85,24 @@ class SettingsForm(RegistrationForm):
 
         url_part = "settings/"
 
-        response = server_request.get_with_parameters(url_part)
+        status, response = server_request.get_without_parameters(url_part)
+
+        data_adress = {"Straße": f"{response["adress"]["street"]}",
+                       "Hausnummer": f"{response["adress"]["house_number"]}",
+                       "PLZ": f"{response["adress"]["zip_code"]}",
+                       "Stadt": f"{response["adress"]["city"]}"}
+
+        self.data = {"Adresse": data_adress}
+
+        data_contact = {"Telefonnummer": f"{response["customers"]["phone_number"]}",
+                        "Email": f"{response["customers"]["email"]}"}
+
+        self.data["Kontaktdaten"] = data_contact
+
+        data_bank = {"Referenzkonto": f"{response["reference_account"]["reference_account"]}"}
+
+        self.data["Bankverbindung"] = data_bank
 
         del server_request
 
-        return response
+        return status

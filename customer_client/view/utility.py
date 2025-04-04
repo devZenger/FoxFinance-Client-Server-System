@@ -1,20 +1,40 @@
 import decimal
 
 
+def get_key_value_max_length(input: dict):
+    max_length_keys = 0
+    max_length_values = 0
+
+    for k, v in input.items():
+        if len(k) > max_length_keys:
+            max_length_keys = len(k)
+
+        if len(v) > max_length_values:
+            max_length_values = len(v)
+
+    return max_length_keys, max_length_values
+
+
 def make_table(input: dict, column_names: dict):
+
+    print("\n\n")
+    print("input:", input)
+    print("")
+    print("column_names", column_names)
+    print("\n\n")
 
     for dic_in in input.values():
 
         for k, v in dic_in.items():
 
             if isinstance(v, decimal.Decimal):
-                dic_in[k]=str(v.quantize(decimal.Decimal(1.00)))
-                dic_in[k]=f"{dic_in} EUR"
+                dic_in[k] = str(v.quantize(decimal.Decimal(1.00)))
+                dic_in[k] = f"{dic_in} EUR"
 
             elif isinstance(v, int):
                 dic_in[k] = str(v)
             elif isinstance(v, float):
-                dic_in[k] = str(round(v,2))
+                dic_in[k] = str(round(v, 2))
 
     column_lengths = []
 
@@ -30,7 +50,7 @@ def make_table(input: dict, column_names: dict):
             vol = len(v)
 
             if vol > column_lengths[i]:
-                column_lengths[i]= vol
+                column_lengths[i] = vol
 
     tabelle = [""]
 
