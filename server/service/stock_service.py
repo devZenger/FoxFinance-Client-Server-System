@@ -4,6 +4,7 @@ from datetime import date
 
 from repository import simple_search, latest_trade_day_entry, trade_day_by_period, search_order_charges, all_stocks_by_customer, customer_balance, insert_stock_transaction
 
+from database import update_single_stock_datas
 
 class StockTrade(BaseModel):
     isin: str
@@ -44,12 +45,10 @@ def search_stock(search_input):
 def stock_performence(stocks_row:dict):
  
     isin = stocks_row["isin"]
-    print(f"isin ist = {isin}")
-    print(f"stocks_row {stocks_row}")
+    
+    update_single_stock_datas(isin)
     
     last_trade_day = latest_trade_day_entry(isin)
-    
-    print(last_trade_day)
     
     timespan = ["6 months", "1 years", "2 years"] #, "3 years"]
     
@@ -76,6 +75,8 @@ def stock_performence(stocks_row:dict):
     
     #prepare for database
 def stocks_trade(customer_id, stock_trade:StockTrade):
+    
+    update_single_stock_datas(stock_trade.isin)
     
     current_market = latest_trade_day_entry(stock_trade.isin)  
     trade_vol = current_market["close"]* stock_trade.amount

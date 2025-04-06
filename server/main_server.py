@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 
+from database import update_stock_datas
+
 from api import information, create_customer_accout, customer_depot, authentication, depot_stock_apis, depot_information, depot_history_apis
 from api import depot_financial_apis, depot_settings_api
 
@@ -34,5 +36,7 @@ def start_server():
 
 
 if __name__ == "__main__":
+    
+    update_stock_datas()
 
     start_server()

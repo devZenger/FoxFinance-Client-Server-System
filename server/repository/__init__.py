@@ -8,3 +8,4 @@ from .financial_repo import customer_balance, search_past_financial_transactions
 from .transaction_repo import insert_stock_transaction, stock_transactions_overview, search_past_transactions
 from .update_repo import update_one_table
 from .watchlist_repo import watchlist_overview
+from .db_executor import DBExecutor

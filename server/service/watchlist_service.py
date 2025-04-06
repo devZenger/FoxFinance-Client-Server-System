@@ -2,6 +2,8 @@ from pydantic import BaseModel
 
 from repository import simple_search, insert_one_table, remove_from_one_table, latest_trade_day_entry, watchlist_overview
 
+from database import update_single_stock_datas
+
 class WatchlistOrder(BaseModel):
     isin: str
     transaction_type: bool
@@ -28,6 +30,9 @@ def editing_watchlist(customer_id, watchlist_order: WatchlistOrder):
     
     elif watchlist_order.transaction_type:
         to_eddit["price"] = result["close"]
+        
+        update_single_stock_datas(to_eddit["isin"])
+        
         insert_one_table("watchlist", to_eddit)
         
     else:
