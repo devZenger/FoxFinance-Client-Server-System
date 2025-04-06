@@ -4,6 +4,7 @@ from view import DisplayMenuOption
 from .main_create_account import CreateAccountMenu
 from .main_login import LoginMenu
 from .depot_controller import DepotControl
+from .informationen import AllInformation
 
 
 class MainControll:
@@ -48,10 +49,8 @@ class MainControll:
                     choice = "start"
 
                 case "information":
-                    title = "Informationen"
-                    info = "in Bearbeitung"
-                    display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.option)
+                    information = AllInformation(self.token)
+                    choice = information.run()
 
                 case "exit":
                     sys.exit(0)

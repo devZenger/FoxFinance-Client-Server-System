@@ -4,7 +4,7 @@ from view import DisplayMenuOption
 
 from .depot_start_menu import DepotStartMenu
 from .depot_stock_search import DepotStockSearch
-from .depot_informationen import DepotInformation
+from .informationen import AllInformation
 from .depot_stock_trade import DepotStockTrade
 from .depot_overview import DepotOverview
 from .depot_financial_overview import AccountOverview
@@ -69,9 +69,8 @@ class DepotControl:
                     choice = bank_transaction.run()
 
                 case "information":
-                    information = DepotInformation(self.token)
-                    information.run()
-                    choice = "start"
+                    information = AllInformation(self.token)
+                    choice = information.run()
 
                 case "settings":
                     settings = Settings(self.token, self.options)

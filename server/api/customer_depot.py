@@ -15,7 +15,7 @@ class User(BaseModel):
     disabled: bool | None = None
 
 @router.get("/depot/")
-async def get_depot( current_customer: Annotated[User, Depends(get_current_active_user)]):
+async def get_depot(current_customer: Annotated[User, Depends(get_current_active_user)]):
 
     useremail = current_customer
     print(f"usermail: {useremail}")
