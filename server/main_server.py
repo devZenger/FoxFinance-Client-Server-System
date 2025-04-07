@@ -3,22 +3,25 @@ import uvicorn
 
 from database import update_stock_datas
 
-from api import information, create_customer_accout, customer_depot, authentication, depot_stock_apis, depot_information, depot_history_apis
-from api import depot_financial_apis, depot_settings_api
+from api import (information,
+                 create_customer_accout,
+                 customer_depot,
+                 authentication,
+                 depot_stock_apis,
+                 depot_history_apis,
+                 depot_financial_apis,
+                 depot_settings_api)
 
 server = FastAPI()
 
-server.include_router(information.router)
 server.include_router(create_customer_accout.router)
-
 server.include_router(authentication.router)
 server.include_router(customer_depot.router)
-
+server.include_router(information.router)
 server.include_router(depot_stock_apis.router)
 server.include_router(depot_financial_apis.router)
 server.include_router(depot_history_apis.router)
 server.include_router(depot_settings_api.router)
-server.include_router(depot_information.router)
 
 
 @server.get("/")
@@ -36,7 +39,7 @@ def start_server():
 
 
 if __name__ == "__main__":
-    
+
     update_stock_datas()
 
     start_server()

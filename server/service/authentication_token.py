@@ -28,8 +28,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-   email: str | None = None
-
+    email: str | None = None
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -74,7 +73,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         if email is None:
             print("debug raise credtials")
             raise credtials_execption
-        token_data = TokenData(email = email)
+        token_data = TokenData(email=email)
     except InvalidTokenError:
         print("raise credtials")
         raise credtials_execption

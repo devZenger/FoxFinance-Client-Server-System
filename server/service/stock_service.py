@@ -26,7 +26,7 @@ def search_stock(search_input):
 
     result = simple_search(table, "company_name", search_term)
 
-    if result == {}:    
+    if result == {}:
         result = simple_search(table, "ticker_symbol", search_term)
         if result == {}:
             result = simple_search(table, "isin", search_term)
@@ -67,8 +67,8 @@ def stock_performence(stocks_row: dict):
 
         performance = result["open"]/last_trade_day["close"] * 100
         data = {}
-        data["date"]= result["date"]
-        data["price"]=result["open"]
+        data["date"] = result["date"]
+        data["price"] = result["open"]
         data["performance"] = performance
 
         performance_data[f"{time}"] = data.copy()
@@ -78,13 +78,14 @@ def stock_performence(stocks_row: dict):
 
     return performance_data
 
-    #prepare for database
+
+# prepare for database
 def stocks_trade(customer_id, stock_trade: StockTrade):
 
     update_single_stock_datas(stock_trade.isin)
 
     current_market = latest_trade_day_entry(stock_trade.isin)
-    trade_vol = current_market["close"]* stock_trade.amount
+    trade_vol = current_market["close"] * stock_trade.amount
 
     current_day = date.today()
 
@@ -92,7 +93,8 @@ def stocks_trade(customer_id, stock_trade: StockTrade):
 
     trade_charge = trade_vol * current_charges["order_charge"]
 
-    if stock_trade.transaction_type != "buy" and stock_trade.transaction_type != "sell":
+    if (stock_trade.transaction_type != "buy" and
+            stock_trade.transaction_type != "sell"):
         raise ValueError("transaction_type is wrong")
 
     transaction = {
@@ -101,7 +103,7 @@ def stocks_trade(customer_id, stock_trade: StockTrade):
             "transaction_type": stock_trade.transaction_type,
             "amount": stock_trade.amount,
             "price_per_stock": current_market["close"],
-            "order_charge_id": current_charges["order_charge_id"]    
+            "order_charge_id": current_charges["order_charge_id"]
         }
 
     return transaction, trade_charge, trade_vol
@@ -123,7 +125,7 @@ def customer_finance_data(customer_id, kind_of):
     bank_account = account["row_result0"]["reference_account"]
 
     balance = {
-            "customer_id":customer_id,
+            "customer_id": customer_id,
             "bank_account": bank_account,
             "fin_transaction_type_id": bts_id
         }
@@ -153,11 +155,12 @@ def buy_stocks(customer_id, stock_trade: StockTrade):
     else:
         print("Guthaben reicht aus")
 
-        balance["fin_amount"]=total
+        balance["fin_amount"] = total
 
         return trade_transaction(transaction, balance)
 
-    #input in database
+
+# input in database
 def trade_transaction(transaction: dict, balance: dict):
 
     print("start trade_transaction")
@@ -178,7 +181,8 @@ def trade_transaction(transaction: dict, balance: dict):
         validation["balance_statement"] = balance_insert["row_result0"]
 
     except Exception as e:
-        validation["error"] = f"Transaktion konnte nicht ausgeführt werden: {e}"
+        validation["error"] = f"Transaktion konnte nicht ausgeführt" \
+                              f"werden: {e}"
 
     finally:
         return validation
@@ -200,7 +204,7 @@ def sell_stocks(customer_id, stock_trade: StockTrade):
         customer_finance, balance = customer_finance_data(customer_id,
                                                           "sell stocks")
 
-        balance["fin_amount"]= (trade_vol - trade_charge)
+        balance["fin_amount"] = (trade_vol - trade_charge)
 
         return trade_transaction(transaction, balance)
 
@@ -237,9 +241,9 @@ if __name__ == "__main__":
         amount: int
         transaction_type: str
 
-    stock_trade = StockTrade(isin="DE0005190003", amount=10, transaction_type="sell")
-
-    print("start")
+    stock_trade = StockTrade(isin="DE0005190003",
+                             amount=10,
+                             transaction_type="sell")
     table = "stocks"
     column = "isin"
     search_term = "DE0005190003"
@@ -247,7 +251,4 @@ if __name__ == "__main__":
 
     performance_data = buy_stocks(1, stock_trade)
 
-    print("--------------------------")    
     print(performance_data)
-
-    print("---------------------------")

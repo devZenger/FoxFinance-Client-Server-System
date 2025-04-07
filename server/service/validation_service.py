@@ -36,7 +36,7 @@ def create_validation(email):
     code = random.randint(100_000, 999_999)
 
     update = {"validation_number": code}
-    condition = {"customer_id":result["customer_id"]}
+    condition = {"customer_id": result["customer_id"]}
 
     if check:
         update_one_table("validation", update, condition)
@@ -45,7 +45,7 @@ def create_validation(email):
         condition.update(update)
         insert_one_table("validation", condition)
 
-    return {"validation_number":code}
+    return {"validation_number": code}
 
 
 def activate_account(code: Code):
@@ -62,7 +62,10 @@ def activate_account(code: Code):
         if result["validation_number"] == code_dic["validation_number"]:
 
             current_time = datetime.now(timezone.utc)
-            validation_time_code = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
+            validation_time_code = datetime.strptime(
+                result["date"], "%Y-%m-%d %H:%M:%S").replace(
+                    tzinfo=timezone.utc)
 
             five_min = timedelta(minutes=5)
 

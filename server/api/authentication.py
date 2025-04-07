@@ -5,7 +5,10 @@ from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-from service import Authentication, create_access_token, create_validation, activate_account
+from service import (Authentication,
+                     create_access_token,
+                     create_validation,
+                     activate_account)
 
 
 class EmailOAuth2PasswordRequestForm(BaseModel):
@@ -34,7 +37,7 @@ class Code(BaseModel):
 
 @router.post("/token")
 async def customer_login_for_access_token(
-    login_form: EmailOAuth2PasswordRequestForm) -> Token:
+        login_form: EmailOAuth2PasswordRequestForm) -> Token:
 
     authentication = Authentication()
 
@@ -47,11 +50,11 @@ async def customer_login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    return Token(access_token = await create_access_token(customer), token_type="bearer")
+    return Token(access_token=await create_access_token(customer), token_type="bearer")
 
 
 @router.get("/startvalidation/{email}/")
-async def get_validation(email:str):
+async def get_validation(email: str):
 
     print("email", email)
 
@@ -64,7 +67,7 @@ async def get_validation(email:str):
         raise HTTPException(status_code=422, detail=str(e))
 
 @router.post("/activateaccount/")
-async def post_activate_account(code:Code):
+async def post_activate_account(code: Code):
 
     try:
         transmission = activate_account(code)

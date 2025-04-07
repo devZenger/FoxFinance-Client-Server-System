@@ -5,11 +5,10 @@ from service import User, SettingsService, get_current_active_user
 
 router = APIRouter()
 
-
-class User(BaseModel):
-    email: str
-    customer_id: int | None = None
-    disabled: bool | None = None
+# class User(BaseModel):
+#    email: str
+#    customer_id: int | None = None
+#    disabled: bool | None = None
 
 
 class Settings(BaseModel):
@@ -41,7 +40,8 @@ async def get_settings(current_customer: Annotated[User, Depends(get_current_act
 
 
 @router.post("/depot/changesettings/")
-async def change_settings(settings: Settings, current_customer: Annotated[User, Depends(get_current_active_user)]):
+async def change_settings(settings: Settings,
+                          current_customer: Annotated[User, Depends(get_current_active_user)]):
 
     try:
         settings_service = SettingsService()

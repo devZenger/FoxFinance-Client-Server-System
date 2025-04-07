@@ -39,7 +39,7 @@ def trade_day_by_period(search_term, time):
         db_ex.open_connection_db()
 
         sql = f"""SELECT *
-                FROM stock_data 
+                FROM stock_data
                 WHERE isin = ? AND date <= DATE('now', '-{time}')
                 ORDER BY date DESC LIMIT 1"""
 

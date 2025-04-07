@@ -27,7 +27,7 @@ def watchlist_overview(customer_id):
                         WHERE isin = w.isin
                         ORDER BY date DESC LIMIT 1) / w.price) AS performance,
                     w.date
-                    FROM watchlist AS w 
+                    FROM watchlist AS w
                     WHERE w.customer_id = ?"""
         value = (customer_id,)
         datas = db_ex.execute(sql, value).fetchall()
