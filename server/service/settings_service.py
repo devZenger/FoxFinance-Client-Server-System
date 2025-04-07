@@ -75,7 +75,6 @@ class SettingsService(CustomerRegistration):
                     "password": self.password
                 }
 
-        print("inser_dic", self.insert_dic)
         try:
             update_customer_settings(self.table, self.customer_id,
                                      self.insert_dic)
@@ -87,37 +86,20 @@ class SettingsService(CustomerRegistration):
     def search_current_settings(self, customer_id):
         current_settings = {}
 
-        try:
+        search_parameters = {"customer_adresses": "adress",
+                             "customers": "customers",
+                             "financials": "reference_account"}
 
-            #response = simple_search("customer_adresses", "customer_id", customer_id) 
-            #current_settings["adress"] = response["row_result0"]
-            
-            #response = simple_search("customers", "customer_id", customer_id)
-            #current_settings["customers"] = response["row_result0"]
-            
-            #response = simple_search("financials", "customer_id", customer_id)
-            #current_settings["reference_account"] = response["row_result0"]
+        for key, value in search_parameters.items():
+            response = simple_search(key, "customer_id", customer_id)
+            current_settings[value] = response["row_result0"]
 
-            search_parameters = {"customer_adresses": "adress",
-                                 "customers": "customers",
-                                 "financials": "reference_account"}
-
-            for key, value in search_parameters.items():
-                response = simple_search(key, "customer_id", customer_id)
-                current_settings[value] = response["row_result0"]
-
-            return current_settings
-
-        except Exception as e:
-            print(e)
-            raise Exception(e)
-
+        return current_settings
 
 
 if __name__ == "__main__":
 
     customer_id = 1
-
 
     settings_service = SettingsService()
 

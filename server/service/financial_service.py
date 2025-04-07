@@ -1,7 +1,10 @@
 from pydantic import BaseModel
 from decimal import Decimal
 
-from repository import customer_balance, search_past_financial_transactions, simple_search, insert_bank_transfer
+from repository import (customer_balance,
+                        search_past_financial_transactions,
+                        simple_search,
+                        insert_bank_transfer)
 
 from .utility import date_form_validation
 
@@ -29,7 +32,9 @@ def do_past_fin_transactions(customer_id, start_date, end_date):
     try:
         date_form_validation(start_date)
         date_form_validation(end_date) 
-        transfers = search_past_financial_transactions(customer_id, start_date, end_date)
+        transfers = search_past_financial_transactions(customer_id,
+                                                       start_date,
+                                                       end_date)
 
         return transfers
 
@@ -78,8 +83,8 @@ if __name__ == "__main__":
     customer_id = 1
 
     transfer = BankTransfer(
-        balance_sum = Decimal(3400.00),
-        transfer_type = "withdrawal",
+        balance_sum=Decimal(3400.00),
+        transfer_type="withdrawal",
         usage="Test")
 
     print(transfer)

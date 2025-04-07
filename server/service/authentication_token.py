@@ -17,24 +17,19 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 class User(BaseModel):
-    #username: str
-    email: str 
+    email: str
     customer_id: int
     disabled: bool | None = None
+
 
 class Token(BaseModel):
     access_token: str
     token_type: str
-    
+
 
 class TokenData(BaseModel):
    email: str | None = None
-    
-  
-#def get_costumer_data(email: str):
- #       search = AuthData()
-  #      user_dict = search.get_data(email)
-   #     return user_dict
+
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -43,12 +38,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class Authentication: 
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    
+
     def verify_password(self, input_password, hashed_password):
         return self.pwd_context.verify(input_password, hashed_password)
-    
-    def authenticate_customer(self, email:str, password:str):
-        
+
+    def authenticate_customer(self, email: str, password: str):
+
         db_query = get_auth_datas(email)
 
         if not db_query:
@@ -57,27 +52,25 @@ class Authentication:
             return False
         if not self.verify_password(password, db_query["password"]):
             return False
-        
+
         #login time to database
         insert_login_time(db_query["customer_id"])        
-        
+
         return db_query
 
 
-
-    
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     print("debug start check")
     credtials_execption = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={"WWW-Atuthenticate":"Bearer"},
+        headers={"WWW-Atuthenticate": "Bearer"},
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-     
+
         email = payload.get("email")
-    
+
         if email is None:
             print("debug raise credtials")
             raise credtials_execption
@@ -95,7 +88,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)]
-):  
+):
     print("start get_current_active_user")
 
     current_user["disabled"] = False
@@ -105,12 +98,12 @@ async def get_current_active_user(
     return current_user
 
 
-async def create_access_token(user:dict):
+async def create_access_token(user: dict):
     expires_delta = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode = user.copy()
-    
+
     expire = datetime.now(timezone.utc) + expires_delta
 
     to_encode.update({"exp": expire})
-    
+
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
