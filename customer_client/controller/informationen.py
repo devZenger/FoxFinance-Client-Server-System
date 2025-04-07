@@ -8,23 +8,18 @@ class AllInformation:
         self.options = options
         self.token = token
 
-        self.options = {"1. Server anfragen: ": "stock_search"}
-
     def run(self):
-        display_menu = DisplayMenu(self.title)
+        display_menu = DisplayMenu()
         information = Information()
-        
+
         choice = "start"
         while True:
             match choice:
 
                 case "start":
-                    status = information.get_information()
-                    if status:
-                        display_menu.display_dic(information.response)
-                    else:
-                        display_menu.display_info(information.response) 
-
+                    display_menu.display_title(self.title)
+                    information.get_information()
+                    display_menu.display_info(information.response)
                     choice = "options"
 
                 case "options":
@@ -33,4 +28,3 @@ class AllInformation:
 
                 case _:
                     choice = "options"
-

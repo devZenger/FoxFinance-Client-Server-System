@@ -9,10 +9,10 @@ from .informationen import AllInformation
 
 class MainControll:
     def __init__(self):
-        self.option = {"1. Login": "login",
-                       "2. Login erstellen": "a_form",
-                       "3. Informationen": "information",
-                       "4. Beenden": "exit"}
+        self.options = {"1. Login": "login",
+                        "2. Login erstellen": "a_form",
+                        "3. Informationen": "information",
+                        "4. Beenden": "exit"}
 
     def run(self):
 
@@ -25,12 +25,12 @@ class MainControll:
                     title = "Hauptmenü"
                     info = "Willkommen bei Fox"
                     display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.option)
+                    choice = display_menu.execute(self.options)
 
                 case "start":
                     title = "Hauptmenü"
                     display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.option)
+                    choice = display_menu.execute(self.options)
 
                 case "a_form":
                     create_account = CreateAccountMenu()
@@ -49,7 +49,7 @@ class MainControll:
                     choice = "start"
 
                 case "information":
-                    information = AllInformation(self.token)
+                    information = AllInformation(self.options)
                     choice = information.run()
 
                 case "exit":

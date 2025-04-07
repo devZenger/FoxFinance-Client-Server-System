@@ -69,7 +69,7 @@ class DepotControl:
                     choice = bank_transaction.run()
 
                 case "information":
-                    information = AllInformation(self.token)
+                    information = AllInformation(self.options, self.token)
                     choice = information.run()
 
                 case "settings":
