@@ -71,10 +71,10 @@ def stock_transactions_overview(customer_id):
                     buy.actual_price As actual_price,
                     (buy.actual_price / buy.price_per_stock_all) AS performance
                     FROM(
-                        SELECT 
+                        SELECT
                             t.isin AS isin,
                             s.company_name AS company_name,
-                            (SELECT SUM(t.amount) 
+                            (SELECT SUM(t.amount)
                                     FROM transactions
                                     WHERE isin=t.isinW
                                         AND transaction_type = 'buy')
@@ -83,8 +83,8 @@ def stock_transactions_overview(customer_id):
                                 AS price_per_stock_all,
                             (SELECT sd.close
                                 FROM stock_data sd
-                                WHERE isin = t.isin 
-                                ORDER BY date DESC 
+                                WHERE isin = t.isin
+                                ORDER BY date DESC
                                 LIMIT 1) AS actual_price
                         FROM transactions t
                         JOIN stocks s ON t.isin = s.isin
@@ -139,9 +139,9 @@ def search_past_transactions(customer_id, search_start, search_end):
                     t.amount,
                     t.price_per_stock
                     FROM (
-                        SELECT * 
+                        SELECT *
                         FROM transactions AS t
-                        WHERE t.customer_id = ? 
+                        WHERE t.customer_id = ?
                             AND t.transaction_date >= ?
                             AND t.transaction_date <= ?
                         GROUP by t.transaction_date

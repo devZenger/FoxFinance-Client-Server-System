@@ -19,8 +19,8 @@ def get_auth_datas(email):
         for i in range(len(data)):
             auth_dic[names[i]] = data[i]
 
-        sql = """SELECT password 
-                 FROM authentication 
+        sql = """SELECT password
+                 FROM authentication
                  WHERE customer_id = ?"""
 
         value = (auth_dic["customer_id"],)

@@ -73,8 +73,8 @@ def all_stocks_by_customer(customer_id, isin):
                             AND transaction_type = 'buy'), 0) -
                     COALESCE((SELECT SUM(amount)
                         FROM transactions
-                        WHERE customer_id = ? 
-                            AND isin = ? 
+                        WHERE customer_id = ?
+                            AND isin = ?
                             AND transaction_type = 'sell'), 0)
                 AS DIFFERENCE"""
 

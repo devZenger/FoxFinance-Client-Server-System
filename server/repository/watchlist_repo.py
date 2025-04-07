@@ -13,7 +13,7 @@ def watchlist_overview(customer_id):
         sql = """SELECT
                     w.isin AS isin,
                     w.price AS price ,
-                    (SELECT stocks.company_name 
+                    (SELECT stocks.company_name
                         FROM stocks
                         WHERE isin = w.isin
                         ) AS company_name,

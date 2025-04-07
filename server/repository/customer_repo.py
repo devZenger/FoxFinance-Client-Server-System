@@ -53,7 +53,7 @@ def insert_customer(input):
                     bank_account,
                     fin_amount,
                     fin_transaction_type_id,
-                    usage)    
+                    usage)
                     VALUES(
                     :customer_id,
                     :bank_account,
@@ -66,7 +66,8 @@ def insert_customer(input):
 
     except Exception as e:
         db_ex.rollback()
-        error = f"Fehler bei insert_customer:\nsql: {sql}\ninput:{input}\nError: {e}\n"
+        error = f"Fehler bei insert_customer:\nsql: {sql}\ninput:{input}" \
+                f"\nError: {e}\n"
         raise Exception(error)
 
     finally:

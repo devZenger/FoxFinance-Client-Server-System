@@ -5,7 +5,8 @@ import os
 class DBExecutor:
     def __init__(self):
 
-        self.path = os.path.join("..", "server", "database", "FoxFinanceData.db")
+        self.path = os.path.join("..", "server",
+                                 "database", "FoxFinanceData.db")
         self.cursor = None
         self.connection = None
 

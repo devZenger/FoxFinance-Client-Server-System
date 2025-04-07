@@ -43,7 +43,7 @@ def insert_one_table(table, insert: dict):
         return execute_id
 
     except Exception as e:
-        error = f"Fehler: Position: insert_one_table:\nsql:{sql}\ntable:" \
+        error = f"Fehler bei insert_one_table:\nsql:{sql}\ntable:" \
                 f"{table}\ninsert: {insert}.\nError: {e}\n"
         print(error)
         raise Exception(error)
@@ -63,7 +63,7 @@ def remove_from_one_table(table, condition: dict):
         db_ex.execute_and_commit(sql, condition)
 
     except Exception as e:
-        error = f"Fehler: Position: delete_from_one_table\nsql: {sql}\n" \
+        error = f"Fehler bei delete_from_one_table\nsql: {sql}\n" \
                 f"table: {table}\ncondition: {condition}.\nError: {e}\n"
         print(error)
         raise Exception(error)

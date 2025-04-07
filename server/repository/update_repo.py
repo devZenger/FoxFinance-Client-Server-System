@@ -17,7 +17,7 @@ def update_one_table(table, update: dict, condition_dic: dict):
 
     try:
         sql = f"""UPDATE {table}
-                    SET {columns} 
+                    SET {columns}
                     WHERE {condition}"""
 
         values = update
