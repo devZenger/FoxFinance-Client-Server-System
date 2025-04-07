@@ -25,8 +25,8 @@ def search_order_charges(volumn, date):
         result = make_dictionary_one_result(datas[0], names)
 
     except Exception as e:
-        error = f"Fehler bei search_order_charges(volumn: {volumn}," \
-                f"date: {date})\n.Error: {e}"
+        error = f"Fehler bei search_order_charges:\nsql: {sql}\n" \
+                f"volumn: {volumn}\ndate: {date})\n.Error: {e}"
         print(error)
         result = "Kein Eintrag gefunden, Error: {e}"
 
@@ -36,37 +36,32 @@ def search_order_charges(volumn, date):
 
 
 def search_all_order_charges(date):
-    
+
     try:
         db_ex.open_connection_db()
-        
+
         sql = """SELECT *
                  FROM order_charges
                  WHERE start_validation <= ?
                     AND end_validation >= ?
                  ORDER BY min_volumn"""
-        
         value = (date, date)
-        
+
         datas = db_ex.execute(sql, value).fetchall()
-        
         names = db_ex.col_names()
-        
-        print("datas", datas)
-        
+
         result = make_dictionary(datas, names)
-        
+
         return result
-        
+
     except Exception as e:
-        error = f"Fehler bei search_all_order_charges, sql: {sql}," \
+        error = f"Fehler bei search_all_order_charges:\nsql: {sql}\n" \
                 f"date: {date})\n.Error: {e}\n"
         print(error)
         raise Exception(error)
 
     finally:
         db_ex.close()
-
 
 
 if __name__ == "__main__":

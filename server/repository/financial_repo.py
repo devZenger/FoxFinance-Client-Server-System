@@ -39,7 +39,7 @@ def customer_balance(customer_id):
         return dic
 
     except Exception as e:
-        error = f"Fehler bei customer_balance," \
+        error = f"Fehler bei customer_balance:\nsql: {sql}" \
                 f"customer_id: {customer_id}.\nError: {e}\n"
         print(error)
         raise ValueError(error)
@@ -88,9 +88,9 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
         return result
 
     except Exception as e:
-        error = f"Fehler bei search_past_financial_transactions(customer_id:" \
-                f"{customer_id}, search_start: {search_start}," \
-                f"search_end: {search_end}.\nError: {e}"
+        error = f"Fehler bei search_past_financial_transactions:\nsql: " \
+                f"{sql}\ncustomer_id: {customer_id}, search_start: " \
+                f"{search_start}\nsearch_end: {search_end}\nError: {e}"
         print(error)
         raise ValueError(error)
 
@@ -101,15 +101,14 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
 def insert_bank_transfer(b_transfer: dict):
 
     db_ex.open_connection_db()
-    db_ex.start_transcation()
+    db_ex.start_transaction()
 
     try:
         sql = """INSERT INTO financial_transactions(
                     customer_id,
                     bank_account,
                     fin_amount,
-                    fin_transaction_type_id
-                    ,
+                    fin_transaction_type_id,
                     usage) VALUES (
                     :customer_id,
                     :bank_account,
@@ -119,12 +118,12 @@ def insert_bank_transfer(b_transfer: dict):
 
         balance_id = db_ex.execute(sql, b_transfer).lastrowid
 
-        db_ex.connection_commit() 
+        db_ex.connection_commit()
 
         return balance_id
     except Exception as e:
         db_ex.rollback()
-        error = f"Fehler bei insert_bank_transfer(" \
+        error = f"Fehler bei insert_bank_transfer:\n" \
                 f"b_transfer:dict:{b_transfer})\nError: {e}"
         print(error)
         raise ValueError(error)

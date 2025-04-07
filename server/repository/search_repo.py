@@ -12,7 +12,7 @@ def make_dictionary(datas, names):
         for j in range(len(data)):
             row_data[names[j]] = data[j]
 
-        search_result[f"row_result{i}"]= row_data
+        search_result[f"row_result{i}"] = row_data
         i += 1
 
     return search_result
@@ -42,14 +42,13 @@ def simple_search(table, column, search_term):
         return result
 
     except Exception as e:
-        error = f"Fehler bei simple_search, table:{table},"\
-                f"column:{column}, search_term:{search_term}.\nError:{e}"
+        error = f"Fehler bei simple_search:\nsql: {sql}\ntable:{table}\n"\
+                f"column:{column}\nsearch_term:{search_term}\nError:{e}"
         print(error)
         raise Exception(error)
 
     finally:
         db_ex.close()
-
 
 
 if __name__ == "__main__":

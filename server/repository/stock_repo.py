@@ -6,12 +6,12 @@ db_ex = DBExecutor()
 
 def latest_trade_day_entry(search_term):
 
-    try:        
+    try:
         db_ex.open_connection_db()
 
         sql = """SELECT *
                  FROM stock_data
-                 WHERE isin = ? 
+                 WHERE isin = ?
                  ORDER BY date DESC LIMIT 1"""
 
         value = (search_term,)
@@ -24,9 +24,9 @@ def latest_trade_day_entry(search_term):
     except Exception as e:
         error = f"Fehler bei latest_trade_day_entry(" \
                 f"search_term: {search_term})" \
-                f".\nError: {e}"
+                f".\nError: {e}\n"
         print(error)
-        result = "Kein Eintrag gefunden, Error: {e}"
+        result = f"Kein Eintrag gefunden, Error: {e}"
 
     finally:
         db_ex.close()
@@ -40,7 +40,7 @@ def trade_day_by_period(search_term, time):
 
         sql = f"""SELECT *
                 FROM stock_data 
-                WHERE isin = ? AND date <= DATE('now', '-{time}') 
+                WHERE isin = ? AND date <= DATE('now', '-{time}')
                 ORDER BY date DESC LIMIT 1"""
 
         value = (search_term,)
@@ -51,9 +51,9 @@ def trade_day_by_period(search_term, time):
 
     except Exception as e:
         error = f"Fehler bei trade_day_by_period(" \
-                f"search_term: {search_term}, time: {time}).\nError: {e}"
+                f"search_term: {search_term}, time: {time}).\nError: {e}\n"
         print(error)
-        result = "Kein Eintrag gefunden, Error: {e}"
+        result = f"Kein Eintrag gefunden, Error: {e}"
 
     finally:
         db_ex.close()
@@ -84,10 +84,10 @@ def all_stocks_by_customer(customer_id, isin):
         result = datas[0][0]
 
     except Exception as e:
-        error = f"Fehler bei all_stocks_by_customer(" \
-                f"customer_id: {customer_id}, isin: {isin}).\nError: {e}"
+        error = f"Fehler bei all_stocks_by_customer:\nsql: {sql}\n" \
+                f"customer_id: {customer_id}\nisin: {isin}\nError: {e}\n"
         print(error)
-        result = "Kein Eintrag gefunden, Error: {e}"
+        result = f"Kein Eintrag gefunden, Error: {e}"
 
     finally:
         db_ex.close()

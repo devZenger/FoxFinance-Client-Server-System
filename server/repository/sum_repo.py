@@ -25,16 +25,16 @@ def simple_search(table, column, search_term):
                 print(f"{j} {data[j]}")
                 print("-------")
 
-            search_result[f"row_result{i}"]= row_data
+            search_result[f"row_result{i}"] = row_data
             print(f"search {search_result} i = {i}")
             i += 1
 
         return search_result
 
     except Exception as e:
-        error = f"Fehler bei simple_search(table: {table}," \
-                f"column: {column}, search_term: {search_term})." \
-                f"\nError: {e}"
+        error = f"Fehler bei simple_search:\nsql: {sql}\ntable: {table}\n" \
+                f"column: {column}\nsearch_term: {search_term}\n" \
+                f"\nError: {e}\n"
         print(error)
         return None
 

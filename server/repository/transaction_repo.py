@@ -9,7 +9,7 @@ def insert_stock_transaction(transaction: dict, balance: dict):
     print("start insert stock transaction")
     try:
         db_ex.open_connection_db()
-        db_ex.start_transcation()
+        db_ex.start_transaction()
 
         sql = """INSERT INTO transactions(
                  customer_id,
@@ -27,7 +27,7 @@ def insert_stock_transaction(transaction: dict, balance: dict):
                  )"""
         transaction_id = db_ex.execute(sql, transaction).lastrowid
 
-        balance["usage"]= f"Aktientransaktions Nr.: {transaction_id}"
+        balance["usage"] = f"Aktientransaktions Nr.: {transaction_id}"
 
         sql = """INSERT INTO financial_transactions(
                  customer_id,
@@ -76,9 +76,12 @@ def stock_transactions_overview(customer_id):
                             s.company_name AS company_name,
                             (SELECT SUM(t.amount) 
                                     FROM transactions
-                                    WHERE isin=t.isin and transaction_type = 'buy') AS amount,
-                            SUM (t.amount * t.price_per_stock) / SUM(t.amount) AS price_per_stock_all,
-                            (SELECT sd.close 
+                                    WHERE isin=t.isinW
+                                        AND transaction_type = 'buy')
+                                        AS amount,
+                            SUM (t.amount * t.price_per_stock) / SUM(t.amount)
+                                AS price_per_stock_all,
+                            (SELECT sd.close
                                 FROM stock_data sd
                                 WHERE isin = t.isin 
                                 ORDER BY date DESC 
@@ -86,14 +89,16 @@ def stock_transactions_overview(customer_id):
                         FROM transactions t
                         JOIN stocks s ON t.isin = s.isin
                         WHERE t.customer_id = ? and transaction_type = 'buy'
-                        GROUP BY t.isin, s.company_name 
+                        GROUP BY t.isin, s.company_name
                     ) AS buy
                     LEFT JOIN (
-                        SELECT 
+                        SELECT
                             t.isin AS isin,
-                            (SELECT SUM(t.amount) 
+                            (SELECT SUM(t.amount)
                                     FROM transactions
-                                    WHERE isin=t.isin and transaction_type = 'sell') AS amount
+                                    WHERE isin=t.isin
+                                        AND transaction_type = 'sell')
+                                        AS amount
                         FROM transactions t
                         WHERE t.customer_id = ? and transaction_type = 'sell'
                         GROUP BY t.isin
@@ -111,8 +116,8 @@ def stock_transactions_overview(customer_id):
         return result
 
     except Exception as e:
-        error = f"Fehler bei stock_transactions_overview(" \
-                f"customer_id: {customer_id}).\nError: {e}"
+        error = f"Fehler bei stock_transactions_overview:\nsql: {sql}\n" \
+                f"customer_id: {customer_id}\nError: {e}\n"
         print(error)
         raise ValueError(error)
 
@@ -160,9 +165,9 @@ def search_past_transactions(customer_id, search_start, search_end):
         return result
 
     except Exception as e:
-        error = f"Fehler bei search_past_transactions(" \
-                f"customer_id: {customer_id}, search_start: {search_start}," \
-                f"search_end: {search_end}).\nError: {e}"
+        error = f"Fehler bei search_past_transactions:\nsql: {sql}\n" \
+                f"customer_id: {customer_id}\nsearch_start: {search_start}\n" \
+                f"search_end: {search_end}\nError: {e}\n"
         print(error)
         raise ValueError(error)
 

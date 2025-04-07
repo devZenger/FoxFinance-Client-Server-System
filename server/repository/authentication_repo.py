@@ -31,15 +31,13 @@ def get_auth_datas(email):
         for i in range(len(data)):
             auth_dic[names[i]] = data[i]
 
-        db_ex.close()
-
-        print(f"debug ausgabe von auth_dic: {auth_dic}")
-
         return auth_dic
 
     except Exception as e:
-        print(f"Position: get_auth_datas, Error: {e}")
-        return None
+        error = f"Position: get_auth_datas:\nsql: {sql}" \
+                f"\nemail: {email}.\nError: {e}\n"
+        print(error)
+        raise Exception(error)
 
     finally:
         db_ex.close()
@@ -54,8 +52,8 @@ def insert_login_time(customer_id):
         db_ex.execute_and_commit_just_sql(sql)
 
     except Exception as e:
-        error = f"Fehler bei insert_login_time, customer_id: {customer_id}." \
-                f"\nError: {e}\n"
+        error = f"Fehler bei insert_login_time:\nsql:{sql}\n" \
+                f"customer_id: {customer_id}\nError: {e}\n"
         print(error)
         raise Exception(error)
 

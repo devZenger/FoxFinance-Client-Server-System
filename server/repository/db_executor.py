@@ -10,46 +10,50 @@ class DBExecutor:
         self.connection = None
 
         if os.path.exists(self.path):
-            print("debug db_executer Datenbank vorhanden")
+            print("Datenbank vorhanden")
         else:
-            print("debug keine Datenbank")
+            print("keine Datenbank")
 
     def open_connection_db(self):
         try:
             self.connection = sqlite3.connect(self.path)
             self.cursor = self.connection.cursor()
-            print("debug Mit Datenbank verbunden")
+            print("Mit Datenbank verbunden")
         except sqlite3.Error as e:
-            print(f"Verbindungsprobleme: {str(e)}")
-            raise Exception(f"Verbidungsprobleme: {str(e)}")
+            error = f"Verbindungsprobleme: {str(e)}\n"
+            print(error)
+            raise Exception(error)
 
-    def start_transcation(self):
+    def start_transaction(self):
         try:
             self.connection.execute("BEGIN TRANSACTION")
         except sqlite3.Error as e:
-            print(f"Ausführungsprobleme: {str(e)}")
-            raise Exception(f"Ausführungsprobleme: {str(e)}")
+            error = f"Ausführungsprobleme bei start_transaction: {str(e)}\n"
+            print(error)
+            raise Exception(error)
 
     def connection_commit(self):
         try:
             self.connection.commit()
         except sqlite3.Error as e:
-            print(f"Ausführungsprobleme: {str(e)}")
-            raise Exception(f"Ausführungsprobleme: {str(e)}")
+            error = f"Ausführungsprobleme bei connection_commit: {str(e)}\n"
+            print(error)
+            raise Exception(error)
 
     def rollback(self):
         try:
             self.connection.rollback()
         except sqlite3.Error as e:
-            print(f"Ausführungsprobleme: {str(e)}")
-            raise Exception(f"Ausführungsprobleme: {str(e)}")
+            error = f"Ausführungsprobleme bei rollback: {str(e)}\n"
+            print(error)
+            raise Exception(error)
 
     def execute(self, sql, value):
         try:
             self.cursor.execute(sql, value)
         except sqlite3.Error as e:
-            error = f"Ausführungsprobleme bei execute, sql: {sql}," \
-                    f"value: {value}.\nError: {e}"
+            error = f"Ausführungsprobleme bei execute:\nsql: {sql}\n" \
+                    f"value: {value}\nError: {e}\n"
             print(error)
             raise Exception(error)
 
@@ -60,8 +64,8 @@ class DBExecutor:
             self.cursor.execute(sql, value)
             self.connection.commit()
         except sqlite3.Error as e:
-            error = f"Ausführungsprobleme bei execute_and_commit, sql: {sql},"\
-                    f"value: {value}.\nError: {e}"
+            error = f"Ausführungsprobleme bei execute_and_commit:\n" \
+                    f"sql: {sql}\nvalue: {value}\nError: {e}\n"
             print(error)
             raise Exception(error)
 
@@ -72,7 +76,7 @@ class DBExecutor:
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.Error as e:
-            error = f"Ausführungsprobleme bei execute_and_commit_just_sql," \
+            error = f"Ausführungsprobleme bei execute_and_commit_just_sql:\n" \
                     f"sql: {sql}\nError: {e}"
             print(error)
             raise Exception(error)

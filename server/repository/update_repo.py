@@ -27,7 +27,7 @@ def update_one_table(table, update: dict, condition_dic: dict):
         db_ex.execute_and_commit(sql, values)
 
     except Exception as e:
-        error = f"Fehler bei update_one_table, table:{table}," \
-                f"update:{update}, condition_dic:{condition_dic}\nError:{e}"
+        error = f"Fehler bei update_one_table:\nsql: {sql}\ntable:{table}\n" \
+                f"update:{update}\ncondition_dic:{condition_dic}\nError:{e}\n"
         print(error)
         raise Exception(error)

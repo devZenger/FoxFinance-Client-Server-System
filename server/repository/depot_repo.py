@@ -10,11 +10,13 @@ def customer_balance(customer_id):
 
         sql = """SELECT
                  COALESCE((SELECT SUM(isin, amount)
-                    FROM balance_transactions 
-                    WHERE customer_id = ? AND balance_transaction_type_id = 1), 0) -
+                    FROM balance_transactions
+                    WHERE customer_id = ?
+                        AND balance_transaction_type_id = 1), 0) -
                  COALESCE((SELECT SUM(isin, amount)
                     FROM balance_transactions
-                    WHERE customer_id = ? AND balance_transaction_type_id = 2), 0)
+                    WHERE customer_id = ?
+                        AND balance_transaction_type_id = 2), 0)
                  AS actual_depot"""
 
         value = (customer_id, customer_id, customer_id, customer_id,)
@@ -28,8 +30,8 @@ def customer_balance(customer_id):
         return dic
 
     except Exception as e:
-        error = f"Fehler bei customer_balance, customer_id: {customer_id}." \
-                f"\nError: {e}\n"
+        error = f"Fehler bei customer_balance, customer_id:\nsql: {sql}\n" \
+                f"customer_id: {customer_id}\nError: {e}\n"
         print(error)
         raise ValueError(error)
 

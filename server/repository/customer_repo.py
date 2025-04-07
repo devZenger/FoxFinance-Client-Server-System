@@ -7,7 +7,7 @@ def insert_customer(input):
     db_ex.open_connection_db()
 
     try:
-        db_ex.start_transcation()
+        db_ex.start_transaction()
 
         input["disabled"] = False
         input["bank_account"] = input["reference_account"]
@@ -28,7 +28,7 @@ def insert_customer(input):
                     :birthday
             )"""
         customer_id = db_ex.execute(sql, input).lastrowid
-        input["customer_id"]=customer_id
+        input["customer_id"] = customer_id
 
         sql = """INSERT INTO customer_adresses VALUES(
                     :customer_id,
@@ -66,7 +66,7 @@ def insert_customer(input):
 
     except Exception as e:
         db_ex.rollback()
-        error = f"Fehler bei insert_customer, input:{input}.\nEorror: {e}\n"
+        error = f"Fehler bei insert_customer:\nsql: {sql}\ninput:{input}\nError: {e}\n"
         raise Exception(error)
 
     finally:
@@ -76,7 +76,7 @@ def insert_customer(input):
 def update_customer_settings(table, customer_id, insert: dict):
 
     db_ex = DBExecutor()
-    db_ex.open_connection_db() 
+    db_ex.open_connection_db()
 
     columns = ""
     for k in insert.keys():
@@ -86,14 +86,15 @@ def update_customer_settings(table, customer_id, insert: dict):
 
     try:
         sql = f"""UPDATE {table}
-                    SET {columns} 
+                    SET {columns}
                     WHERE customer_id={customer_id}"""
 
         db_ex.execute_and_commit(sql, insert)
 
     except Exception as e:
-        error = f"Fehler bei update_customer_settings, table:{table}," \
-                f"customer_id{customer_id}, insert:{insert}.\nError:{e}\n"
+        error = f"Fehler bei update_customer_settings.\nsql{sql}\n" \
+                f"table: {table}\ncustomer_id{customer_id}\n" \
+                f"insert: {insert}\nError: {e}\n"
         print(error)
         raise Exception(error)
 
@@ -103,8 +104,6 @@ def update_customer_settings(table, customer_id, insert: dict):
 
 if __name__ == "__main__":
 
-    dic = {
-           'reference_account': 'z-bank'
-          }
+    dic = {'reference_account': 'z-bank'}
     table = "financials"
     test = update_customer_settings(table, 1, dic)
