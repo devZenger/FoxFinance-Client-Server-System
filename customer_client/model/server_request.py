@@ -26,8 +26,6 @@ class ServerRequest:
         except:
             pass
 
-        print("server_response", server_response)
-
         if status_code >= 200 and status_code <= 300:
 
             if server_response is None:
@@ -42,18 +40,17 @@ class ServerRequest:
         else:
             try:
                 server_response = server_response.json()
-                print("Ausgabe von server_response (server_request_depot: z23)", server_response)
+
             except:
                 pass
 
             if "detail" not in server_response:
                 server_response = {}
-                server_response["detail"] = f"Unbekannter Fehler, Status Code: {status_code}"
+                server_response["detail"] = f"Unbekannter Fehler," \
+                                            f"Status Code: {status_code}"
 
-            print(f"server_response (server_request_depot: z31): {server_response}")
-            print(f"server_response[detail] (server_request_depot: z32): {server_response["detail"]}")
-
-            return False, server_response["detail"] # server_response is string
+            # server_response is string
+            return False, server_response["detail"]
 
     def _make_get_request(self, url):
 
@@ -75,17 +72,11 @@ class ServerRequest:
 
         url = f"{self.url_server}{url_part}{parameters}"
 
-        print(f"url in get_with_parameters: {url}")
-
         return self._make_get_request(url)
 
     def make_post_request(self, url_part, to_transmit):
 
         url = f"{self.url_server}{url_part}"
-
-        print(f"url = {url}")
-
-        print(f"to_transmit = {to_transmit}")
 
         server_response = requests.post(url,
                                         json=to_transmit,

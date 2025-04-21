@@ -10,28 +10,27 @@ if os.path.exists(path):
     sys.exit(0)
 else:
     print("Datenbank nicht vorhanden")
-    
+
 connection = sqlite3.connect(path)
 cursor = connection.cursor()
 
-#customer related:
+# customer related:
 sql = """CREATE TABLE customers(
             customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
-            
+
             email TEXT UNIQUE NOT NULL,
             phone_number TEXT UNIQUE NOT NULL,
             birthday TEXT NOT NULL,
-            
+
             registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
             termination_date TEXT,
             disabled BOOL DEFAULT TRUE,  
-            
+
             last_login TEXT DEFAULT CURRENT_TIMESTAMP,
             UNIQUE (customer_id, registration_date),
             UNIQUE (first_name, last_name, birthday)
-    
             )"""
 cursor.execute(sql)
 
@@ -66,8 +65,6 @@ sql = """CREATE TABLE authentication(
             password TEXT NOT NULL
             )"""
 cursor.execute(sql)  
-
-
 
 # financial related:
 sql = """CREATE TABLE financial_transactions(
@@ -268,7 +265,5 @@ sql = """INSERT INTO order_charges(
             0.05)"""
 cursor.execute(sql)
 connection.commit()
-
-
 
 connection.close()

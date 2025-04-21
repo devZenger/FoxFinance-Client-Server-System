@@ -1,9 +1,12 @@
-import os, sys, sqlite3
+import os
+import sys
+import sqlite3
 
 path_csv = os.path.join("..", "server", "database", "sqlite_scripts", "dax.csv")
 
 try:
     d = open(path_csv)
+
 except:
     print("Datei nicht geöffnet")
     sys.exit(0)
@@ -12,17 +15,18 @@ d.readline()
 tx = d.read()
 d.close()
 
-li= tx.split("\n")
+li = tx.split("\n")
 
-            
+         
 path = os.path.join("..", "server", "database", "FoxFinanceData.db")
-        
-try:        
+
+try:
     connection = sqlite3.connect(path)
     print("Verbunden")
+
 except:
     print("Fehler in der Verbundung")
-    
+
 cursor = connection.cursor()
 
 
@@ -43,8 +47,8 @@ name = name_tulp[0]
 if name == "DAX":
     print("korrekt")
 else:
-    print("Fehler index_id und name stimmen nicht")   
-    
+    print("Fehler index_id und name stimmen nicht")
+
 
 for zeile in li:
     if zeile:
@@ -55,8 +59,8 @@ for zeile in li:
         sql = f"INSERT INTO index_members (isin, index_id) VALUES('{ds[0]}', '{dax_id}')"
         cursor.execute(sql)
         connection.commit()
-        
+
         print(f"{ds[0]} {ds[1]} {ds[2]}")
-        
+
 
 connection.close()

@@ -1,8 +1,11 @@
-from .utility import make_table, get_length_from_subdic, get_key_value_max_length
+from .utility import (make_table, 
+                      get_length_from_subdic, 
+                      get_key_value_max_length)
 
 
 class DisplayMenu:
     line = "-" * 90
+    line = f"\t{line}"
 
     def display_title(self, title):
         print(self.line)

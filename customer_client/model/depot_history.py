@@ -55,7 +55,7 @@ class DepotHistory:
     def end_time(self, input: str):
         split = input.split("-")
 
-        if len(split[0]) == 4 and len(split[1])==2 and len(split[2])==2:
+        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
             print(f"end_time = {input}")
             self._end_time = input
         else:
@@ -79,7 +79,7 @@ class DepotHistory:
 
         return success
 
-    #test und dann löschen
+    # test und dann löschen
     def _get_transaction_by_timespan(self):
 
         url_depot = f'{url_server_depot}pasttransactions/{self.start_time}/{self.end_time}/'
@@ -88,7 +88,7 @@ class DepotHistory:
 
         self.response = requests.get(url_depot, headers=headers)
 
-        self.status_code =  self.response.status_code
+        self.status_code = self.response.status_code
         self.response = self.response.json()
 
         if self.status_code == 200:

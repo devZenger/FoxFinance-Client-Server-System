@@ -1,4 +1,5 @@
-import os, sys, sqlite3
+import os 
+import sqlite3
 
 
 path = os.path.join("..", "server", "database", "FoxFinanceData.db")
@@ -10,7 +11,7 @@ if os.path.exists(path):
 
 else:
     print("Datenbank nicht vorhanden")
-    
+
 connection = sqlite3.connect(path)
 cursor = connection.cursor()
 
@@ -27,7 +28,5 @@ sql = """CREATE TABLE watchlist(
 cursor.execute(sql)
 
 connection.commit()
-
-
 
 connection.close()
