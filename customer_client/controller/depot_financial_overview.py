@@ -1,21 +1,21 @@
 from model import FinancialHistory
-from view import DisplayMenu
+from view import Display
 
 
 class AccountOverview:
     def __init__(self, token):
 
-        self.token = token
+        self.account = FinancialHistory(token)
         self.title = "Kontoübersicht"
-        self.option = {"1. Die letzten drei Monate": "last_three",
+        self.options = {"1. Die letzten drei Monate": "last_three",
                        "2. Die letzten zwölf Monate": "last_twelve",
                        "3. Zeitraum einbegen": "timespan",
                        "4. Konto anzeigen": "start",
                        "5. zurück": "back"}
+        
+        self.display_menu = Display()
 
     def run(self):
-        self.display_menu = DisplayMenu()
-        self.account = FinancialHistory(self.token)
         self.form_names = self.account.form_names
 
         self.display_menu.display_title(self.title)
@@ -50,7 +50,7 @@ class AccountOverview:
                     return "start"
 
                 case "option":
-                    choice = self.display_menu.display_options(self.option)
+                    choice = self.display_menu.display_options(self.options)
 
                 case _:
                     choice = "option"

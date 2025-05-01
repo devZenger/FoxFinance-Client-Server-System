@@ -1,11 +1,11 @@
-from view import DisplayMenu
+from view import Display
 from model import SettingsForm
 
 
 class Settings:
     def __init__(self, token, options):
 
-        self.token = token
+        self.settings = SettingsForm(token)
         self.options = options
 
         self.title = "Kontoeinstelungen ändern"
@@ -25,8 +25,8 @@ class Settings:
 
     def run(self):
 
-        display_menu = DisplayMenu()
-        self.settings = SettingsForm(self.token)
+        display_menu = Display()
+
 
         choice = "start"
         first = True

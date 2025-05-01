@@ -1,5 +1,6 @@
 import sys
-from view import DisplayMenuOption
+
+from view import Display
 
 from .main_create_account import CreateAccountMenu
 from .main_login import LoginMenu
@@ -7,8 +8,9 @@ from .depot_controller import DepotControl
 from .informationen import AllInformation
 
 
-class MainControll:
+class MainControl:
     def __init__(self):
+        self.title = "Hauptmenü"
         self.options = {"1. Login": "login",
                         "2. Login erstellen": "a_form",
                         "3. Informationen": "information",
@@ -16,21 +18,22 @@ class MainControll:
 
     def run(self):
 
+        display = Display()
+
         choice = "welcome"
 
         while True:
 
             match choice:
                 case "welcome":
-                    title = "Hauptmenü"
+                    display.display_title(self.title)
                     info = "Willkommen bei Fox"
-                    display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.options)
+                    display.display_info(info)
+                    choice = display.display_options(self.options)
 
                 case "start":
-                    title = "Hauptmenü"
-                    display_menu = DisplayMenuOption(title, info)
-                    choice = display_menu.execute(self.options)
+                    display.display_title(self.title)
+                    choice = display.display_options(self.options)
 
                 case "a_form":
                     create_account = CreateAccountMenu()

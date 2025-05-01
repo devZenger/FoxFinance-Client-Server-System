@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import LoginForm
 
 
@@ -10,13 +10,13 @@ class LoginMenu:
             "1. Anmelden": "login",
             "2. abbrechen, Zurück zum Hauptmenü:": "abbrechen"
         }
-        self.options2 = {
+        self.options_failure = {
             "1. Erneut versuchen": "start",
             "2. abbrechen, Zurück zum Hauptmenü:": "abbrechen"
         }
 
     def run(self):
-        display_menu = DisplayMenu()
+        display_menu = Display()
         login_form = LoginForm()
         form_names = login_form.form_names
 
@@ -38,7 +38,7 @@ class LoginMenu:
                         return True, login_form.response
                     else:
                         display_menu.display_info(login_form.response)
-                        choice = display_menu.display_options(self.options2)
+                        choice = display_menu.display_options(self.options_failure)
 
                 case "abbrechen":
                     return False, None

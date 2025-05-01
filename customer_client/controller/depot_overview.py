@@ -1,25 +1,23 @@
 from model import DepotHistory
-from view import DisplayMenu
+from view import Display
 
 
 class DepotOverview:
     def __init__(self, token):
 
-        self.token = token
-        self.depot = None
+        self.depot = DepotHistory(token)
 
         self.title = "Depotübersicht"
-        self.option = {"1. die letzten drei Monate": "last_three",
+        self.options = {"1. die letzten drei Monate": "last_three",
                        "2. die letzten zwölf Monate": "last twelve",
                        "3. Zeitraum einbegen": "timespan",
                        "4. Depot anzeigen": "start",
                        "5. zurück": "back"}
+        self.display_menu = Display()
 
     def run(self):
-        self.display_menu = DisplayMenu()
-        self.depot = DepotHistory(self.token)
-        self.form_names = self.depot.form_names
 
+        self.form_names = self.depot.form_names
         self.display_menu.display_title(self.title)
 
         choice = "start"
@@ -51,7 +49,7 @@ class DepotOverview:
                     return "start"
 
                 case "option":
-                    choice = self.display_menu.display_options(self.option)
+                    choice = self.display_menu.display_options(self.options)
 
                 case _:
                     choice = "option"

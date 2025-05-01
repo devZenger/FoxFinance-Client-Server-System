@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import BankTransfer
 
 
@@ -14,7 +14,7 @@ class DepotBankTransfer:
 
     def run(self):
 
-        display_menu = DisplayMenu()
+        display_menu = Display()
 
         self.information = self.transfer.actual_balance()
 

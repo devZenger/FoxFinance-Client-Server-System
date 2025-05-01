@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import RegistrationForm, Validation
 
 
@@ -16,7 +16,7 @@ class CreateAccountMenu:
         }
 
     def run(self):
-        display_menu = DisplayMenu()
+        display_menu = Display()
         regis_form = RegistrationForm()
         form_names = regis_form.form_names
         validation = Validation()

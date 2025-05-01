@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import Watchlist
 
 
@@ -17,7 +17,7 @@ class DepotWatchlist:
                         "4. zurück": "discontinue"}
 
     def run(self):
-        display_menu = DisplayMenu()
+        display_menu = Display()
 
         display_menu.display_title_and_infos(self.title, self.information)
 

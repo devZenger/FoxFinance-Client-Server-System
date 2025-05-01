@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import StockActions
 
 
@@ -10,12 +10,10 @@ class DepotStockSearch:
         self.information = "Derzeit nur Dax unternehmen möglich"
         self.token = token
 
-        self.stock_information = None
-
         self.options = options
 
     def run(self):
-        display_menu = DisplayMenu()
+        display_menu = Display()
         stock_actions = StockActions(self.token)
 
         display_menu.display_title(self.title)
@@ -46,15 +44,11 @@ class DepotStockSearch:
                     choice = "options"
 
                 case "no_stocks":
-                    display_menu.display_info(self.stock_information)
+                    display_menu.display_info(stock_actions.stock_information)
                     choice = "options"
 
                 case "options":
                     choice = display_menu.display_options(self.options)
 
-                case "stock_buy":
-                    isin = stock_actions.isin
-                    return "buy_stocks", isin
-
                 case _:
-                    return choice, ""
+                    return choice

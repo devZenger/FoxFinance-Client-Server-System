@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import StockActions
 
 
@@ -17,7 +17,7 @@ class DepotStockTrade:
 
     def run(self, isin=""):
 
-        display_menu = DisplayMenu()
+        display_menu = Display()
         stock_actions = StockActions(self.token)
 
         search_form_names = stock_actions.search_form_names

@@ -62,13 +62,12 @@ class SettingsForm(RegistrationForm):
                 to_transmit = {"transmission_type": "password",
                                "password": self.password}
             case _:
-                return print("fehler")
+                self.response = "Fehler, type konnte nicht zugeordnet werden"
+                return "error"
 
         server_request = ServerRequest(self.token)
 
         url_part = "changesettings/"
-
-        print(f"to transmit is {to_transmit}")
 
         status, self.response = server_request.make_post_request(
             url_part, to_transmit)

@@ -1,4 +1,10 @@
-from controller.main_controller import MainControll
+from controller.main_controller import MainControl
 
-start = MainControll()
-start.run()
+
+def main():
+    start = MainControl()
+    start.run()
+
+
+if __name__ == "__main__":
+    main()

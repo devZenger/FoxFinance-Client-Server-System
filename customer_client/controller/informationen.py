@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 from model import Information
 
 
@@ -9,7 +9,7 @@ class AllInformation:
         self.token = token
 
     def run(self):
-        display_menu = DisplayMenu()
+        display_menu = Display()
         information = Information()
 
         choice = "start"

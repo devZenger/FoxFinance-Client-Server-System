@@ -1,4 +1,4 @@
-from view import DisplayMenu
+from view import Display
 
 
 class DepotStartMenu:
@@ -8,7 +8,7 @@ class DepotStartMenu:
 
     def run(self):
 
-        display_menu = DisplayMenu()
+        display_menu = Display()
 
         display_menu.display_title(self.title)
         choice = display_menu.display_options(self.options)
