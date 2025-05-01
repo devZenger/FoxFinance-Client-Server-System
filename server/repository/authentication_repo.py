@@ -12,6 +12,9 @@ def get_auth_datas(email):
         value = (email,)
         data = db_ex.execute(sql, value).fetchall()
 
+        if not data:
+            return None
+        
         data = data[0]
         names = db_ex.col_names()
 

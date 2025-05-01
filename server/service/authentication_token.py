@@ -46,20 +46,22 @@ class Authentication:
         db_query = get_auth_datas(email)
 
         if not db_query:
-            return False
+            return False, True
+        if db_query["disabled"]:
+            return False, True
         if db_query["email"] != email:
-            return False
+            return False, False
         if not self.verify_password(password, db_query["password"]):
-            return False
+            return False, False
 
         #login time to database
         insert_login_time(db_query["customer_id"])        
 
-        return db_query
+        return db_query, False
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    print("debug start check")
+
     credtials_execption = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -71,7 +73,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         email = payload.get("email")
 
         if email is None:
-            print("debug raise credtials")
             raise credtials_execption
         token_data = TokenData(email=email)
     except InvalidTokenError:
@@ -79,18 +80,14 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise credtials_execption
 
     user_dic = get_auth_datas(email=token_data.email)
-    print(f"debug {user_dic}")
     if user_dic.get("customer_id") is None:
-        print("debug credtials2")
         raise credtials_execption
+    
     return user_dic
 
-async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    print("start get_current_active_user")
+async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
 
-    current_user["disabled"] = False
+    # current_user["disabled"] = False
 
     if current_user["disabled"]:
         raise HTTPException(status_code=400, detail="Inactive user")

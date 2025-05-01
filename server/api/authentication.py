@@ -41,14 +41,21 @@ async def customer_login_for_access_token(
 
     authentication = Authentication()
 
-    customer = authentication.authenticate_customer(login_form.email, login_form.password)
+    customer, disabled = authentication.authenticate_customer(login_form.email, login_form.password)
 
+    if disabled:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Account existiert nicht oder ist gesperrt",
+            headers={"WWW-Authenticate": "Bearer"},
+            )
+    
     if not customer:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Falsches Passwort oder Email Adresse",
             headers={"WWW-Authenticate": "Bearer"},
-        )
+            )
 
     return Token(access_token=await create_access_token(customer), token_type="bearer")
 
