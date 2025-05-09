@@ -1,6 +1,3 @@
-import decimal
-
-
 def get_key_value_max_length(input: dict):
     max_length_keys = 0
     max_length_values = 0
@@ -27,11 +24,11 @@ def make_table(input: dict, column_names: dict):
 
         for k, v in dic_in.items():
 
-            if isinstance(v, decimal.Decimal):
-                dic_in[k] = str(v.quantize(decimal.Decimal(1.00)))
-                dic_in[k] = f"{dic_in} EUR"
+            # if isinstance(v, decimal.Decimal):
+              #  dic_in[k] = str(v.quantize(decimal.Decimal(1.00)))
+              #  dic_in[k] = f"{dic_in} EUR"
 
-            elif isinstance(v, int):
+            if isinstance(v, int):
                 dic_in[k] = str(v)
             elif isinstance(v, float):
                 dic_in[k] = str(round(v, 2))
@@ -61,12 +58,13 @@ def make_table(input: dict, column_names: dict):
             tabelle.append("")
         tabelle[1] = f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
 
+    
     for i, dic_in in enumerate(input.values()):
 
         tabelle.append("")
-        for j, v in enumerate(dic_in.values()):
+        for j, k in enumerate(column_names.keys()):
 
-            tabelle[i+2] = f"{tabelle[i+2]} {v.ljust(column_lengths[j])} |" 
+            tabelle[i+2] = f"{tabelle[i+2]} {dic_in[k].ljust(column_lengths[j])} |" 
 
     return tabelle
 
