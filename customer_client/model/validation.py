@@ -26,7 +26,7 @@ class Validation:
             raise ValueError("Mindestens sechs Zahlen")
 
     def to_dict(self):
-        return {"validation_number":self.validation_number}
+        return {"validation_number": self.validation_number}
 
     def get_activate_code(self, email):
         url_part = "startvalidation/"
