@@ -1,20 +1,19 @@
 from .server_request import ServerRequest
-
-
+from .utility import time_check_two, email_check
 class RegistrationForm:
     def __init__(self):
-        self._last_name = None
-        self._first_name = None
-        self._street = None
-        self._house_number = None
-        self._zip_code = None
-        self._city = None
-        self._birthday = None
-        self._email = None
-        self._phone_number = None
-        self._reference_account = None
-        self._fin_amount = None
-        self._password = None
+        self._last_name = ""
+        self._first_name = ""
+        self._street = ""
+        self._house_number = ""
+        self._zip_code = ""
+        self._city = ""
+        self._birthday = ""
+        self._email = ""
+        self._phone_number = ""
+        self._reference_account = ""
+        self._fin_amount = 0.0
+        self._password = ""
 
         self.response = None
 
@@ -25,7 +24,7 @@ class RegistrationForm:
             "house_number": "Hausnummer",
             "city": "Stadt",
             "zip_code": "Postleitzahl",
-            "birthday": "Geburtstag",
+            "birthday": "Geburtstag (tt.mm.jjjj)",
             "email": "E-Mail Adresse",
             "phone_number": "Handynummer",
             "reference_account": "Referenzkonto",
@@ -39,7 +38,7 @@ class RegistrationForm:
         return self._last_name
 
     @last_name.setter
-    def last_name(self, input):
+    def last_name(self, input: str):
         if len(input) >= 2:
             self._last_name = input
         else:
@@ -51,11 +50,11 @@ class RegistrationForm:
         return self._first_name
 
     @first_name.setter
-    def first_name(self, input):
+    def first_name(self, input: str):
         if len(input) >= 2:
             self._first_name = input
         else:
-             raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Mindestens zwei Zeichen")
 
     #  street
     @property
@@ -63,7 +62,7 @@ class RegistrationForm:
         return self._street
 
     @street.setter
-    def street(self, input):
+    def street(self, input: str):
         if len(input) >= 2:
             self._street = input
         else:
@@ -75,7 +74,7 @@ class RegistrationForm:
         return self._house_number
 
     @house_number.setter
-    def house_number(self, input):
+    def house_number(self, input: str):
         if len(input) >= 1:
             self._house_number = input
         else:
@@ -87,7 +86,7 @@ class RegistrationForm:
         return self._city
 
     @city.setter
-    def city(self, input):
+    def city(self, input: str):
         if len(input) >= 2:
             self._city = input
         else:
@@ -99,11 +98,16 @@ class RegistrationForm:
         return self._zip_code
 
     @zip_code.setter
-    def zip_code(self, input):
-        if len(input) >= 2:
-            self._zip_code = input
-        else:
-            raise ValueError("Mindestens zwei Zeichen")
+    def zip_code(self, input: int):
+        try:
+            input = int(input) 
+            if input >= 1067 and input <= 99998:
+                self._zip_code = input
+            else:
+                raise ValueError("Ungültige Postleitzahl")
+
+        except ValueError:
+            raise ValueError("Ungültige Postleitzahl")
 
     # birthday
     @property
@@ -111,11 +115,13 @@ class RegistrationForm:
         return self._birthday
 
     @birthday.setter
-    def birthday(self, input):
-        if len(input) >= 2:
+    def birthday(self, input: str):
+        input = input.strip()
+        test = time_check_two(input)
+        if test:
             self._birthday = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Fehlerhafte Eingabe, tt.mm.jjjj beachten")
 
     # email
     @property
@@ -124,10 +130,11 @@ class RegistrationForm:
 
     @email.setter
     def email(self, input):
-        if len(input) >= 2:
+        test = email_check(input)
+        if test:
             self._email = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Fehlerfafte Eingabe, ungültige E-Mail Adressse")
 
     # phone number
     @property
@@ -160,10 +167,14 @@ class RegistrationForm:
 
     @fin_amount.setter
     def fin_amount(self, input):
-        if len(input) >= 1:
-            self._fin_amount = input
-        else:
-            self._fin_amount = 0
+        try:
+            input = float(input)
+            if input >= 0:
+                self._fin_amount = input
+            else:
+                raise ValueError("Fehlerhafte Eingabe, bitte positive Zahl eingeban")
+        except ValueError:
+            raise ValueError("Fehlerhafte Eingabe, bitte eine Zahl eingaben")
 
     # passwort
     @property
@@ -171,7 +182,7 @@ class RegistrationForm:
         return self._password
 
     @password.setter
-    def password(self, input):
+    def password(self, input: str):
         if len(input) >= 2:
             self._password = input
         else:

@@ -1,38 +1,27 @@
 from passlib.context import CryptContext
-from pydantic import BaseModel
 
 from repository import insert_customer
+from schemas import AccountForm
 
+from .utility import time_check_two, email_check
 
-class AccountForm(BaseModel):
-   last_name: str
-   first_name: str
-   street: str
-   house_number: str
-   zip_code: str
-   city: str
-   birthday: str
-   email: str
-   phone_number: str
-   reference_account: str
-   fin_amount: str
-   password: str
+# class AccountForm(BaseModel):
 
 
 class CustomerRegistration:
     def __init__(self):
-        self._last_name = None
-        self._first_name = None
-        self._street = None
-        self._house_number = None
+        self._last_name = ""
+        self._first_name = ""
+        self._street = ""
+        self._house_number = ""
         self._zip_code = None
-        self._city = None
-        self._birthday = None
-        self._email = None
-        self._phone_number = None
-        self._reference_account = None
-        self._fin_amount = None
-        self._password = None
+        self._city = ""
+        self._birthday = ""
+        self._email = ""
+        self._phone_number = ""
+        self._reference_account = ""
+        self._fin_amount = 0.0
+        self._password = ""
 
     def fill_in(self, account_form: AccountForm):
         errors = []
@@ -68,7 +57,7 @@ class CustomerRegistration:
     @first_name.setter
     def first_name(self, input):
         if len(input) >= 2:
-            self._first_name = input  
+            self._first_name = input
         else:
             raise ValueError("Mindestens zwei Zeichen")
 
@@ -115,10 +104,15 @@ class CustomerRegistration:
 
     @zip_code.setter
     def zip_code(self, input):
-        if len(input) >= 2:
-            self._zip_code = input
-        else:
-            raise ValueError("Mindestens zwei Zeichen")
+        try:
+            input = int(input) 
+            if input >= 1067 and input <= 99998:
+                self._zip_code = input
+            else:
+                raise ValueError("Ungültige Postleitzahl")
+
+        except ValueError:
+            raise ValueError("Ungültige Postleitzahl")
 
     # birthday
     @property
@@ -127,10 +121,12 @@ class CustomerRegistration:
 
     @birthday.setter
     def birthday(self, input):
-        if len(input) >= 2:
+        input = input.strip()
+        test = time_check_two(input)
+        if test:
             self._birthday = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Fehlerhafte Eingabe, tt.mm.jjjj beachten")
 
     # email
     @property
@@ -139,10 +135,11 @@ class CustomerRegistration:
 
     @email.setter
     def email(self, input):
-        if len(input) >= 2:
+        test = email_check(input)
+        if test:
             self._email = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Fehlerfafte Eingabe, ungültige E-Mail Adressse")
 
     # phone number
     @property
@@ -175,10 +172,14 @@ class CustomerRegistration:
 
     @fin_amount.setter
     def fin_amount(self, input):
-        if len(input) >= 1:
-            self._fin_amount = input
-        else:
-            self._fin_amount = 0
+        try:
+            input = float(input)
+            if input >= 0:
+                self._fin_amount = input
+            else:
+                raise ValueError("Fehlerhafte Eingabe, bitte positive Zahl eingeban")
+        except ValueError:
+            raise ValueError("Fehlerhafte Eingabe, bitte eine Zahl eingaben")
 
     # passwort
     @property

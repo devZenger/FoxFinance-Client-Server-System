@@ -1,14 +1,18 @@
-def date_form_validation(input: str):
 
-    date_arry = input.split("-")
 
-    if (len(date_arry[0]) == 4 and
-            len(date_arry[1]) == 2 and
-            len(date_arry[2]) == 2):
-        return True
+def time_check(time: str):
+    time = time.strip()
+    try:
+        split = time.split("-")
+        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
+            return True
+        else:
+            return False
 
-    else:
-        raise ValueError("ungültiges Datum")
+    except AttributeError:
+        return False
+    except IndexError:
+        return False
 
 
 def time_check_two(time: str):
