@@ -1,6 +1,23 @@
-from repository import stock_transactions_overview, search_past_transactions
+from repository import simple_search, stock_transactions_overview, search_past_transactions
 
 from .utility import date_form_validation
+
+
+def customer_name(customer_id):
+    table = "customers"
+    condition = "customer_id"
+
+    result = simple_search(table, condition, customer_id)
+    
+    print(result)
+    print("++++++++++++++++++")
+    result = result["row_result0"]
+
+    
+    print(result)
+    name = f"{result["first_name"]} {result["last_name"]}"
+
+    return name
 
 
 def depot_overview(customer_id):

@@ -29,6 +29,7 @@ class DepotControl:
                         " 9. Abmelden": "loggout",
                         "10. Abmelden und benden": "loggout_and_exit"}
 
+        self.depot_menu_start = None
         self.depot_overview = None
         self.stock_search = None
         self.stock_trade = None
@@ -38,9 +39,9 @@ class DepotControl:
         self.information = None
         self.settings = None
 
-
     def delete_token_instance(self):
         del self.token
+        del self.depot_menu_start
         if isinstance(self.depot_overview, Display):
             del self.depot_overview
         if isinstance(self.stock_search, Display):
@@ -57,19 +58,18 @@ class DepotControl:
             del self.information
         if isinstance(self.settings, Display):
             del self.settings
-            
 
     def run(self):
 
         choice = "start"
+        self.depot_menu_start = DepotStartMenu(self.options, self.token)
 
         while True:
 
             match choice:
 
                 case "start":
-                    depot_menu_start = DepotStartMenu(self.options)
-                    choice = depot_menu_start.run()
+                    choice = self.depot_menu_start.run()
 
                 case "depot_overview":
                     self.depot_overview = DepotOverview(self.token)
