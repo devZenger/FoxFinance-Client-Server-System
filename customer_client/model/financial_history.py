@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 
 from .server_request import ServerRequest
 
+from .utility import time_check
+
 
 class FinancialHistory:
 
@@ -9,17 +11,14 @@ class FinancialHistory:
 
         self.server_request = ServerRequest(token)
 
-        self.status_code = None
-
-        self._start_time = None
-        self._end_time = None
+        self._start_time = ""
+        self._end_time = ""
 
         self.form_names = {"start_time": "Startdatum (jjjj-mm-tt) ",
                            "end_time": "Enddatum (jjjj-mm-tt) "}
 
-        self.column_names = {"fin_transaction_id": "T. Nr.",
-                             "fin_transaction_date": "Datum",
-                             "fin_transaction_types": "Art der T.",
+        self.column_names = {"fin_transaction_date": "Datum",
+                             "fin_transaction_type": "Art der T.",
                              "fin_amount": "Betrag",
                              "bank_account": "Bankkonto"}
 
@@ -29,11 +28,11 @@ class FinancialHistory:
 
     @start_time.setter
     def start_time(self, input: str):
-        print(f"input = {input}")
-        split = input.split("-")
-        print(f"split= {len(split[0])}    split= {split[0]}")
-        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
-            print(f"start time. {input}")
+        input = input.strip()
+        
+        check = time_check(input)
+   
+        if check:
             self._start_time = input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
@@ -44,10 +43,10 @@ class FinancialHistory:
 
     @end_time.setter
     def end_time(self, input: str):
-        split = input.split("-")
+        input = input.strip()
+        check = time_check(input)
 
-        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
-            print(f"end_time = {input}")
+        if check:
             self._end_time = input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")

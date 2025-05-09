@@ -1,5 +1,5 @@
 from .db_executor import DBExecutor
-from .search_repo import make_dictionary
+from .repo_utilitys import make_dictionary
 
 db_ex = DBExecutor()
 
@@ -54,7 +54,6 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
 
     try:
         sql = """SELECT
-                    ft.fin_transaction_type_id,
                     ft.fin_transaction_date,
                     ftt.fin_transaction_type,
                     ft.fin_amount,
