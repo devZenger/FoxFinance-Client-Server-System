@@ -8,11 +8,11 @@ class DepotOverview:
         self.depot = DepotHistory(token)
 
         self.title = "Depotübersicht"
-        self.options = {"1. die letzten drei Monate": "last_three",
-                       "2. die letzten zwölf Monate": "last twelve",
-                       "3. Zeitraum einbegen": "timespan",
-                       "4. Depot anzeigen": "start",
-                       "5. zurück": "back"}
+        self.options = {"1. Aktienhandel der letzten dreißig Tage": "last_30days",
+                        "2. Aktienhandel der letzten drei Monate": "last_three",
+                        "3. Zeitraum eingeben": "timespan",
+                        "4. Depot anzeigen": "start",
+                        "5. zurück": "back"}
         self.display_menu = Display()
 
     def run(self):
@@ -29,24 +29,26 @@ class DepotOverview:
                     self.show_table(request)
                     choice = "option"
 
-                case "last_three":
-                    request = self.depot.get_last_three_months()
-                    self.show_table_timespan(request)
+                case "last_30days":
+                    request = self.depot.get_last_thirty_days()
+                    self.show_table_timespan(request, "Die letzten dreißig Tage:")
                     choice = "option"
 
-                case "last_twelve":
-                    request = self.depot.get_last_twelve_months()
-                    self.show_table_timespan(request)
+                case "last_three":
+                    request = self.depot.get_last_three_months()
+                    self.show_table_timespan(request, "Die letzten drei Monate:")
                     choice = "option"
 
                 case "timespan":
-                    self.display_menu.display_form(self.form_names)
-                    request = self.depot.get_transaction_by_timespan()
-                    self.show_table_timespan(request)
+                    form_filled = self.display_menu.display_form(self.form_names,
+                                                                 self.depot)
+                    if form_filled:
+                        request = self.depot.get_transaction_by_timespan()
+                        self.show_table_timespan(request)
                     choice = "option"
 
                 case "back":
-                    return "start"
+                    return
 
                 case "option":
                     choice = self.display_menu.display_options(self.options)
@@ -63,9 +65,12 @@ class DepotOverview:
         else:
             self.display_menu.display_info(self.depot.response)
 
-    def show_table_timespan(self, input):
+    def show_table_timespan(self, input, title=None):
 
         if input is True:
+            if title is None:
+                title = f"Vom {self.depot.start_time} bis {self.depot.end_time}:"
+            self.display_menu.display_title(title)
             self.display_menu.display_table(
                 self.depot.response, self.depot.column_names_timespan)
 

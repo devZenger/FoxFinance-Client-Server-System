@@ -3,16 +3,17 @@ from datetime import datetime, timedelta
 
 from .server_request import ServerRequest
 
+from .utility import time_check
+
 
 class DepotHistory:
 
     def __init__(self, token):
 
         self.server_request = ServerRequest(token)
-        self.status_code = None
 
-        self._start_time = None
-        self._end_time = None
+        self._start_time = ""
+        self._end_time = ""
 
         self.form_names = {"start_time": "Startdatum (jjjj-mm-tt) ",
                            "end_time": "Enddatum (jjjj-mm-tt) "}
@@ -30,7 +31,8 @@ class DepotHistory:
                                       "isin": "ISIN",
                                       "company_name": "Unternehmen",
                                       "amount": "Anzahl",
-                                      "price_per_stock": "Preis"}
+                                      "price_per_stock": "Preis",
+                                      "total_order_charge": "Ordergebühren"}
 
     @property
     def start_time(self):
@@ -38,11 +40,11 @@ class DepotHistory:
 
     @start_time.setter
     def start_time(self, input: str):
-        print(f"input = {input}")
-        split = input.split("-")
-        print(f"split= {len(split[0])}    split= {split[0]}")
-        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
-            print(f"start time. {input}")
+
+        input = input.strip()
+        check = time_check(input)
+
+        if check:
             self._start_time = input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
@@ -53,10 +55,11 @@ class DepotHistory:
 
     @end_time.setter
     def end_time(self, input: str):
-        split = input.split("-")
+        input = input.strip()
 
-        if len(split[0]) == 4 and len(split[1]) == 2 and len(split[2]) == 2:
-            print(f"end_time = {input}")
+        check = time_check(input)
+
+        if check:
             self._end_time = input
         else:
             raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
@@ -79,48 +82,25 @@ class DepotHistory:
 
         return success
 
-    # test und dann löschen
-    def _get_transaction_by_timespan(self):
-
-        url_depot = f'{url_server_depot}pasttransactions/{self.start_time}/{self.end_time}/'
-        print(f"url get transaction: {url_depot}")
-        headers = {"Authorization": f"Bearer {self.token['access_token']}"}
-
-        self.response = requests.get(url_depot, headers=headers)
-
-        self.status_code = self.response.status_code
-        self.response = self.response.json()
-
-        if self.status_code == 200:
-            print(self.status_code)
-            return True
-
-        else:
-            print(self.status_code)
-            return False
-
-    def get_last_three_months(self):
+    def get_last_thirty_days(self):
 
         today = datetime.today()
-        three_months_ago = today - timedelta(days=90)
-        print(today)
-        print(three_months_ago)
+        thirty_days_ago = today - timedelta(days=30)
+
         self.end_time = today.strftime("%Y-%m-%d")
-        self.start_time = three_months_ago.strftime("%Y-%m-%d")
+        self.start_time = thirty_days_ago.strftime("%Y-%m-%d")
 
         result = self.get_transaction_by_timespan()
 
         return result
 
-    def get_last_twelve_months(self):
+    def get_last_three_months(self):
 
         today = datetime.today()
-        three_months_ago = today - timedelta(days=365)
+        three_months_ago = today - timedelta(days=90)
 
-        print(today.strftime("%Y-%m-%d"))
-
-        self.start_time = today.strftime("%Y-%m-%d")
-        self.end_time = three_months_ago.strftime("%Y-%m-%d")
+        self.end_time = today.strftime("%Y-%m-%d")
+        self.start_time = three_months_ago.strftime("%Y-%m-%d")
 
         result = self.get_transaction_by_timespan()
 

@@ -1,6 +1,6 @@
 from .db_executor import DBExecutor
 
-from .search_repo import make_dictionary
+from .repo_utilitys import make_dictionary
 
 db_ex = DBExecutor()
 
@@ -76,7 +76,7 @@ def stock_transactions_overview(customer_id):
                             s.company_name AS company_name,
                             (SELECT SUM(t.amount)
                                     FROM transactions
-                                    WHERE isin=t.isinW
+                                    WHERE isin=t.isin
                                         AND transaction_type = 'buy')
                                         AS amount,
                             SUM (t.amount * t.price_per_stock) / SUM(t.amount)
@@ -142,8 +142,8 @@ def search_past_transactions(customer_id, search_start, search_end):
                         SELECT *
                         FROM transactions AS t
                         WHERE t.customer_id = ?
-                            AND t.transaction_date >= ?
-                            AND t.transaction_date <= ?
+                            AND DATE(t.transaction_date) >= ?
+                            AND DATE(t.transaction_date) <= ?
                         GROUP by t.transaction_date
                         ORDER BY t.transaction_date ASC
                     ) AS t
@@ -178,11 +178,13 @@ def search_past_transactions(customer_id, search_start, search_end):
 if __name__ == "__main__":
 
     print("start")
+    start = "2025-01-12"
+    end = "2025-05-13"
     table = "stocks"
     column = "company_name"
     search_term = "%%deutsche%%"
 
-    answer = stock_transactions_overview("1")
+    answer = search_past_transactions(101, start, end)
 
     print(" ")
 
