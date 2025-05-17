@@ -17,7 +17,7 @@ class DepotStartMenu:
             self.name = self.welcome.response
         if succes:
             self.title = f"{self.title} {self.name}"
-        
+
         display_menu.display_title(self.title)
         choice = display_menu.display_options(self.options)
 

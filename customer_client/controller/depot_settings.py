@@ -6,13 +6,12 @@ class Settings:
     def __init__(self, token, options):
 
         self.settings = SettingsForm(token)
-        self.options = options
 
         self.title = "Kontoeinstelungen ändern"
-
         self.information = "Was möchten Sie ändern?"
         self.information_2time = "Möchten Sie noch weiteres ändern ?"
 
+        self.options = options
         self.options_settings = {"1. Adresse": "adress",
                                  "2. Telefonnummer": "phone_number",
                                  "3. Email Adresse": "email_adress",
@@ -26,8 +25,6 @@ class Settings:
     def run(self):
 
         display_menu = Display()
-
-
         choice = "start"
         first = True
 
@@ -56,39 +53,54 @@ class Settings:
                         self.options_settings)
 
                 case "adress":
-                    display_menu.display_form(
-                        self.settings.form_names_adress, self.settings)
-                    display_menu.display_filled_form()
-                    setting_type = "adress"
-                    choice = "conform_change"
+                    form_filled = display_menu.display_form(self.settings.form_names_adress,
+                                                            self.settings)
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        setting_type = "adress"
+                        choice = "conform_change"
+                    else:
+                        choice = "options"
 
                 case "phone_number":
-                    display_menu.display_form(
+                    form_filled = display_menu.display_form(
                         self.settings.form_names_phone_number, self.settings)
-                    display_menu.display_filled_form()
-                    setting_type = "phone_number"
-                    choice = "conform_change"
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        setting_type = "phone_number"
+                        choice = "conform_change"
+                    else:
+                        choice = "options"
 
                 case "email_adress":
-                    display_menu.display_form(
+                    form_filled = display_menu.display_form(
                         self.settings.form_names_email_adress, self.settings)
-                    display_menu.display_filled_form()
-                    setting_type = "email"
-                    choice = "conform_hange"
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        setting_type = "email"
+                        choice = "conform_hange"
+                    else:
+                        choice = "options"
 
                 case "reference_account":
-                    display_menu.display_form(
+                    form_filled = display_menu.display_form(
                         self.settings.form_names_ref_account, self.settings)
-                    display_menu.display_filled_form()
-                    setting_type = "reference_account"
-                    choice = "conform_change"
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        setting_type = "reference_account"
+                        choice = "conform_change"
+                    else:
+                        choice = "options"
 
                 case "password":
-                    display_menu.display_form(
+                    form_filled = display_menu.display_form(
                         self.settings.form_names_password, self.settings)
-                    display_menu.display_filled_form()
-                    setting_type = "password"
-                    choice = "conform_change"
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        setting_type = "password"
+                        choice = "conform_change"
+                    else:
+                        choice = "options"
 
                 case "conform_change":
                     choice = display_menu.display_options(

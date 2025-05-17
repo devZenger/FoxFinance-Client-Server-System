@@ -5,7 +5,6 @@ from .server_request import ServerRequest
 class SettingsForm(RegistrationForm):
     def __init__(self, token):
         self.token = token
-        
         self.data = None
 
         self.form_names_adress = {

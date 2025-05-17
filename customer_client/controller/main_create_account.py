@@ -11,7 +11,7 @@ class CreateAccountMenu:
             "2. abbrechen Zurück zum Hauptmenü:": "discontinue"
         }
         self.options_failure = {
-            "1. Wollen Sie wiederholen?":"start",
+            "1. Wollen Sie wiederholen?": "start",
             "2. abbrechen Zurück zum Hauptmenü:": "discontinue"
         }
 
@@ -27,9 +27,13 @@ class CreateAccountMenu:
                 case "start":
                     display_menu.display_title_and_infos(self.title,
                                                          self.information)
-                    display_menu.display_form(form_names, regis_form)
-                    display_menu.display_filled_form()
-                    choice = display_menu.display_options(self.options)
+                    form_filled = display_menu.display_form(form_names,
+                                                            regis_form)
+                    if form_filled:
+                        display_menu.display_filled_form()
+                        choice = display_menu.display_options(self.options)
+                    else:
+                        return "start"
 
                 case "create_account":
                     if regis_form.post_registration_form():

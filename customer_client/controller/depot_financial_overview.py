@@ -8,11 +8,11 @@ class AccountOverview:
         self.account = FinancialHistory(token)
         self.title = "Kontoübersicht"
         self.options = {"1. Die letzten drei Monate": "last_three",
-                       "2. Die letzten zwölf Monate": "last_twelve",
-                       "3. Zeitraum einbegen": "timespan",
-                       "4. Konto anzeigen": "start",
-                       "5. zurück": "back"}
-        
+                        "2. Die letzten zwölf Monate": "last_twelve",
+                        "3. Zeitraum eingeben": "timespan",
+                        "4. Konto anzeigen": "start",
+                        "5. zurück": "back"}
+
         self.display_menu = Display()
 
     def run(self):
@@ -40,10 +40,11 @@ class AccountOverview:
                     choice = "option"
 
                 case "timespan":
-                    self.display_menu.display_form(
-                        self.form_names, self.account)
-                    request = self.account.get_fin_transaction_by_timespan()
-                    self.show_table(request)
+                    form_filled = self.display_menu.display_form(
+                                    self.form_names, self.account)
+                    if form_filled:
+                        request = self.account.get_fin_transaction_by_timespan()
+                        self.show_table(request)
                     choice = "option"
 
                 case "back":
@@ -66,8 +67,6 @@ class AccountOverview:
             self.display_menu.display_info("unbekannter Fehler")
 
     def show_table(self, input):
-
-        print(f"input = {input}")
 
         if input is True:
             self.display_menu.display_table(

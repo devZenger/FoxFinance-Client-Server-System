@@ -8,7 +8,7 @@ class DepotWatchlist:
         self.watchlist = Watchlist(token)
 
         self.title = "Markliste"
-        self.title2 = "Welche Aktie"
+        self.title_stock = "Welche Aktie"
         self.information = "Dezeit nur von DAX Unternehmen möglich"
 
         self.options = {"1. Aktie hinzufürgen": "add_stock",
@@ -32,7 +32,6 @@ class DepotWatchlist:
                     if self.watchlist.success:
                         display_menu.display_table(self.watchlist.response,
                                                    self.watchlist.column_names)
-
                     else:
                         display_menu.display_info(self.watchlist.response)
 
@@ -50,13 +49,16 @@ class DepotWatchlist:
                     choice = "search_stock"
 
                 case "search_stock":
-                    display_menu.display_form(
-                        self.watchlist.search_form_names, self.watchlist)
-                    choice = self.watchlist.stock_search()
+                    form_filled = display_menu.display_form(self.watchlist.search_form_names,
+                                                            self.watchlist)
+                    if form_filled:
+                        choice = self.watchlist.stock_search()
+                    else:
+                        choice = "options"
 
                 case "several_stocks":
                     display_menu.display_title_and_infos(
-                        self.title2, self.watchlist.stock_list)
+                        self.title_stock, self.watchlist.stock_list)
                     choice = "search_stock"
 
                 case "single_stock":

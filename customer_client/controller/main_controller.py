@@ -12,7 +12,7 @@ class MainControl:
     def __init__(self):
         self.title = "Hauptmenü"
         self.options = {"1. Login": "login",
-                        "2. Login erstellen": "a_form",
+                        "2. Konto erstellen": "create_account",
                         "3. Informationen": "information",
                         "4. Beenden": "exit"}
 
@@ -35,7 +35,7 @@ class MainControl:
                     display.display_title(self.title)
                     choice = display.display_options(self.options)
 
-                case "a_form":
+                case "create_account":
                     create_account = CreateAccountMenu()
                     choice = create_account.run()
 

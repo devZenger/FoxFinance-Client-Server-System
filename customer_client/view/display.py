@@ -1,6 +1,5 @@
 import getpass
 
-
 from .utility import (make_table, 
                       get_length_from_subdic, 
                       get_key_value_max_length)
@@ -51,18 +50,25 @@ class Display:
         for key, value in form_names.items():
             while True:
                 try:
+                    if value == "Abbrechen" or value == "abbrechen":
+                        return False
                     if value != "Passwort":
-                        user_input = input(f"\t{value} eingeben: ")
+                        user_input = input(f"\t{value} eingeben: ").strip()
                     elif value == "Passwort":
                         user_input = getpass.getpass("\tPasswort eingeben: ")
                     else:
-                        user_input = input(f"\t{value} eingeben: ")
+                        user_input = input(f"\t{value} eingeben: ").strip()
                     setattr(self.to_fill, key, user_input)
                     break
                 except Exception as e:
-                    print(f"\tFehlerhafte eingabe: {e}")
+                    if e == "unter 18":
+                        print("Es tut uns leid, Mindestalter ist 18 Jahre.")
+                        return False
+                    else:
+                        print(f"\tFehlerhafte Eingabe: {e}")
+                        print("'Abbrechen' eingeben, um abzubrechen")
         print(self.line)
-        return "form_filled"
+        return True
 
     def display_filled_form(self, form_names_input=None):
         if form_names_input is None:
@@ -74,7 +80,12 @@ class Display:
         print("\tBitte Eingaben überprüfen:")
         print(self.line)
         for key, value in form_names_input.items():
-            print(f"\t{value.ljust(length_values)} : {getattr(self.to_fill, key)}")
+            if key == "password":
+                length = len(getattr(self.to_fill, key))
+                stars = "*"*length
+                print(f"\t{value.ljust(length_values)} : {stars}")
+            else:
+                print(f"\t{value.ljust(length_values)} : {getattr(self.to_fill, key)}")
 
         print(self.line)
 

@@ -3,8 +3,8 @@ from .server_request import ServerRequest
 
 class LoginForm:
     def __init__(self):
-        self._email = None
-        self._password = None
+        self._email = ""
+        self._password = ""
         self.response = None
 
         self.form_names = {"email": "Email Adresse",
@@ -15,7 +15,7 @@ class LoginForm:
         return self._email
 
     @email.setter
-    def email(self, input):
+    def email(self, input: str):
         if len(input) > 2:
             self._email = input
         else:
@@ -26,7 +26,7 @@ class LoginForm:
         return self._password
 
     @password.setter
-    def password(self, input):
+    def password(self, input: str):
         if len(input) > 12:
             self._password = input
         else:
@@ -38,7 +38,7 @@ class LoginForm:
             "password": str(self.password)
         }
 
-    def post_login_form(self):
+    def post_login_form(self) -> bool:
 
         to_transmit = self.to_dict()
 

@@ -3,7 +3,7 @@ from .server_request import ServerRequest
 
 
 class Watchlist(StockActions):
-    def __init__(self, token):
+    def __init__(self, token: str):
 
         self.server_request = ServerRequest(token)
         self.type_of_editing = None
@@ -23,13 +23,11 @@ class Watchlist(StockActions):
     def edit_watchlist(self):
         url_part = "editingwatchlist/"
         to_transmit = {"isin": self.isin}
-        print("to_transmit", to_transmit)
 
         if self.type_of_editing:
             to_transmit["transaction_type"] = True
         else:
             to_transmit["transaction_type"] = False
 
-        print(f"\n to transmit {to_transmit}\n")
         self.success, self.response = self.server_request.make_post_request(
             url_part, to_transmit)

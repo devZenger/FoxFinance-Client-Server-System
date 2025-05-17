@@ -5,11 +5,11 @@ from model import StockActions
 class DepotStockSearch:
     def __init__(self, token, options):
         self.title = "Aktiensuche"
-        self.title2 = "Ergebnisse: "
-        self.title3 = "Ergebnis: "
+        self.title_findings = "Ergebnisse: "
+        self.title_result = "Ergebnis: "
         self.information = "Derzeit nur Dax unternehmen möglich"
-        self.token = token
 
+        self.token = token
         self.options = options
 
     def run(self):
@@ -25,20 +25,21 @@ class DepotStockSearch:
 
                 case "stock_search":
                     display_menu.display_info(self.information)
-                    choice = display_menu.display_form(
+                    form_filled = display_menu.display_form(
                         stock_actions.search_form_names, stock_actions)
-
-                case "form_filled":
-                    choice = stock_actions.stock_search()
+                    if form_filled:
+                        choice = stock_actions.stock_search()
+                    else:
+                        choice = "options"
 
                 case "several_stocks":
                     stock_information = stock_actions.stock_list
                     display_menu.display_title_and_infos(
-                        self.title2, stock_information)
+                        self.title_findings, stock_information)
                     choice = "options"
 
                 case "single_stock":
-                    display_menu.display_title(self.title3)
+                    display_menu.display_title(self.title_result)
                     display_menu.display_dic_in_dic(
                         stock_actions.stock_information)
                     choice = "options"

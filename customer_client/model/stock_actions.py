@@ -7,7 +7,7 @@ def match_server_response(input: dict):
 
     dic_info = {"Name": f"{input["stocks_row"]["company_name"]}",
                 "Symbol": f"{input["stocks_row"]["ticker_symbol"]}",
-                "ISIN": f"{input["stocks_row"]["isin"]}"}
+                "ISIN": f" {input["stocks_row"]["isin"]}"}
 
     data_dict["Informationen"] = dic_info
 
@@ -20,30 +20,30 @@ def match_server_response(input: dict):
     data_dict["Aktuellster Handelstag"] = dic_lastest_day
 
     dic_six_months = {"Kurs": f"{input["6 months"]["price"]:.2f} €",
-                      "Veränderung": f"{input["6 months"]["performance"]:.2f}%"}
+                      "Veränderung": f"{input["6 months"]["performance"]:.2f} %"}
 
     data_dict["Performance über 6 Monate"] = dic_six_months
 
     dic_one_year = {"Kurs": f"{input["1 years"]["price"]:.2f} €",
-                    "Veränderung": f"{input["1 years"]["performance"]:.2f}%"}
+                    "Veränderung": f"{input["1 years"]["performance"]:.2f} %"}
 
     data_dict["Performance über ein Jahr"] = dic_one_year
 
     dic_two_year = {"Kurs": f"{input["2 years"]["price"]:.2f} €",
-                    "Veränderung": f"{input["2 years"]["performance"]:.2f}%"}
+                    "Veränderung": f"{input["2 years"]["performance"]:.2f} %"}
 
-    data_dict["Performance über ein Jahr"] = dic_two_year
+    data_dict["Performance über zwei Jahre"] = dic_two_year
 
     return data_dict
 
 
 class StockActions:
-    def __init__(self, token):
+    def __init__(self, token: str):
 
         self.server_request = ServerRequest(token)
 
-        self._search_term = None
-        self.stock_list = None
+        self._search_term = ""
+        self.stock_list = ""
         self.stock_information = None
 
         self.response = None
@@ -53,11 +53,11 @@ class StockActions:
         self.trade_form_names = {"amount": "Anzahl",
                                  "type_of_action": "Kaufen oder Verkaufen"}
 
-        self.isin = None
-        self.stock_name = None
-        self._amount = None
-        self._type_of_action = None
-        self._type_of_action_en = None
+        self.isin = ""
+        self.stock_name = ""
+        self._amount = 0
+        self._type_of_action = ""
+        self._type_of_action_en = ""
 
     @property
     def search_term(self):
@@ -109,9 +109,6 @@ class StockActions:
         get_data, response = self.server_request.get_with_parameters(
             url_part, self.search_term)
 
-        print("##############")
-        print(f"get_data= {get_data}\t")
-        print("++++++++++++++++++++")
         if get_data is False:
             return f"\tFehler, {self.response.status_code}\n\t" \
                     "Überprüfen Sie die Verbindung"
@@ -125,7 +122,7 @@ class StockActions:
                 self.stock_information = results
                 return "no_stocks"
 
-            elif len(results) > 1: 
+            elif len(results) > 1:
                 result_str = "ISIN\t\t | Ticker Symbol | Firmenname\n"
 
                 for result in results.values():

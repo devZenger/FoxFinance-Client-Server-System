@@ -2,7 +2,7 @@ import requests
 
 
 class ServerRequest:
-    def __init__(self, token=None):
+    def __init__(self, token: str | None = None):
         self.token = token
 
         self.url_server = 'http://127.0.0.1:8000/'
@@ -21,7 +21,6 @@ class ServerRequest:
 
         try:
             server_response = server_response.json()
-            print("server_response", server_response)
 
         except:
             pass
@@ -52,13 +51,13 @@ class ServerRequest:
             # server_response is string
             return False, server_response["detail"]
 
-    def _make_get_request(self, url):
+    def _make_get_request(self, url: str):
 
         server_response = requests.get(url, headers=self.headers)
 
         return self.process_response(server_response)
 
-    def get_without_parameters(self, url_part):
+    def get_without_parameters(self, url_part: str):
 
         url = f"{self.url_server}{url_part}"
 
@@ -74,7 +73,7 @@ class ServerRequest:
 
         return self._make_get_request(url)
 
-    def make_post_request(self, url_part, to_transmit):
+    def make_post_request(self, url_part: str, to_transmit):
 
         url = f"{self.url_server}{url_part}"
 

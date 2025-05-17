@@ -29,9 +29,9 @@ class FinancialHistory:
     @start_time.setter
     def start_time(self, input: str):
         input = input.strip()
-        
+
         check = time_check(input)
-   
+
         if check:
             self._start_time = input
         else:
@@ -57,7 +57,6 @@ class FinancialHistory:
 
         status, self.response = self.server_request.get_without_parameters(
             url_part)
-        print(f"get-acutal_balance: self.response: {self.response}")
 
         if status:
             current_balance = str(round(self.response["actual_balance"], 2))

@@ -35,8 +35,8 @@ class Validation:
 
         if success is True:
 
-            handy = {"line1": "          #",
-                     "line2": "          #",
+            handy = {"line1": "           #",
+                     "line2": "           #",
                      "line3": " __________#___",
                      "line4": "/     :::::    \\",
                      "line5": "|  ___________ |",

@@ -14,19 +14,9 @@ def get_key_value_max_length(input: dict):
 
 def make_table(input: dict, column_names: dict):
 
-    print("\n\n")
-    print("input:", input)
-    print("")
-    print("column_names", column_names)
-    print("\n\n")
-
     for dic_in in input.values():
 
         for k, v in dic_in.items():
-
-            # if isinstance(v, decimal.Decimal):
-              #  dic_in[k] = str(v.quantize(decimal.Decimal(1.00)))
-              #  dic_in[k] = f"{dic_in} EUR"
 
             if isinstance(v, int):
                 dic_in[k] = str(v)
@@ -49,22 +39,21 @@ def make_table(input: dict, column_names: dict):
             if vol > column_lengths[i]:
                 column_lengths[i] = vol
 
-    tabelle = [""]
+    tabelle = ["| "]
 
     for i, v in enumerate(column_names.values()):
 
         tabelle[0] = f"{tabelle[0]} {v.ljust(column_lengths[i])} |"
         if i == 0:
-            tabelle.append("")
+            tabelle.append("|-")
         tabelle[1] = f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
 
-    
     for i, dic_in in enumerate(input.values()):
 
-        tabelle.append("")
+        tabelle.append("| ")
         for j, k in enumerate(column_names.keys()):
 
-            tabelle[i+2] = f"{tabelle[i+2]} {dic_in[k].ljust(column_lengths[j])} |" 
+            tabelle[i+2] = f"{tabelle[i+2]} {dic_in[k].ljust(column_lengths[j])} |"
 
     return tabelle
 
@@ -86,11 +75,11 @@ def get_length_from_subdic(input: dict):
 
 if __name__ == "__main__":
     result = {'row_result0': {'isin': 'DE0005140008',
-                            'company_name': 'Deutsche Bank',
-                            'amount': 68,
-                            'price_per_stock': 21.270000457763672,
-                            'actual_price': 21.270000457763672,
-                            'performance': 1.0},
+                              'company_name': 'Deutsche Bank',
+                              'amount': 68,
+                              'price_per_stock': 21.270000457763672,
+                              'actual_price': 21.270000457763672,
+                              'performance': 1.0},
               'row_result1': {'isin': 'DE0005190003',
                               'company_name': 'BMW St',
                               'amount': 79,

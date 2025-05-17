@@ -1,4 +1,3 @@
-import requests
 from datetime import datetime, timedelta
 
 from .server_request import ServerRequest

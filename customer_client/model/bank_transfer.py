@@ -6,9 +6,9 @@ from .financial_history import FinancialHistory
 class BankTransfer:
     def __init__(self, token):
         self.token = token
-        self._fin_amount = None
-        self._transaction_type = None
-        self._usage = None
+        self._fin_amount = 0.0
+        self._transaction_type = ""
+        self._usage = ""
 
         self.form_names = {"fin_amount": "Betrag (. statt ,) ",
                            "transaction_type": "Einzahlen oder Auszahlen ",
@@ -20,9 +20,14 @@ class BankTransfer:
 
     @fin_amount.setter
     def fin_amount(self, input: str):
+        input = input.strip()
         if "," in input:
             input = input.replace("", ","".")
-        input = float(input)
+
+        try:
+            input = float(input)
+        except ValueError:
+            raise ValueError("Fehlerhafte Eingabe")
 
         if input >= 0:
             self._fin_amount = input
@@ -36,7 +41,7 @@ class BankTransfer:
     @transaction_type.setter
     def transaction_type(self, input: str):
 
-        input = input.lower()
+        input = input.lower().strip()
 
         if input == "einzahlen" or input == "deposit":
             self._transaction_type = "einzahlen"
