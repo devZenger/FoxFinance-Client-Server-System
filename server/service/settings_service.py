@@ -1,20 +1,8 @@
-from pydantic import BaseModel
+from repository import update_customer_settings, simple_search
+from schemas import Settings
 
 from .customer_registration import CustomerRegistration
-from repository import update_customer_settings, simple_search
-
-
-class Settings(BaseModel):
-    transmission_type: str
-    street: str | None = None
-    house_number: str | None = None
-    city: str | None = None
-    zip_code: str | None = None
-    phone_number: str | None = None
-    email: str | None = None
-    reference_account: str | None = None
-    password: str | None = None
-
+from utilitys import bank_account_decode
 
 class SettingsService(CustomerRegistration):
 
@@ -92,7 +80,10 @@ class SettingsService(CustomerRegistration):
 
         for key, value in search_parameters.items():
             response = simple_search(key, "customer_id", customer_id)
+            print(response)
             current_settings[value] = response["row_result0"]
+
+        current_settings["reference_account"]["reference_account"] = bank_account_decode(current_settings["reference_account"]["reference_account"])
 
         return current_settings
 

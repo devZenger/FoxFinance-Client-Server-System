@@ -1,18 +1,11 @@
-from pydantic import BaseModel
-from decimal import Decimal
-
 from repository import (customer_balance,
                         search_past_financial_transactions,
                         simple_search,
                         insert_bank_transfer)
+from schemas import BankTransfer
 
 from .utility import date_form_validation
-
-
-class BankTransfer(BaseModel):
-    fin_amount: float
-    transfer_type: str
-    usage: str | None = None
+from utilitys import bank_account_decode
 
 
 def get_customer_balance(customer_id):
@@ -31,10 +24,13 @@ def do_past_fin_transactions(customer_id, start_date, end_date):
 
     try:
         date_form_validation(start_date)
-        date_form_validation(end_date) 
+        date_form_validation(end_date)
         transfers = search_past_financial_transactions(customer_id,
                                                        start_date,
                                                        end_date)
+
+        for trans in transfers.values():
+            trans["bank_account"] = bank_account_decode(trans["bank_account"])
 
         return transfers
 
@@ -43,8 +39,6 @@ def do_past_fin_transactions(customer_id, start_date, end_date):
 
 
 def make_bank_transfer(customer_id, bank_transfer: BankTransfer):
-
-    print("start make bank transfer")
 
     transfer_dic = {}
     transfer_dic["customer_id"] = customer_id
@@ -75,6 +69,7 @@ def make_bank_transfer(customer_id, bank_transfer: BankTransfer):
                                                 "financial_transfer_id",
                                                 b_transfer_id)
 
+        financial_transfer_data["row_result0"]["bank_account"] = bank_account_decode(financial_transfer_data["row_result0"]["bank_account"])
         return financial_transfer_data
 
     except Exception as e:
@@ -83,17 +78,18 @@ def make_bank_transfer(customer_id, bank_transfer: BankTransfer):
 
 
 if __name__ == "__main__":
-
+    print("test")
     customer_id = 1
 
     transfer = BankTransfer(
-        balance_sum=Decimal(3400.00),
+        fin_amount=100.0,
         transfer_type="withdrawal",
         usage="Test")
 
-    print(transfer)
+    start_date = "2025-01-01"
+    end_date = "2025-31-06"
 
-    answer = make_bank_transfer(customer_id, transfer)
+    answer = do_past_fin_transactions(customer_id, start_date, end_date)
 
     print(" ")
 

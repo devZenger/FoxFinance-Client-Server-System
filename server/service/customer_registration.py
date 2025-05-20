@@ -1,11 +1,15 @@
 from passlib.context import CryptContext
 
+from utilitys import bank_account_encode 
 from repository import insert_customer
 from schemas import AccountForm
 
-from .utility import time_check_two, email_check
-
-# class AccountForm(BaseModel):
+from .utility import (time_check_two,
+                      email_check,
+                      password_check,
+                      house_number_check,
+                      phone_number_check,
+                      age_check)
 
 
 class CustomerRegistration:
@@ -47,7 +51,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._last_name = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens zwei Zeichen")
 
     # first name
     @property
@@ -59,7 +63,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._first_name = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens zwei Zeichen")
 
     #  street
     @property
@@ -71,7 +75,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._street = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens zwei Zeichen")
 
     # house number
     @property
@@ -81,9 +85,13 @@ class CustomerRegistration:
     @house_number.setter
     def house_number(self, input):
         if len(input) >= 1:
-            self._house_number = input
+            check = house_number_check(input)
+            if check:
+                self._house_number = input
+            else:
+                raise ValueError("Die Hausnummer muss eine Zahl beinhalten")
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens ein Zeichen")
 
     # city
     @property
@@ -95,7 +103,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._city = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens zwei Zeichen")
 
     # zip code
     @property
@@ -109,10 +117,10 @@ class CustomerRegistration:
             if input >= 1067 and input <= 99998:
                 self._zip_code = input
             else:
-                raise ValueError("Ungültige Postleitzahl")
+                raise ValueError("ungültige Postleitzahl")
 
         except ValueError:
-            raise ValueError("Ungültige Postleitzahl")
+            raise ValueError("ungültige Postleitzahl")
 
     # birthday
     @property
@@ -124,9 +132,13 @@ class CustomerRegistration:
         input = input.strip()
         test = time_check_two(input)
         if test:
-            self._birthday = input
+            test = age_check(input)
+            if test:
+                self._birthday = input
+            else:
+                raise ValueError("unter 18")
         else:
-            raise ValueError("Fehlerhafte Eingabe, tt.mm.jjjj beachten")
+            raise ValueError("Bitte das Format tt.mm.jjjj beachten")
 
     # email
     @property
@@ -139,7 +151,7 @@ class CustomerRegistration:
         if test:
             self._email = input
         else:
-            raise ValueError("Fehlerfafte Eingabe, ungültige E-Mail Adressse")
+            raise ValueError("ungültige E-Mail Adressse")
 
     # phone number
     @property
@@ -148,22 +160,27 @@ class CustomerRegistration:
 
     @phone_number.setter
     def phone_number(self, input):
-        if len(input) >= 2:
-            self._phone_number = input
+        if len(input) >= 11 and len(input) <= 13:
+            test = phone_number_check(input)
+            if test:
+                self._phone_number = input
+            else:
+                raise ValueError("Telfeonnummer darf nur Zahlen beinhalten")
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("ungülitge Länge")
 
     # reference account
     @property
     def reference_account(self):
-        return self._reference_account
+        encode = bank_account_encode(self._reference_account)
+        return encode
 
     @reference_account.setter
     def reference_account(self, input):
         if len(input) >= 2:
             self._reference_account = input
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("mindestens zwei Zeichen")
 
     # balance
     @property
@@ -177,9 +194,9 @@ class CustomerRegistration:
             if input >= 0:
                 self._fin_amount = input
             else:
-                raise ValueError("Fehlerhafte Eingabe, bitte positive Zahl eingeban")
+                raise ValueError("Bitte eine positive Zahl eingeben")
         except ValueError:
-            raise ValueError("Fehlerhafte Eingabe, bitte eine Zahl eingaben")
+            raise ValueError("Bitte eine positive Zahl eingaben")
 
     # passwort
     @property
@@ -188,12 +205,17 @@ class CustomerRegistration:
 
     @password.setter
     def password(self, input):
-        if len(input) >= 2:
-            password_context = CryptContext(schemes=["bcrypt"],
-                                            deprecated="auto")
-            self._password = password_context.hash(input)
+        if len(input) >= 12:
+            test, error = password_check(input)
+            if test:
+                password_context = CryptContext(schemes=["bcrypt"],
+                                                deprecated="auto")
+                self._password = password_context.hash(input)
+            else:
+                raise ValueError("Passwort muss mindestens "
+                                 f"{error} enthalten")
         else:
-            raise ValueError("Mindestens zwei Zeichen")
+            raise ValueError("Mindestens zwölf Zeichen")
 
     def to_dict(self):
         return {
