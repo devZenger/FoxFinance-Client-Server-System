@@ -1,4 +1,4 @@
-from .server_request import ServerRequest
+from service import ServerRequest
 
 
 class LoginForm:
@@ -8,7 +8,7 @@ class LoginForm:
         self.response = None
 
         self.form_names = {"email": "Email Adresse",
-                           "password": "Passwort"}
+                           "password": "Passwort_Login"}
 
     @property
     def email(self):
