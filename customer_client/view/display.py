@@ -50,23 +50,26 @@ class Display:
         for key, value in form_names.items():
             while True:
                 try:
-                    if value == "Abbrechen" or value == "abbrechen":
-                        return False
-                    if value != "Passwort":
-                        user_input = input(f"\t{value} eingeben: ").strip()
+                    if value == "Passwort_Login":
+                        user_input = getpass.getpass("\tPasswort eingeben: ").strip()
                     elif value == "Passwort":
-                        user_input = getpass.getpass("\tPasswort eingeben: ")
+                        user_input = getpass.getpass("\tPasswort (min. 12 Zeichen und \n, mit A-Z, a-z, 0-9 und Sonderzeichen)\n"
+                                                     "eingeben: ").strip()
                     else:
                         user_input = input(f"\t{value} eingeben: ").strip()
+
+                    if user_input == "Abbrechen" or user_input == "abbrechen":
+                        return False
+
                     setattr(self.to_fill, key, user_input)
                     break
                 except Exception as e:
                     if e == "unter 18":
-                        print("Es tut uns leid, Mindestalter ist 18 Jahre.")
+                        print("\tEs tut uns leid, Mindestalter ist 18 Jahre.")
                         return False
                     else:
                         print(f"\tFehlerhafte Eingabe: {e}")
-                        print("'Abbrechen' eingeben, um abzubrechen")
+                        print("\t'Abbrechen' eingeben, um abzubrechen")
         print(self.line)
         return True
 
