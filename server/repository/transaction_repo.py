@@ -1,15 +1,14 @@
-from .db_executor import DBExecutor
+from utilitys import DBOperationError, SQlExecutionError, make_dictionary
 
-from .repo_utilitys import make_dictionary
-
-db_ex = DBExecutor()
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def insert_stock_transaction(transaction: dict, balance: dict):
     print("start insert stock transaction")
     try:
-        db_ex.open_connection_db()
-        db_ex.start_transaction()
+        db_op.open_connection_db()
+        db_op.start_transaction()
 
         sql = """INSERT INTO transactions(
                  customer_id,
@@ -25,7 +24,7 @@ def insert_stock_transaction(transaction: dict, balance: dict):
                  :price_per_stock,
                  :order_charge_id
                  )"""
-        transaction_id = db_ex.execute(sql, transaction).lastrowid
+        transaction_id = db_op.execute(sql, transaction).lastrowid
 
         balance["usage"] = f"Aktientransaktions Nr.: {transaction_id}"
 
@@ -41,27 +40,29 @@ def insert_stock_transaction(transaction: dict, balance: dict):
                  :fin_transaction_type_id,
                  :usage)"""
 
-        balance_id = db_ex.execute(sql, balance).lastrowid
+        balance_id = db_op.execute(sql, balance).lastrowid
 
-        db_ex.connection_commit()
+        db_op.connection_commit()
         print("ende try stock transaction")
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei insert_stock_transaction(" \
+        error_msg = f"Fehler bei insert_stock_transaction(" \
                 f"transaction:dict: {transaction},"\
                 f"balance:dict: {balance}).\nError: {e}"
-        print(error)
-        db_ex.rollback()
-        raise ValueError(error)
+
+        db_op.rollback()
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
         return transaction_id, balance_id
 
 
 def stock_transactions_overview(customer_id):
 
-    db_ex.open_connection_db()
+    db_op.open_connection_db()
     try:
         sql = """SELECT
                     buy.isin AS isin,
@@ -76,16 +77,16 @@ def stock_transactions_overview(customer_id):
                             s.company_name AS company_name,
                             (SELECT SUM(t.amount)
                                     FROM transactions
-                                    WHERE isin=t.isin
-                                        AND transaction_type = 'buy')
-                                        AS amount,
+                                    WHERE isin=t.isin AND transaction_type = 'buy')
+                                    AS amount,
                             SUM (t.amount * t.price_per_stock) / SUM(t.amount)
                                 AS price_per_stock_all,
                             (SELECT sd.close
                                 FROM stock_data sd
                                 WHERE isin = t.isin
                                 ORDER BY date DESC
-                                LIMIT 1) AS actual_price
+                                LIMIT 1)
+                                AS actual_price
                         FROM transactions t
                         JOIN stocks s ON t.isin = s.isin
                         WHERE t.customer_id = ? and transaction_type = 'buy'
@@ -96,38 +97,41 @@ def stock_transactions_overview(customer_id):
                             t.isin AS isin,
                             (SELECT SUM(t.amount)
                                     FROM transactions
-                                    WHERE isin=t.isin
-                                        AND transaction_type = 'sell')
-                                        AS amount
+                                    WHERE isin=t.isin AND transaction_type = 'sell')
+                                    AS amount
                         FROM transactions t
                         WHERE t.customer_id = ? and transaction_type = 'sell'
                         GROUP BY t.isin
-                    ) AS sell ON buy.isin = sell.isin"""
+                    ) AS sell ON buy.isin = sell.isin
+                    WHERE (buy.amount - coalesce(sell.amount, 0)) > 0"""
 
         value = (customer_id, customer_id,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
-        print(f"result ist : {result}")
-
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei stock_transactions_overview:\nsql: {sql}\n" \
-                f"customer_id: {customer_id}\nError: {e}\n"
-        print(error)
-        raise ValueError(error)
+        error_msg = (
+            "Fehler bei Datenbankabfrage:\n"
+            f"customer_id: {customer_id}\n"
+            f"SQL: {sql}\n"
+            "Ort: stock_transactions_overview (transaction_repo.py)"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 def search_past_transactions(customer_id, search_start, search_end):
 
-    db_ex.open_connection_db()
+    db_op.open_connection_db()
 
     try:
         sql = """SELECT
@@ -141,9 +145,7 @@ def search_past_transactions(customer_id, search_start, search_end):
                     FROM (
                         SELECT *
                         FROM transactions AS t
-                        WHERE t.customer_id = ?
-                            AND DATE(t.transaction_date) >= ?
-                            AND DATE(t.transaction_date) <= ?
+                        WHERE t.customer_id = ? AND DATE(t.transaction_date) >= ? AND DATE(t.transaction_date) <= ?
                         GROUP by t.transaction_date
                         ORDER BY t.transaction_date ASC
                     ) AS t
@@ -154,25 +156,29 @@ def search_past_transactions(customer_id, search_start, search_end):
                         ON t.isin = s.isin"""
 
         value = (customer_id, search_start, search_end,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
-        print(f"result ist : {result}")
-
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei search_past_transactions:\nsql: {sql}\n" \
-                f"customer_id: {customer_id}\nsearch_start: {search_start}\n" \
-                f"search_end: {search_end}\nError: {e}\n"
-        print(error)
-        raise ValueError(error)
+        error_msg = (
+            f"Fehler bei search_past_transactions:\n"
+            f"customer_id: {customer_id}\n"
+            f"search_start: {search_start}\n"
+            f"search_end: {search_end}\n"
+            f"SQL: {sql}\n"
+            "Ort: search_past_transaction (transaction_repo.py)"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":
