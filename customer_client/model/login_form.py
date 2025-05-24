@@ -27,7 +27,7 @@ class LoginForm:
 
     @password.setter
     def password(self, input: str):
-        if len(input) > 12:
+        if len(input) >= 12:
             self._password = input
         else:
             raise ValueError("min. 12 Zeichen")
