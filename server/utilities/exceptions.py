@@ -18,3 +18,8 @@ class SQlExecutionError(Exception):
 class ValidationError(Exception):
     # Fehler bei Prüfung von Eingabedaten.
     pass
+
+
+class StockDataFetchError(Exception):
+    # Fehler bei Abruf von 'yfinance'
+    pass

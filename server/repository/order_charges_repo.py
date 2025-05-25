@@ -1,4 +1,4 @@
-from utilitys import (DBOperationError,
+from utilities import (DBOperationError,
                       SQlExecutionError,
                       make_dictionary,
                       make_dictionary_one_result)

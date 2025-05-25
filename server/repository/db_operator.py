@@ -1,24 +1,29 @@
 import sqlite3
 import os
 from logger import status_message
-from utilitys import DBOperationError
-import utilitys.config_loader
+from utilities import DBOperationError
+import utilities.config_loader
 
 # DBOperator Instanz unten
 
 
 class DBOperator:
     def __init__(self):
-        self.path = utilitys.config_loader.path_db
+        self.path = utilities.config_loader.path_db
         self.cursor = None
         self.connection = None
 
     def open_connection_db(self):
-        try:
-            if not os.path.exists(self.path):
-                utilitys.config_loader.load_config()
-                self.path = utilitys.config_loader.path_db
 
+        if self.path == "":
+            utilities.config_loader.load_config()
+            self.path = utilities.config_loader.path_db
+        if not os.path.exists(self.path):
+            error_msg = ("Datenbank existiert nicht.\n"
+                         f"Pfad: {self.path}\n")
+            raise FileNotFoundError(error_msg)
+
+        try:
             self.connection = sqlite3.connect(self.path)
             self.cursor = self.connection.cursor()
             status_message("Mit Datenbank verbunden")

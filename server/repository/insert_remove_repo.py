@@ -1,4 +1,4 @@
-from utilitys import DBOperationError, SQlExecutionError
+from utilities import DBOperationError, SQlExecutionError
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op

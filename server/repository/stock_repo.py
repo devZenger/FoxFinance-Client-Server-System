@@ -1,6 +1,6 @@
 import yfinance as yf
 
-from utilitys import (DBOperationError,
+from utilities import (DBOperationError,
                       SQlExecutionError,
                       make_dictionary_one_result)
 
@@ -128,7 +128,7 @@ def update_single_stock_datas(isin):
               row.name.strftime('%Y-%m-%d')
               )
 
-    sql = """UPDATE stock_data 
+    sql = """UPDATE stock_data
                 SET open = ?,
                     high = ?,
                     low = ?,

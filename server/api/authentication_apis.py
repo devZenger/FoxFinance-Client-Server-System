@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 
-from utilitys import DBOperationError, SQlExecutionError, error_msg_no_service
+from utilities import DBOperationError, SQlExecutionError, error_msg_no_service
 from logger import error_message, error_login_message
 from service import (Authentication,
                      create_access_token,

@@ -100,6 +100,8 @@ def message_to_log(message: str, m_type: str | None, print_head: bool = True):
         head_title = "Fehlermeldung"
     elif m_type == "status":
         head_title = "Stausmeldung"
+    elif m_type == "error_login":
+        head_title = "Fehlerhafter Login-Versuch"
     else:
         head_title = "Unbekannt"
 
@@ -126,6 +128,10 @@ def message_to_log(message: str, m_type: str | None, print_head: bool = True):
 def error_message(e):
     error_message = format_Exception_e(e)
     message_to_log(error_message, "error", True)
+
+
+def error_login_message(message: str):
+    message_to_log(message, "login_error")
 
 
 def status_message(message: str, print_head: bool = True):
