@@ -1,54 +1,39 @@
-from .db_executor import DBExecutor
+from utilitys import DBOperationError, SQlExecutionError, make_dictionary
 
-db_ex = DBExecutor()
-
-
-def make_dictionary(datas, names):
-
-    search_result = {}
-    i = 0
-    for data in datas:
-        row_data = {}
-        for j in range(len(data)):
-            row_data[names[j]] = data[j]
-
-        search_result[f"row_result{i}"] = row_data
-        i += 1
-
-    return search_result
-
-
-def make_dictionary_one_result(datas, names):
-    row_data = {}
-    for j in range(len(datas)):
-        row_data[names[j]] = datas[j]
-
-    return row_data
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def simple_search(table, column, search_term):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = f"""SELECT * FROM {table} WHERE {column} LIKE ?"""
         value = (search_term,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei simple_search:\nsql: {sql}\ntable:{table}\n"\
-                f"column:{column}\nsearch_term:{search_term}\nError:{e}"
-        print(error)
-        raise Exception(error)
+        error_msg = (
+            f"Fehler bei simple_search:\n"
+            f"Tabelle: {table}\n"
+            f"Spalte:{column}\n"
+            f"Suchbegriff:{search_term}\n"
+            f"SQL: {sql}"
+            "Ort: simple_search (search_repo)"
+            f"Error: {e}")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":

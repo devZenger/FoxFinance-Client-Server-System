@@ -1,14 +1,13 @@
-from .db_executor import DBExecutor
+from utilitys import DBOperationError, SQlExecutionError, make_dictionary
 
-from .search_repo import make_dictionary
-
-db_ex = DBExecutor()
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def watchlist_overview(customer_id):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = """SELECT
                     w.isin AS isin,
@@ -30,22 +29,27 @@ def watchlist_overview(customer_id):
                     FROM watchlist AS w
                     WHERE w.customer_id = ?"""
         value = (customer_id,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei watchlist_overview:\nsql: {sql}\n" \
-                f"customer_id: {customer_id}\nError: {e}\n"
-        print(error)
-        raise ValueError(error)
+        error_msg = (
+            f"Fehler bei Datenbankabfrage:\n"
+            f"customer_id: {customer_id}\n"
+            f"SQL: {sql}"
+            f"Ort: watchlist_overview (watchlist_repo.py)"
+            f"Error: {str(e)}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":

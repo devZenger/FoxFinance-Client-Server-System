@@ -1,67 +1,76 @@
-from .db_executor import DBExecutor
+from utilitys import (DBOperationError,
+                      SQlExecutionError,
+                      make_dictionary,
+                      make_dictionary_one_result)
 
-from .search_repo import make_dictionary_one_result, make_dictionary
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
-db_ex = DBExecutor()
 
-
-def search_order_charges(volumn, date):
+def search_order_charges(volume, date):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = """SELECT *
                 FROM order_charges
-                WHERE start_validation <= ?
-                    AND ? <= end_validation
-                    AND ? >= min_volumn
+                WHERE start_validation <= ? AND ? <= end_validation AND ? >= min_volumn
                 ORDER BY min_volumn DESC
                 LIMIT 1"""
-        value = (date, date, volumn)
-        datas = db_ex.execute(sql, value).fetchall()
+        value = (date, date, volume)
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
-
+        names = db_op.col_names()
         result = make_dictionary_one_result(datas[0], names)
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei search_order_charges:\nsql: {sql}\n" \
-                f"volumn: {volumn}\ndate: {date})\n.Error: {e}"
-        print(error)
-        result = "Kein Eintrag gefunden, Error: {e}"
+        error_msg = (
+            f"Fehler bei Abfrage nach Ordergebühren:\n"
+            f"Volumen: {volume}\n"
+            f"date: {date})\n."
+            f"SQL: {sql}\n"
+            "Ort: search_order_charges (order_charges_repo.py)"
+            f"Error: {str(e)}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
         return result
 
 
 def search_all_order_charges(date):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = """SELECT *
                  FROM order_charges
-                 WHERE start_validation <= ?
-                    AND end_validation >= ?
+                 WHERE start_validation <= ? AND end_validation >= ?
                  ORDER BY min_volumn"""
         value = (date, date)
 
-        datas = db_ex.execute(sql, value).fetchall()
-        names = db_ex.col_names()
+        datas = db_op.execute(sql, value).fetchall()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei search_all_order_charges:\nsql: {sql}\n" \
-                f"date: {date})\n.Error: {e}\n"
-        print(error)
-        raise Exception(error)
+        error_msg = (
+            f"Fehler bei der Abfrage nach allen Ordergebühren:\n"
+            f"date: {date})\n"
+            f"SQL: {sql}\n"
+            "Ort: search_all_order_charges (order_charges_repo.py)\n"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg)
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":
@@ -74,8 +83,8 @@ if __name__ == "__main__":
     time = "6 months"
 
     date = "2021-5-21"
-    volumn = 324
+    volume = 324
 
-    answer = search_all_order_charges(date)
+    answer = search_order_charges(volume, date)
 
     print(answer)

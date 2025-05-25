@@ -1,56 +1,57 @@
-from .db_executor import DBExecutor
-from .repo_utilitys import make_dictionary
+from utilitys import DBOperationError, SQlExecutionError, make_dictionary
 
-db_ex = DBExecutor()
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def customer_balance(customer_id):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = """SELECT
                     COALESCE((SELECT SUM(fin_amount)
                         FROM financial_transactions
-                        WHERE customer_id = ? AND fin_transaction_type_id
-                        = 1), 0) +
+                        WHERE customer_id = ? AND fin_transaction_type_id = 1), 0) +
                     COALESCE((SELECT SUM(fin_amount)
                         FROM financial_transactions
-                        WHERE customer_id = ? AND fin_transaction_type_id
-                        = 4), 0) -
+                        WHERE customer_id = ? AND fin_transaction_type_id = 4), 0) -
                     COALESCE((SELECT SUM(fin_amount)
                         FROM financial_transactions
-                        WHERE customer_id = ? AND fin_transaction_type_id
-                        = 2), 0) -
+                        WHERE customer_id = ? AND fin_transaction_type_id = 2), 0) -
                     COALESCE((SELECT SUM(fin_amount)
                         FROM financial_transactions
-                        WHERE customer_id = ? AND fin_transaction_type_id
-                        = 3), 0)
+                        WHERE customer_id = ? AND fin_transaction_type_id = 3), 0)
                 AS actual_balance"""
 
         value = (customer_id, customer_id, customer_id, customer_id,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         dic = {}
         dic[names[0]] = datas[0][0]
 
         return dic
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei customer_balance:\nsql: {sql}" \
-                f"customer_id: {customer_id}.\nError: {e}\n"
-        print(error)
-        raise ValueError(error)
+        error_msg = (
+            "Fehler bei Datenbankabfrage:\n"
+            f"customer_id: {customer_id}\n"
+            f"SQL: {sql}"
+            f"Ort: customer_balance (financial_repo.py)"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 def search_past_financial_transactions(customer_id, search_start, search_end):
 
-    db_ex.open_connection_db()
+    db_op.open_connection_db()
 
     try:
         sql = """SELECT
@@ -67,40 +68,41 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
                         ORDER BY ft.fin_transaction_date ASC
                     ) AS ft
                     LEFT JOIN (
-                        SELECT ftt.fin_transaction_type_id
-                        , ftt.fin_transaction_type
+                        SELECT ftt.fin_transaction_type_id, ftt.fin_transaction_type
                         FROM fin_transaction_types AS ftt
                         )AS ftt
-                        ON ft.fin_transaction_type_id
-                         = ftt.fin_transaction_type_id
-                        """
+                        ON ft.fin_transaction_type_id = ftt.fin_transaction_type_id"""
 
         value = (customer_id, search_start, search_end,)
-        datas = db_ex.execute(sql, value).fetchall()
+        datas = db_op.execute(sql, value).fetchall()
 
-        names = db_ex.col_names()
+        names = db_op.col_names()
 
         result = make_dictionary(datas, names)
 
-        print(f"result ist : {result}")
-
         return result
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei search_past_financial_transactions:\nsql: " \
-                f"{sql}\ncustomer_id: {customer_id}, search_start: " \
-                f"{search_start}\nsearch_end: {search_end}\nError: {e}"
-        print(error)
-        raise ValueError(error)
+        error_msg = (
+            "Fehler bei der Datenabfrage:\n"
+            f"customer_id: {customer_id}\n"
+            f"Suchstart: {search_start}\n"
+            f"Suchende: {search_end}\n"
+            f"SQL: {sql}\n"
+            f"Ort: search_past_financial_transactions (financial_repo.py)\n"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 def insert_bank_transfer(b_transfer: dict):
 
-    db_ex.open_connection_db()
-    db_ex.start_transaction()
+    db_op.open_connection_db()
+    db_op.start_transaction()
 
     try:
         sql = """INSERT INTO financial_transactions(
@@ -115,20 +117,27 @@ def insert_bank_transfer(b_transfer: dict):
                     :fin_transaction_type_id,
                     :usage)"""
 
-        balance_id = db_ex.execute(sql, b_transfer).lastrowid
+        balance_id = db_op.execute(sql, b_transfer).lastrowid
 
-        db_ex.connection_commit()
+        db_op.connection_commit()
 
         return balance_id
+
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        db_ex.rollback()
-        error = f"Fehler bei insert_bank_transfer:\n" \
-                f"b_transfer:dict:{b_transfer})\nError: {e}"
-        print(error)
-        raise ValueError(error)
+        db_op.rollback()
+        error_msg = (
+            f"Fehler bei einfügen eines Banktransfers:\n"
+            f"Transfer (dict): {b_transfer})\n"
+            f"SQL: {sql}\n"
+            f"Ort: insert_bank_transfer (financial_repo.py)\n"
+            f"Error: {e}\n"
+            )
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":

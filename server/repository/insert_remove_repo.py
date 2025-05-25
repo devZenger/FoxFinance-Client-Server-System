@@ -1,6 +1,7 @@
-from .db_executor import DBExecutor
+from utilitys import DBOperationError, SQlExecutionError
 
-db_ex = DBExecutor()
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def key_to_column(to_form: dict):
@@ -32,41 +33,56 @@ def key_to_where(to_form: dict):
 def insert_one_table(table, insert: dict):
 
     try:
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         key_column = key_to_column(insert)
         key_value = key_to_value(insert)
 
         sql = f"""INSERT INTO {table} ({key_column}) VALUES({key_value})"""
-        execute_id = db_ex.execute_and_commit(sql, insert).lastrowid
+        execute_id = db_op.execute_and_commit(sql, insert).lastrowid
 
         return execute_id
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei insert_one_table:\nsql:{sql}\ntable:" \
-                f"{table}\ninsert: {insert}.\nError: {e}\n"
-        print(error)
-        raise Exception(error)
+        error_msg = (
+            "Fehler beim Einfügen in einer Datenbanktabelle:"
+            f"Tabelle: {table}\n"
+            f"Eingabedaten: {insert}\n"
+            f"SQL: {sql}\n"
+            "Ort: insert_one_table (insert_remove_repo.py)\n"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close
+        db_op.close
 
 
 def remove_from_one_table(table, condition: dict):
 
     try:
         key_condition = key_to_where(condition)
-        db_ex.open_connection_db()
+        db_op.open_connection_db()
 
         sql = f"""DELETE FROM {table} WHERE {key_condition}"""
 
-        db_ex.execute_and_commit(sql, condition)
+        db_op.execute_and_commit(sql, condition)
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei delete_from_one_table\nsql: {sql}\n" \
-                f"table: {table}\ncondition: {condition}.\nError: {e}\n"
-        print(error)
-        raise Exception(error)
+        error_msg = (
+            "Fehler bim Entfernen eines Datensatzes:"
+            f"Tabelle: {table}\n"
+            f"Bedingung: {condition}\n"
+            f"SQL: {sql}\n"
+            "Ort: delete_from_one_table (insert_remove_repo.py)\n"
+            f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
+
+    finally:
+        db_op.close()
 
 
 if __name__ == "__main__":

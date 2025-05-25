@@ -1,13 +1,15 @@
-from .db_executor import DBExecutor
+from utilitys import DBOperationError, SQlExecutionError
+
+# db_op - Instanz von DBOperator
+from .db_operator import db_op
 
 
 def insert_customer(input):
 
-    db_ex = DBExecutor()
-    db_ex.open_connection_db()
+    db_op.open_connection_db()
 
     try:
-        db_ex.start_transaction()
+        db_op.start_transaction()
 
         input["disabled"] = False
         input["bank_account"] = input["reference_account"]
@@ -27,7 +29,7 @@ def insert_customer(input):
                     :phone_number,
                     :birthday
             )"""
-        customer_id = db_ex.execute(sql, input).lastrowid
+        customer_id = db_op.execute(sql, input).lastrowid
         input["customer_id"] = customer_id
 
         sql = """INSERT INTO customer_adresses VALUES(
@@ -36,17 +38,17 @@ def insert_customer(input):
                     :house_number,
                     :zip_code,
                     :city)"""
-        db_ex.execute(sql, input)
+        db_op.execute(sql, input)
 
         sql = """INSERT INTO authentication VALUES(
                     :customer_id,
                     :password)"""
-        db_ex.execute(sql, input)
+        db_op.execute(sql, input)
 
         sql = """INSERT INTO financials VALUES(
                     :customer_id,
                     :reference_account)"""
-        db_ex.execute(sql, input)
+        db_op.execute(sql, input)
 
         sql = """INSERT INTO financial_transactions
                     (customer_id,
@@ -60,47 +62,63 @@ def insert_customer(input):
                     :fin_amount,
                     :fin_transaction_type_id,
                     :usage)"""
-        db_ex.execute(sql, input)
+        db_op.execute(sql, input)
 
-        db_ex.connection_commit()
+        db_op.connection_commit()
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        db_ex.rollback()
-        error = f"Fehler bei insert_customer:\nsql: {sql}\ninput:{input}" \
-                f"\nError: {e}\n"
-        raise Exception(error)
+        db_op.rollback()
+        error_msg = (
+                "Fehler beim Einfügen von Kundendaten\n"
+                f"Eingabe: {input}\n"
+                f"SQL: {sql}\n"
+                f"Ort: update_customer_settings (customer_repo.py)"
+                f"Error: {e}\n")
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 def update_customer_settings(table, customer_id, insert: dict):
 
-    db_ex = DBExecutor()
-    db_ex.open_connection_db()
-
-    columns = ""
-    for k in insert.keys():
-        columns = f"{columns}{k}=:{k}, "
-
-    columns = columns[:-2]
+    db_op.open_connection_db()
 
     try:
+
+        columns = ""
+        for k in insert.keys():
+            columns = f"{columns}{k}=:{k}, "
+
+        columns = columns[:-2]
+
+        values = insert.copy()
+        values["customer_id"] = customer_id
+
         sql = f"""UPDATE {table}
                     SET {columns}
-                    WHERE customer_id={customer_id}"""
+                    WHERE customer_id=:customer_id"""
 
-        db_ex.execute_and_commit(sql, insert)
+        db_op.execute_and_commit(sql, values)
 
+    except DBOperationError as e:
+        raise DBOperationError("Fehler während der Datenbankoperation") from e
     except Exception as e:
-        error = f"Fehler bei update_customer_settings.\nsql{sql}\n" \
-                f"table: {table}\ncustomer_id{customer_id}\n" \
-                f"insert: {insert}\nError: {e}\n"
-        print(error)
-        raise Exception(error)
+        error_msg = (
+            "Fehler beim Update der Kundendaten update_customer_settings.\n"
+            f"customer_id{customer_id}\n"
+            f"table: {table}\n"
+            f"Update-Daten: {insert}\n"
+            f"SQL: {sql}\n"
+            f"Ort: update_customer_settings (customer_repo.py)"
+            f"Error: {e}\n")
+
+        raise SQlExecutionError(error_msg) from e
 
     finally:
-        db_ex.close()
+        db_op.close()
 
 
 if __name__ == "__main__":
