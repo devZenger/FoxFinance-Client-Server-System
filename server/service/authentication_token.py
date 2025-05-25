@@ -1,44 +1,45 @@
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 import jwt
-from fastapi import Depends, APIRouter, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
-from pydantic import BaseModel
-
 
 from repository import get_auth_datas, insert_login_time
+from schemas import User
 
-SECRET_KEY = "fefbda68bb1af51ee7c4295f509b570a1aa96b01b754c4d50b52bdb3c17d7643"
+# SECRET_KEY = "fefbda68bb1af51ee7c4295f509b570a1aa96b01b754c4d50b52bdb3c17d7643"
+secret_key = ""
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-
-class User(BaseModel):
-    email: str
-    customer_id: int
-    disabled: bool | None = None
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    email: str | None = None
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-class Authentication: 
+def load_token_key():
+
+    global secret_key
+    path = os.path.join("..", "server", "keys", "demo_token.key")
+    try:
+        with open(path, "rb") as key_file:
+            secret_key_bytes = key_file.read()
+        secret_key = secret_key_bytes.decode("utf-8")
+
+    except FileNotFoundError as e:
+        error_msg = ("'demo_account.key' konnte nicht geöffnet werden.\n"
+                     f"Pfad: {path}\n"
+                     f"Error: {str(e)}\n")
+        raise RuntimeError(error_msg) from e
+
+
+class Authentication:
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    def verify_password(self, input_password, hashed_password):
+    def _verify_password(self, input_password: str, hashed_password: str):
         return self.pwd_context.verify(input_password, hashed_password)
 
     def authenticate_customer(self, email: str, password: str):
@@ -51,11 +52,11 @@ class Authentication:
             return False, True
         if db_query["email"] != email:
             return False, False
-        if not self.verify_password(password, db_query["password"]):
+        if not self._verify_password(password, db_query["password"]):
             return False, False
 
-        #login time to database
-        insert_login_time(db_query["customer_id"])        
+        # login time to database
+        insert_login_time(db_query["customer_id"])
 
         return db_query, False
 
@@ -68,26 +69,25 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Atuthenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
 
         email = payload.get("email")
 
         if email is None:
             raise credtials_execption
-        token_data = TokenData(email=email)
+
     except InvalidTokenError:
         print("raise credtials")
         raise credtials_execption
 
-    user_dic = get_auth_datas(email=token_data.email)
+    user_dic = get_auth_datas(email=email)
     if user_dic.get("customer_id") is None:
         raise credtials_execption
-    
+
     return user_dic
 
-async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
 
-    # current_user["disabled"] = False
+async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
 
     if current_user["disabled"]:
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -102,4 +102,4 @@ async def create_access_token(user: dict):
 
     to_encode.update({"exp": expire})
 
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, secret_key, algorithm=ALGORITHM)
