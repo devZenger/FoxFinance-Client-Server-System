@@ -1,0 +1,13 @@
+{
+    "filename": "logging_FoxFinance",
+    "date_at_filename": true,
+    "path": ["..", "server", "logger", "log_files"],
+
+
+    "print_errors_msg" : true,
+    "print_status_msg" : true,
+
+    "save_errors_msg" : true,
+    "save_status_msg" : true
+
+}
