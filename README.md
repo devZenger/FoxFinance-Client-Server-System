@@ -1,152 +1,129 @@
-Projektziel:
-Ein besseres Verständnis von Python und SQL durch die Entwicklung eines Programms zur Veraltung von Aktiendepots.
-Besonderes Augenmerkt auf Klassen und Vererbung
+# Projekt: FoxFinance - A Server-Client Projekt
+FoxFinance ist ein Server-Client-Projekt, das es Nutzern ermöglicht, ein Aktiendepot zu eröffnen und Aktien zu handeln.
+Das Client-Programm dient als Benutzerschnittstelle, während das Server_Programm die Verwaltung von Konten und Transaktionen übernimmt. Die Daten werden in einer SQLite-Datenbank gespeichert.
+- Das Client-Programm  ist eine Konsolenanwendung, umgesetzt nach dem **MVC-Pattern**.
+- Das Server-Programm basiert auf einer **mehrschichtigen Architektur** (Schichenarchitektur)
+- Implementiert wurde das Projekt in **Python** unter Einsatz von **FastAPI** und **SQLite**.
 
-Ideen:
-````mermaid
-mindmap
-    root((Aktiendepot<br>Verwaltung))
-        Willkomensmenü
-            Testdepot
-            Neues Konto erstellen
-            Kundenlogin
-                Kundenmenü
-                    Depot Übersicht
-                        Liste an Aktien
-                        Gewinn/Verlust
-                    Aktien kauf/verkauf
-                    Kursübersicht
-                    Kontotransaktionen
-                    Änderungen der Daten
-            Informationen
-            Programm beenden
-            
-   
-````
+Hinweis:  
+Für Geldbeträge wird `float` statt `Deciaml` verwendet, da SQLite3 `Decimal` nicht unterstützt. Da die Genauigkeit nicht im Vordergrund stand, wurde für Geldbeträge `float` und in der Datenbank `REAL` genutzt.
+
+<div style="text-align: center;">
+<b>Customer-Client Programm: Startmenü</b> <br>
+<img src="docs/images/Screenshot_Startmenu.png" alt="Startmenü" title="Customer-Client Programm Startmenu" style="width:80%; height:auto;">
+</div>
 
 
-````mermaid
-erDiagram
-    customers ||--o{ transactions : makes
-    customers ||--o{ stock_watchlist : watch
-    customers ||--o{ financial_transactions : makes
-    customers {
-        int customer_id PK
-        text first_name "not null"
-        text last_name "not null"
-        text birthdate "not null"
-        text email "not null"
-        text phone_number "not null"
-        text registration_date "not null"
-        text termination_date
-        text disabled
-        text last_login "not null"
-    }
+## Inhaltsverzeichnis:
+- [Vewendete Technologien](#verwendete-technologien)
+- [Projektvorstellung](#projektvorstellung)
+- [Projektübersicht](#projektübersicht)
+  - [Funktionen](#funktionen)
+  - [Projektverzeichnis](#projectverzeichnis)
+  - [Uml Klassendiagramm](#uml-klassendiaggramm)
+  - [Relationale Datenbankdiagramm](#relationales-datenbankmodell)
+- [Screenshoots](#screenshots)
+- [Lizenz](#lizenz)
 
-    authentication ||--|| customers : use
-    authentication {
-        int customer_id PK, FK
-        text password "not null"
-    }
+## Verwendete Technologien:
+- Programmiersprachen:
+  - Python
+  - SQL ?
+- Frameworks & Tools:
+  - FastAPi – REST-API Framework
+  - SQLite – OpenSource Datenbank  
+  - YFinance – zum einlesen Aktiendaten
+  - UVicorn – ASGI-Server für FastAPI
+- weitere Bibliotheken:
+  - ``os``, ``sys`` – Systemfunktionen
+  - ``request`` – HTTP-Anfragen
+  - ``datetime`` – Zeitverarbeitung
+  - ``getpass`` – Passwort-Eingabe ohne Anzeige
+  - ``jwt``, ``passlib.context`` – Authentifizierung & Passwort-Hashing
+  - ``pydantic`` – Datenvalidierung
+  - ``typing`` – Typannotationen
+- Diagrammtools:
+  - PlantUML – Klassendiagrammen
+  - dbdiagram.io – relationalen Datenbankmodell
 
-    customer_adresses ||--|| customers : owns
-    customer_adresses{
-        int customer_id PK, FK
-        text street "not null"
-        text house_number "not null"
-        int zip_coide "not null"
-        text city "not null"
 
-    }
+## Projektvorstellung:
+Der Hintergrund des Projekts war es, ein tieferes Verständnis von **Python**, **SQL** und den Aufbau von **REST-APIs** zu entwickeln. Aus persönlichen Interesse entschied ich mich für das Thema **Aktendepots und Aktienhandel**, da es sich um ein spannendes Thema handelt und sich gut f+ür die Umsetzung eines vollständigen Server-Client-Systems eignet.  
+Die Wahl fiel auf **SQLite** als Datenbank, da es sich nathlos in Python integrieren lässt und es praktische Erweiterung für die Entwicklungsumgebungen Visual Studio Code gibt.  
+Das Projekt besteht aus vier Teile, die Client-Anwendung, das Server-Programm, die Kommunikation über eine **REST-API** und die SQLite Datenbank
 
-    financials ||--|| customers : has
-    financials {
-        int costumer_id PK, FK
-        text reference_account "not null"
-    }
+Die Client-Anwendung ist ein Konsolenprogramm im **MVC-Pattern** geschrieben, dadurch ist das Programm klar unterteilt was die **Wartbarkeit und Testbarkeit** erhöht. Es wurde eine grundlegende **Fehlerbehandlung** integriert, um ungüligte Benutzereingaben abzufangen. getter setter erwähnen?
+Bei der Erstellung des Konto wurde darauf geachtet das das Passwort sicher ist Standard erwähnen? 2 Faktor für Konot freischaltung erwähnen?  
+Wo es sich anbot wurde mit Klassen und Vererbung gearbeitet, um gemeinsame Logik zentral bereitzustellen und eine Trennung von Zuständigkeiten umzusetzten. 
+Desweiteren wurde nach dem DRY-Prinzip gearbeitet und Service-Klassen erstellt und Funktionen in utilit.py geschrieben um Wiederholungen vom Programmcode zu vermeiden. Das Auslesen und Setzen von Eigenschaften wird mit Hilfe von Reflection dynamisch umgesetzt.
 
-    financial_transactions }o--|| fin_transactions_types : has
-    financial_transactions{
-        int financial_transaction_id PK
-        int customer_id FK "not null"
-        text bank_account "not null"
-        float fin_amount "not null"
-        text fin_transaction_type "not null"
-        text usage 
-        text fin_transaction_date "not null"
-    }
+Das Serverprogramm ist in einer SChichtenarchitektur umgesetzt. Die Hauptschichten sind api, service und repository. Auf SQLAlchemy wurde bewusst verzichtet um SQL-Befehle zu benutzen. Für die Fehlermeldung wurde ein eigener Logger geschrieben.
 
-    fin_transactions_types {
-        int fin_transaction_type_id PK
-        text fin_transaction_type "not null"
-    }
+Die relationale Datenbank ist in verschiedene Tabellen aufgeteilt. Um den Datenschutz gerecht zu werden, wurden die Daten der Kunden aufgeteilt in Adresse, Authentivation, Finanzen und Allgemein. Außerdem werden das Passwort und die Kontonummer verschlüsselt.
 
-    transactions ||--|| order_charges : contains
-    transactions ||--o{ stocks : contains
-    transactions {
-        int transaction_id PK
-        int customer_id FK "not null"
-        text isin FK "not null"
-        text transactions_type FK "not null"
-        int amount "not null"
-        float price_per_stock "not null"
-        float order_charge_id "not null"
-        text transaction_date "not null"
-    }
+Die REST-Api wurde mit FAST-API umgesetzt bla bla . Die Client-Anwendung sendet seine Anfrage mit Hilfe der `request`Bibliothek
 
-    stocks ||--o{ stock_data : has
-    stocks ||--o{ index_members : "is part"
-    stocks {
-        text isin PK 
-        text ticker_symbol "not null"
-        text company_name "not null"
-    }
-    stock_data {
-        text dataID PK 
-        text isin FK "not null"
-        text date "not null"
-        float open "not null"
-        float close "not null"
-        float high "not null"
-        float low "not null"
-        float close "not null"
-        int volume "not null"
-        float dividends "not null"
-        float stock_splits "not null"
-    }
 
-    stock_watchlist ||--o{ stocks : contains
-    stock_watchlist {
-        int watchlist_id PK
-        int customer_id FK "not null"
-        text isin FK "not null"
-        float price_per_stock "not null"
-        text date "not null"
-    }
-        
+Ursrpünglich war die Absicht, ein zweites Client-Programm zu erstellen, um auch die Bankseite zu repräsentieren. Dies wurde aus Zeitgründen um das Projekt abzuschließen, verworfen. 
 
-    stock_indexes {
-        int index_id PK "NOT NULL"
-        text name "NOT NULL"
-        text symbol "NOT NULL"
-    }
+ 
 
-    index_members }o--|| stock_indexes : includes
-    index_members {
-        text isin PK, FK "NOT NULL"
-        int index_id PK, FK "NOT NULL"
-    }
+## Projektübersicht
 
-    order_charges {
-    int order_charge_id PK
-    text start_validation "not null"
-    text end_validation "not null"
-    float min_volumn "not null"
-    float order_charge "not null"
-    }
+### Funktionen:
+- Start des Servers
+- Erstellen ein Kontos
+- Login in das Konto
+- Funktionen des Depot
+  - Aktien suchen
+  - Aktien handeln
+  - Watchlist erstellen
+  - Kontoübersicht
+  - Geld ein-/auszahlen
+  - Informationen (Ordergebühren)
+  - Daten ändern
+  - Abmelden
+  - Abmelden und beenden
+- Informationen (Ordergebühren)
+- Beenden
 
-    validation {
-        int customer_id PK, FK
-        int validation_number "NOT NULL"
-        text date "NOT NULL"
-    }
+### Projectverzeichnis
+Ein komplettes Verzeichnis findet sich hier: Link
+
+<pre style="font-size:10px; font-family:Consolas;">
+FoxFinance/
+├── customer_client/
+│    ├── controller/
+│    ├── model/
+│    ├── service/
+│    ├── view/
+│    └── app.py
+├── docs/
+│    └── images/
+├── server/
+│    ├── api/
+│    ├── database/
+│    │    ├── sqlite_scripts/
+│    │    └── FoxFinanceData.db
+│    ├── logger/
+│    ├── repository/
+│    ├── schemas/
+│    ├── service/
+│    └── main_server.py
+└── README.md
+</pre>
+
+### UML Klassendiaggramm
+[wird noch eingefügt]
+### Relationales Datenbankmodell
+[wird noch eingefügt]
+## Screenshots
+[wird noch eingefügt]
+
+## Lizenz
+Dieses Projekt wurde ausschließlich zu **Lern- und Demonstrationszwecken** entwickelt.  
+Die Nutzung des Quellcodes ist for den privaten, nicht-kommerziellen Gebrauch gestattet   
+
+Eine Weitergabe, Veränderung oder kommerzielle Nutzung ist nur mit ausdrücklicher Genehmigung erlaubt.  
+
+Bei Fragen oder Feedback freue ich mich über eine Nachricht.

@@ -1,0 +1,130 @@
+
+Table customers {
+    customer_id integer [primary key]
+    first_name text [not null]
+    last_name text [not null] 
+    birthdate text [not null] 
+    email text [not null] 
+    phone_number text [not null] 
+    registration_date timestamp [not null] 
+    termination_date text [not null] 
+    disabled bool [not null] 
+    last_login timestamp [not null]
+    
+    Note: 'UNIQUE (customer_id, registration_date) and UNIQUE (first_name, last_name, birthday)'
+    }
+
+Table authentication {
+   customer_id integer [PK, ref: - customers.customer_id]
+   password text [not null]
+}
+
+
+Table customer_adresses{
+        customer_id integer [PK, ref: - customers.customer_id]
+        street text [not null] 
+        house_number text [not null] 
+        zip_coide integer [not null]
+        city text [not null] 
+    }
+
+Table financials {
+        customer_id integer [PK, ref: - customers.customer_id]
+        reference_account text [UNIQUE, not null]
+        Note: "UNIQUE reference_account"
+    }
+
+Table financial_transactions{
+    financial_transfer_id integer [PK]
+    customer_id integer [not null, ref: > customers.customer_id]
+    bank_account text [not null]
+    fin_amount float [not null]
+    fin_transaction_type_id integer [not null, ref: > fin_transactions_types.fin_transaction_type_id] 
+    usage text
+    fin_transaction_date timestamp [not null] 
+    }
+
+Table fin_transactions_types {
+    fin_transaction_type_id integer [PK]
+    fin_transaction_type text [not null]
+    }
+
+    
+Table transactions {
+    transaction_id integer [PK]
+    customer_id integer [not null, ref: > customers.customer_id]
+    isin text [not null, ref: > stocks.isin]
+    transactions_type text [not null] 
+    amount integer [not null]
+    price_per_stock float [not null]
+    order_charge_id integer [not null, ref: > order_charges.order_charge_id]
+    transaction_date timestamp [not null]
+    }
+
+
+   
+Table stocks {
+    isin text [PK]
+    ticker_symbol text [not null]
+    company_name text [not null]
+    }
+
+
+
+Table stock_data {
+    dataID text [PK]
+    isin text [not null, ref: > stocks.isin]
+    date text [not null]
+    open float [not null]
+    close float [not null]
+    high float [not null]
+    low float [not null]
+    close float [not null]
+    volume int [not null]
+    dividends float [not null]
+    stock_splits float [not null]
+    Note: "UNIQUE (isin, date)"
+    }
+
+    
+Table watchlist {
+    wl_nr integer [PK]
+    customer_id integer [not null, ref: > customers.customer_id]
+    isin text [not null, ref: > stocks.isin]
+    price_per_stock float [not null] 
+    date timestamp [not null]
+    Note: "UNIQUE (customer_id, isin)"
+    }
+
+
+Table stock_indexes {
+    index_id integer [PK]
+    name text [not null]
+    symbol text [not null]
+    }
+
+
+
+
+    
+Table index_members {
+    isin text [not null, PK, ref: > stocks.isin]
+    index_id integer [not null, PK, ref: > stock_indexes.index_id] 
+    }
+
+
+Table order_charges {
+    order_charge_id integer [PK]
+    start_validation date [not null]
+    end_validation date [not null]
+    min_volumn float [not null]
+    order_charge float [not null]
+    Note: "UNIQUE (start_validation, min_volumn)"
+    }
+
+Table validation {
+    customer_id integer [PK, ref: - customers.customer_id] 
+    validation_number integer [not null] 
+    date timestamp [not null]
+    Note: "Trigger at date if validation_number is updadeted then date = current_timestamp"
+    }

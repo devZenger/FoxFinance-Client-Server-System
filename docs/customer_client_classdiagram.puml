@@ -1,0 +1,403 @@
+@startuml
+    package "datetime" {
+        class datetime
+        class timedelta
+    }
+
+
+    package "customer_client" {
+
+    package "display" {
+    class Display {
+        + line: str
+        + display_title(title: str): void
+        + display_info(info: str): void
+        + display_title_and_info(title: str, info: str): void
+        + display_options(options: str): str
+        + display_form(form_names: [str, str]), to_fill: object): void
+        + display_filled_form(form_names: dict[str, str]): void
+        + display_table(input: dict[str, Any], column_names: dict[str, str]): void
+        }
+
+    class "utility.py" as utility_py {
+        + get_key_value_max_length(input:dic[str, str]): (int, int)
+        + make_tabe(input: dict[str, Any], column_names: dict[str, str]): list[str]
+        + get_length_grom_subdic(input: dict[str, dict[str, str]]): (int, int)
+    }
+    }
+
+    package "control" {
+    class MainControl{
+        + title: str
+        + options: dict[str, str]
+        + init(): void
+        + run(): void
+    }
+    class CreateAccountMenu {
+        + title: str
+        + information: str
+        + options: dict[str, str]
+        + options_failure : dict[str, str]
+        + init(): void
+        + run(): str
+    }
+
+    class LoginMenu {
+        + title: str
+        + options: dict[str, str]
+        + options_failure: dict[str, str]
+
+        + init() void
+        + run() (bool, str | None)
+    }
+    class AllInformation {
+        + title: str
+        + options: dict[str, str]
+        + token: str
+
+        + init(options: dict, token: str | None)
+        + run(): str
+    }
+    class DepotControl {
+        + token: str
+        + headers: str
+        + options: dict[str, str]
+        + depot_overview: DepotStartMenu | None
+        + stock_search = DepotStockSearch | None
+        + stock_trade = DepotStockTrade | None
+        + watchlist = DepotWatchlist | None
+        + account_overview = AccountOverview | None
+        + bank_transaction = DepotBankTransfer | None
+        + information = AllInformation | None
+        + settings = Settings | None
+
+        + init(token: str): void
+        + delete_token_instance(): void
+        + run(): void
+    }
+    }
+    package "control (depot)" {
+    
+    class DepotBankTransfer {
+        + transfer: BankTransfer
+        + title: str
+        + options: dict[str, str]
+        + options_make_transfer: dict[str, str]
+
+        + init(token:str, options: dict[str, strs]): void
+        + run(): str
+    }
+    class AccountOverview {
+        + account: object
+        + title: str
+        + options: dict
+        + display_menu: object
+        + init(token: str) void
+        + run() str
+        + show_info(input: bool) void
+        + show_table(input: bool) void
+    }
+    class DepotOverview {
+        + depot: DepotHistory
+        + title: str
+        + options: dict[str, str]
+        + display_menu: Display
+
+        + init(token: str): void
+        + run(): void
+        + show_table(input: bool): void
+        + show_table_timespan(input: bool): void
+    }
+    class Settings {
+        + depot: SettingsForm
+        + title: str
+        + information: str
+        + information_2time: str
+        + options: dict[str, str]
+        + options_settings: dict[str, str]
+        + otpions_make_change: dict[str, str]
+
+        + init(token: str, options: dict[str, str]): void
+        + run(): str
+    }
+    class DepotStockSearch {
+        + title: str
+        + title_findings: str
+        + title_result: str
+        + information: str
+        + token: str
+        + options: dict[str, str]
+
+        + init(token: str, options: dict[str, str]) void
+        + run() str
+    }
+
+    class DepotStockTrade {
+        + stock_actions: StockActions
+        + title: str
+        + title_stock: str
+        + information: str
+        + options: dict[str, str]
+        + options_make_trade: dict[str, str]
+
+        + init(token: str, options: str): void
+        + run(): str
+    }
+
+    class DepotWatchlist {
+        + watchlist: Watchlist
+        + title: str
+        + title_stock: str
+        + information: str
+        + options: dict[str, str]
+
+        + init(token: str): void
+        + run(): str
+    }
+    }
+
+
+
+    package "model" {
+    
+    class RegistrationForm {
+        - _last_name: str 
+        + last_name: str {property}
+        - _fist_name: str
+        + fist_name: str {property}
+        - _street: str
+        + street: str {property}
+        - _house_number: str
+        + house_number: str {property}
+        - _zip_code: str
+        + zip_code: str {property}
+        - _city: str
+        + city: str {property}
+        - _birthday: str
+        + birthday: str {property}
+        - _email: str
+        + email: str {property}
+        - _phone_number: str
+        + phone_number: str {property}
+        - _reference_account: str
+        + reference_account: str {property}
+        - _fin_amount: float
+        + fin_amount: float {property}
+        - _password: str
+        + password: str {property}
+        + resonse: ?
+        + form_names: dict[str, str]
+
+        + init() void
+        + to_dict() dict
+        + post_registration_form(9 bool)
+    }
+    class LoginForm {
+        - _email: str
+        + email: str {property}
+        - _password: str
+        + password: str {property}
+        + response: ?
+        + form_names: dict[str, str]
+
+        + init() void
+        + to_dict() dict[str, str]
+        + post_login_form() bool
+    }
+
+    ' klasse muss noch angepasst werden
+    class StockActions {
+        + server_request: ServerRequest
+        + search_term: str
+        + stock_list: str
+        + stock_informtaion: None
+        + response: Dict[str, str] | None
+        + search_form_names: dict[str, str]
+        + trade_form_names: dict[str, str]
+        + isin: str
+        + stock_name: str
+        - _amount: int
+        + amount: int {property}
+        - _type_of_action: str
+        + type_of_action: str {property}
+        + type_of_action_en: str {property}
+    
+        + init(token: str) void
+        + stock_search() str
+        + to_dict() dict [str, str | int]
+        + stock_trade() bool
+
+
+    }
+    ' response üerprüfen
+    class Information {
+        + url_part: str
+        + response: Dict[str, str] | None
+        + server_request: ServerRequest
+        + init() void
+        + get_information() bool
+    }
+    ' test und was löschen
+    class DepotHistory {
+        + server_request: ServerRequest
+        + start_time: str {property}
+        + end_time: str {property}
+        + form_names: dict[str, str]
+        + column_names: dict[str, str]
+        + column_names: dict[str, str]
+
+        + init(): void
+        + get_all_stocks(): bool
+        + get_transaction_by_timespan(): bool
+        + get_last_three_months(): bool
+        + get_last_twelve_months(): bool
+
+
+    }
+
+    class FinancialHistory {
+        + server_request: ServerRequest
+        + start_time: str {property}
+        + end_time: str {property}
+        + form_names: dict[str, str]
+        + column_names: dict[str, str]
+        + init(token: str): void
+        + get_actual_balance(): bool
+        + get_fin_transaction_by_timespan(): bool
+        + get_last_three_months(): bool
+        + get_last_twelve_months(): bool
+    }
+
+    class BankTransfer {
+        + token: str
+        + fin_amoount: float {property}
+        + transactions_type: str {property}
+        + transaction_type_en: str {property, readOnly}
+        + usage: str {property}
+        + form_names: dict[str, str]
+
+        + init(token:str): void
+        + finamount(input: str): str
+        + transaction_type(input: str): str
+        + transaction_type_en(): str
+        + usage(input: str): str
+        + actual_balance()_ str
+        + make_transfer(): (bool, dict[str, dict[str, str]])
+    }
+
+    class SettingsForm {
+        + token: str
+        + data: dict=None
+        + form_names_adress: dict
+        + form_names_email_adress: dict
+        + form_names_ref_account: dict
+        + form_names_password: dict
+        + name_settings: dict
+        + init(token: str) void
+        + transmit_changes(type:str) str
+        + current_settings() bool
+    }
+    class Validation {
+        + init() void
+        + to_dict() dict
+        + get_activate_code() bool, ?
+        + send_activate_code() bool
+    }
+    class Watchlist {
+        + server_request: ServerRequest
+        + type_of_editing: None
+        + colum_names: dict[str, str]
+        + init(token: str) void
+        + get_watchlist() void
+        + edit_watchlist void
+
+    }
+    class ServerRequest {
+        + token: str
+        + url_server: str
+        + headers: dict[str, str] | None
+        + init() void
+        + process_response(server_response: Any) (bool, dict | None)
+        + make_get_request(url: str) (bool, dict | None)
+        + get_without_parameters(url_part: str) (bool, dict | None)
+        + make_post_request(url_part: str, to_transmit: ?) (bool, dict | None)
+    }
+    class "utility.py" as utility_py {
+        + time_check(time: str): bool
+        + time_check_two(time: str): bool
+        + email_check(email: str): bool
+        + password_check(password: str): (bool, str)
+        + house_number_check(house_number: str): bool
+        + phone_number_check(phone_number: str): bool
+    }
+    }
+    }
+
+    Display <-- DepotOverview 
+    Display <-- Settings
+    Display <-- AccountOverview
+    Display <-- DepotBankTransfer
+    Display <-- DepotStockSearch
+    Display <-- DepotStockTrade
+    Display <-- DepotWatchlist
+
+    MainControl --> CreateAccountMenu
+    MainControl --> LoginMenu
+    MainControl --> AllInformation
+    
+    DepotControl <-- MainControl
+    
+    DepotOverview <-- DepotControl
+    Settings <-- DepotControl
+    AccountOverview <-- DepotControl
+    DepotBankTransfer <-- DepotControl
+    DepotStockSearch <-- DepotControl
+    DepotStockTrade <-- DepotControl
+    DepotWatchlist <-- DepotControl
+
+    CreateAccountMenu --> Display 
+    Display <-- LoginMenu
+    Display <-- AllInformation
+
+    CreateAccountMenu --> Validation
+
+    LoginMenu --> LoginForm
+    CreateAccountMenu --> RegistrationForm
+    AllInformation --> Information
+
+    Settings --> SettingsForm
+    DepotOverview --> DepotHistory
+    AccountOverview --> FinancialHistory
+    DepotBankTransfer --> BankTransfer
+    DepotStockSearch --> StockActions
+    DepotStockTrade --> StockActions
+    DepotWatchlist --> Watchlist
+    
+    DepotHistory --> timedelta
+    DepotHistory --> datetime.datetime
+
+    DepotHistory --> utility_py
+    FinancialHistory --> utility_py
+
+
+    LoginForm --> ServerRequest
+    DepotHistory --> ServerRequest
+    FinancialHistory --> ServerRequest
+    RegistrationForm --> ServerRequest
+    SettingsForm --> ServerRequest
+    Information --> ServerRequest
+    BankTransfer --> ServerRequest
+    StockActions --> ServerRequest
+    Watchlist --> ServerRequest
+    Validation --> ServerRequest
+    ServerRequest --> request
+
+    ServerRequest -[hidden]-> datetime
+
+    SettingsForm --|> RegistrationForm
+
+    Display --> utility_py
+    getpass <-- Display
+
+
+@enduml
