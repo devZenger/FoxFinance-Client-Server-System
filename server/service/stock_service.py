@@ -1,6 +1,4 @@
-from pydantic import BaseModel
-
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from repository import (simple_search,
                         latest_trade_day_entry,
@@ -8,15 +6,9 @@ from repository import (simple_search,
                         search_order_charges,
                         all_stocks_by_customer,
                         customer_balance,
-                        insert_stock_transaction)
-
-from database import update_single_stock_datas
-
-
-class StockTrade(BaseModel):
-    isin: str
-    amount: int
-    transaction_type: str
+                        insert_stock_transaction,
+                        update_single_stock_datas)
+from schemas import StockTrade
 
 
 def search_stock(search_input):
@@ -31,9 +23,6 @@ def search_stock(search_input):
         if result == {}:
             result = simple_search(table, "isin", search_term)
 
-    print(result)
-    print(len(result))
-
     if result == {}:
         return "Die Aktien konnte nicht gefunden werden"
 
@@ -41,12 +30,12 @@ def search_stock(search_input):
         return result
 
     else:
-        result1 = {}
+        end_result = {}
         stocks_row = result["row_result0"]
         performance_data = stock_performence(stocks_row)
-        result1["one"] = performance_data.copy()
+        end_result["one"] = performance_data.copy()
 
-        return result1
+        return end_result
 
 
 def stock_performence(stocks_row: dict):
@@ -63,7 +52,18 @@ def stock_performence(stocks_row: dict):
 
     for time in timespan:
 
-        result = trade_day_by_period(isin, time)
+        if time == "6 months":
+            time_dif = timedelta(days=(183))
+        elif time == "1 years":
+            time_dif = timedelta(days=365)
+        elif time == "2 years":
+            time_dif = timedelta(days=730)
+        else:
+            raise ValueError("Zeitspanne konnte nicht zugeordnet werden.")
+
+        search_date = (datetime.now()-time_dif).date()
+
+        result = trade_day_by_period(isin, search_date)
 
         performance = result["open"]/last_trade_day["close"] * 100
         data = {}
@@ -119,8 +119,6 @@ def customer_finance_data(customer_id, kind_of):
                                          "fin_transaction_type",
                                          kind_of)
     bts_id = fin_transaction_type["row_result0"]["fin_transaction_type_id"]
-    print("bts_id:", bts_id)
-    print(f"balance: {account}")
 
     bank_account = account["row_result0"]["reference_account"]
 
@@ -135,26 +133,17 @@ def customer_finance_data(customer_id, kind_of):
 
 def buy_stocks(customer_id, stock_trade: StockTrade):
 
-    transaction, trade_charge, trade_vol = stocks_trade(customer_id,
-                                                        stock_trade)
+    transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
 
-    customer_finance, balance = customer_finance_data(customer_id,
-                                                      "buy stocks")
+    customer_finance, balance = customer_finance_data(customer_id, "buy stocks")
 
     total = trade_vol+trade_charge
 
-    print(f"customer finance: {customer_finance}")
-
-    print(f"customer blanance: {customer_finance["actual_balance"]}")
-    print(f"total = {total}")
-
     if customer_finance["actual_balance"] < total:
-        print("Guthaben reicht nicht aus")
+
         return ("Guthaben reicht nicht aus")
 
     else:
-        print("Guthaben reicht aus")
-
         balance["fin_amount"] = total
 
         return trade_transaction(transaction, balance)
@@ -162,8 +151,6 @@ def buy_stocks(customer_id, stock_trade: StockTrade):
 
 # input in database
 def trade_transaction(transaction: dict, balance: dict):
-
-    print("start trade_transaction")
 
     validation = {}
 
@@ -181,8 +168,7 @@ def trade_transaction(transaction: dict, balance: dict):
         validation["balance_statement"] = balance_insert["row_result0"]
 
     except Exception as e:
-        validation["error"] = f"Transaktion konnte nicht ausgeführt" \
-                              f"werden: {e}"
+        validation["error"] = f"Transaktion konnte nicht ausgeführt werden: {e}"
 
     finally:
         return validation
@@ -198,11 +184,9 @@ def sell_stocks(customer_id, stock_trade: StockTrade):
 
     else:
 
-        transaction, trade_charge, trade_vol = stocks_trade(customer_id,
-                                                            stock_trade)
+        transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
 
-        customer_finance, balance = customer_finance_data(customer_id,
-                                                          "sell stocks")
+        customer_finance, balance = customer_finance_data(customer_id, "sell stocks")
 
         balance["fin_amount"] = (trade_vol - trade_charge)
 
@@ -230,25 +214,3 @@ def start_stock_transaction(customer_id, stock_trade: StockTrade):
     except Exception as e:
         print(f"Error at start_stock_transaction, Error: {e}\n")
         raise Exception(e)
-
-
-if __name__ == "__main__":
-
-    from pydantic import BaseModel
-
-    class StockTrade(BaseModel):
-        isin: str
-        amount: int
-        transaction_type: str
-
-    stock_trade = StockTrade(isin="DE0005190003",
-                             amount=10,
-                             transaction_type="sell")
-    table = "stocks"
-    column = "isin"
-    search_term = "DE0005190003"
-    time = "6 months"
-
-    performance_data = buy_stocks(1, stock_trade)
-
-    print(performance_data)

@@ -15,12 +15,10 @@ def all_order_charges():
 
     over_vol_charge = f"{round(order_dic["row_result1"]["order_charge"]*100, 1)} %"
 
-    print("order_dic", order_dic)
-
-    information = "Aktuelle Gebühren:\n" \
-                  f"\tbei einen Volumen von 0 Euro: {zero_vol_charge}\n" \
-                  f"\tab einen Volumen von {over_vol}: {over_vol_charge}\n" \
-                  "\tvom Auftragsvolumen"
+    information = ("Aktuelle Gebühren:\n"
+                   f"\tbei einen Volumen von 0 Euro: {zero_vol_charge}\n"
+                   f"\tab einen Volumen von {over_vol}: {over_vol_charge}\n"
+                   "\tvom Auftragsvolumen")
 
     return information
 

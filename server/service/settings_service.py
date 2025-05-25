@@ -2,7 +2,8 @@ from repository import update_customer_settings, simple_search
 from schemas import Settings
 
 from .customer_registration import CustomerRegistration
-from utilitys import bank_account_decode
+from utilities import bank_account_decode
+
 
 class SettingsService(CustomerRegistration):
 
@@ -83,7 +84,8 @@ class SettingsService(CustomerRegistration):
             print(response)
             current_settings[value] = response["row_result0"]
 
-        current_settings["reference_account"]["reference_account"] = bank_account_decode(current_settings["reference_account"]["reference_account"])
+        current_settings["reference_account"]["reference_account"] = bank_account_decode(
+            current_settings["reference_account"]["reference_account"])
 
         return current_settings
 

@@ -1,12 +1,8 @@
 import random
-from pydantic import BaseModel
 from datetime import datetime, timezone, timedelta
 
 from repository import simple_search, insert_one_table, update_one_table
-
-
-class Code(BaseModel):
-    validation_number: int = 0
+from schemas import Code
 
 
 def find_customer_id(search):
@@ -27,7 +23,7 @@ def create_validation(email):
         result = result["row_result0"]
 
     except:
-        error = "Email Addresse konnte nicht gefunden werden"
+        error = "Email Addresse konnte nicht gefunden werden."
         print(error)
         raise Exception(error)
 
@@ -52,9 +48,7 @@ def activate_account(code: Code):
 
     code_dic = code.model_dump()
 
-    result = simple_search("validation",
-                           "validation_number",
-                           code_dic["validation_number"])
+    result = simple_search("validation", "validation_number", code_dic["validation_number"])
 
     try:
         result = result["row_result0"]
@@ -63,9 +57,7 @@ def activate_account(code: Code):
 
             current_time = datetime.now(timezone.utc)
 
-            validation_time_code = datetime.strptime(
-                result["date"], "%Y-%m-%d %H:%M:%S").replace(
-                    tzinfo=timezone.utc)
+            validation_time_code = datetime.strptime(result["date"], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
 
             five_min = timedelta(minutes=5)
 

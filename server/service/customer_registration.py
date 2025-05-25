@@ -1,15 +1,9 @@
 from passlib.context import CryptContext
+from datetime import datetime, timedelta
 
-from utilitys import bank_account_encode 
+from utilities import ValidationError, bank_account_encode, time_check
 from repository import insert_customer
 from schemas import AccountForm
-
-from .utility import (time_check_two,
-                      email_check,
-                      password_check,
-                      house_number_check,
-                      phone_number_check,
-                      age_check)
 
 
 class CustomerRegistration:
@@ -35,11 +29,10 @@ class CustomerRegistration:
                 setattr(self, key, value)
 
             except Exception as e:
-                print(f"Fehlerhafte eingabe für {key}: {e}")
-                errors.append(f"Fehlerhafte eingabe für {key}: {e}")
+                errors.append(f"Fehlerhafte Eingabe für {key}: {e}")
 
         if errors:
-            raise Exception(errors)
+            raise ValidationError(errors)
 
     # last name
     @property
@@ -51,7 +44,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._last_name = input
         else:
-            raise ValueError("mindestens zwei Zeichen")
+            raise ValidationError("mindestens zwei Zeichen")
 
     # first name
     @property
@@ -63,7 +56,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._first_name = input
         else:
-            raise ValueError("mindestens zwei Zeichen")
+            raise ValidationError("mindestens zwei Zeichen")
 
     #  street
     @property
@@ -75,7 +68,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._street = input
         else:
-            raise ValueError("mindestens zwei Zeichen")
+            raise ValidationError("mindestens zwei Zeichen")
 
     # house number
     @property
@@ -83,15 +76,16 @@ class CustomerRegistration:
         return self._house_number
 
     @house_number.setter
-    def house_number(self, input):
+    def house_number(self, input: str):
         if len(input) >= 1:
-            check = house_number_check(input)
-            if check:
-                self._house_number = input
-            else:
-                raise ValueError("Die Hausnummer muss eine Zahl beinhalten")
+            for inp in input:
+                if inp.isdigit():
+                    self._house_number = input
+                    break
+                else:
+                    raise ValidationError("Die Hausnummer muss eine Zahl beinhalten")
         else:
-            raise ValueError("mindestens ein Zeichen")
+            raise ValidationError("mindestens ein Zeichen")
 
     # city
     @property
@@ -103,7 +97,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._city = input
         else:
-            raise ValueError("mindestens zwei Zeichen")
+            raise ValidationError("mindestens zwei Zeichen")
 
     # zip code
     @property
@@ -113,14 +107,14 @@ class CustomerRegistration:
     @zip_code.setter
     def zip_code(self, input):
         try:
-            input = int(input) 
+            input = int(input)
             if input >= 1067 and input <= 99998:
                 self._zip_code = input
             else:
-                raise ValueError("ungültige Postleitzahl")
+                raise ValidationError("ungültige Postleitzahl")
 
         except ValueError:
-            raise ValueError("ungültige Postleitzahl")
+            raise ValidationError("ungültige Postleitzahl")
 
     # birthday
     @property
@@ -130,13 +124,15 @@ class CustomerRegistration:
     @birthday.setter
     def birthday(self, input):
         input = input.strip()
-        test = time_check_two(input)
+        test = time_check(input)
         if test:
-            test = age_check(input)
-            if test:
+            today = datetime.today()
+            adult_date = today - timedelta(days=18*365)
+            birthday = datetime.strptime(input, "%d.%m.%Y")
+            if birthday <= adult_date:
                 self._birthday = input
             else:
-                raise ValueError("unter 18")
+                raise ValidationError("unter 18")
         else:
             raise ValueError("Bitte das Format tt.mm.jjjj beachten")
 
@@ -147,11 +143,12 @@ class CustomerRegistration:
 
     @email.setter
     def email(self, input):
-        test = email_check(input)
-        if test:
+        char_a = "@"
+        char_dot = "."
+        if char_a in input and char_dot in input:
             self._email = input
         else:
-            raise ValueError("ungültige E-Mail Adressse")
+            raise ValidationError("ungültige E-Mail Adressse")
 
     # phone number
     @property
@@ -159,13 +156,14 @@ class CustomerRegistration:
         return self._phone_number
 
     @phone_number.setter
-    def phone_number(self, input):
+    def phone_number(self, input: str):
         if len(input) >= 11 and len(input) <= 13:
-            test = phone_number_check(input)
-            if test:
-                self._phone_number = input
-            else:
-                raise ValueError("Telfeonnummer darf nur Zahlen beinhalten")
+            for number in input:
+                if not number.isdigit():
+                    raise ValidationError("Telfeonnummer darf nur Zahlen beinhalten")
+
+            self._phone_number = input
+
         else:
             raise ValueError("ungülitge Länge")
 
@@ -180,7 +178,7 @@ class CustomerRegistration:
         if len(input) >= 2:
             self._reference_account = input
         else:
-            raise ValueError("mindestens zwei Zeichen")
+            raise ValidationError("mindestens zwei Zeichen")
 
     # balance
     @property
@@ -194,7 +192,7 @@ class CustomerRegistration:
             if input >= 0:
                 self._fin_amount = input
             else:
-                raise ValueError("Bitte eine positive Zahl eingeben")
+                raise ValidationError("Bitte eine positive Zahl eingeben")
         except ValueError:
             raise ValueError("Bitte eine positive Zahl eingaben")
 
@@ -206,16 +204,30 @@ class CustomerRegistration:
     @password.setter
     def password(self, input):
         if len(input) >= 12:
-            test, error = password_check(input)
-            if test:
-                password_context = CryptContext(schemes=["bcrypt"],
-                                                deprecated="auto")
+
+            upper = 0
+            lower = 0
+            special = 0
+            numbers = 0
+
+            for char in input:
+                if char.isupper() and char.isalpha():
+                    upper += 1
+                elif char.islower() and char.isalpha():
+                    lower += 1
+                elif char.isdigit():
+                    numbers += 1
+                elif not char.isalnum():
+                    special += 1
+
+            if upper > 1 and lower > 1 and numbers > 1 and special > 1:
+
+                password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
                 self._password = password_context.hash(input)
             else:
-                raise ValueError("Passwort muss mindestens "
-                                 f"{error} enthalten")
+                raise ValidationError("Passwort entspricht nicht den Sicherheitsstandart")
         else:
-            raise ValueError("Mindestens zwölf Zeichen")
+            raise ValidationError("Mindestens zwölf Zeichen")
 
     def to_dict(self):
         return {
@@ -235,10 +247,4 @@ class CustomerRegistration:
 
     def insert_db(self):
         as_dic = self.to_dict()
-
-        try:
-            insert_customer(as_dic)
-
-        except Exception as e:
-            print(e)
-            raise ValueError(e)
+        insert_customer(as_dic)

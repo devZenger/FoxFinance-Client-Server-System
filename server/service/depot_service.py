@@ -1,9 +1,9 @@
 from repository import (simple_search,
                         stock_transactions_overview,
-                        search_past_transactions, 
+                        search_past_transactions,
                         search_order_charges)
 
-from .utility import date_form_validation
+from utilities import date_form_validation
 
 
 def customer_name(customer_id):
@@ -28,9 +28,7 @@ def past_transactions(customer_id, start_date, end_date):
     date_form_validation(start_date)
     date_form_validation(end_date)
 
-    transactions = search_past_transactions(customer_id,
-                                            start_date,
-                                            end_date)
+    transactions = search_past_transactions(customer_id, start_date, end_date)
     for trans in transactions.values():
 
         volume = trans["amount"] * trans["price_per_stock"]
