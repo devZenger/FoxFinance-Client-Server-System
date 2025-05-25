@@ -1,269 +1,237 @@
-import os, sys, sqlite3
+import os
+import sys
+import sqlite3
+
+from .insert_base_data_to_db import insert_datas
+from .import_customer_data_to_db import insert_customers
+from .import_dax_data_to_db import insert_dax_members
+from .import_stock_data_to_db import insert_stock_datas
+from .max_mustermann import insert_mustermann, email, password
 
 
-path = os.path.join("..", "server", "database", "FoxFinanceData.db")
+def create_tables(path):
 
-print(path)
+    try:
+        connection = sqlite3.connect(path)
+        cursor = connection.cursor()
 
-if os.path.exists(path):
-    print("Datenbank bereits vorhanden")
-    sys.exit(0)
-else:
-    print("Datenbank nicht vorhanden")
+        # customer related:
+        sql = """CREATE TABLE customers(
+                    customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    first_name TEXT NOT NULL,
+                    last_name TEXT NOT NULL,
 
-connection = sqlite3.connect(path)
-cursor = connection.cursor()
+                    email TEXT UNIQUE NOT NULL,
+                    phone_number TEXT UNIQUE NOT NULL,
+                    birthday TEXT NOT NULL,
 
-# customer related:
-sql = """CREATE TABLE customers(
-            customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
+                    registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    termination_date TEXT,
+                    disabled BOOL DEFAULT TRUE,
 
-            email TEXT UNIQUE NOT NULL,
-            phone_number TEXT UNIQUE NOT NULL,
-            birthday TEXT NOT NULL,
+                    last_login TEXT DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE (customer_id, registration_date),
+                    UNIQUE (first_name, last_name, birthday)
+                    )"""
+        cursor.execute(sql)
 
-            registration_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            termination_date TEXT,
-            disabled BOOL DEFAULT TRUE,  
+        sql = """CREATE TABLE customer_adresses(
+                    customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+                    street TEXT NOT NULL,
+                    house_number TEXT NOT NULL,
+                    zip_code INTEGER NOT NULL,
+                    city TEXT NOT NULL
+                    )"""
+        cursor.execute(sql)
 
-            last_login TEXT DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE (customer_id, registration_date),
-            UNIQUE (first_name, last_name, birthday)
-            )"""
-cursor.execute(sql)
+        sql = """CREATE TABLE financials(
+                    customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+                    reference_account BLOB UNIQUE NOT NULL
+                    )"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE customer_adresses(
-            customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+        sql = """CREATE TABLE authentication(
+                    customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+                    password TEXT NOT NULL
+                    )"""
+        cursor.execute(sql)
 
-            street TEXT NOT NULL,
-            house_number TEXT NOT NULL,
-            zip_code INTEGER NOT NULL,
-            city TEXT NOT NULL,
+        # validation:
+        sql = """CREATE TABLE validation(
+                    customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
+                    validation_number INTEGER NOT NULL,
+                    date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+                    )"""
+        cursor.execute(sql)
 
-            FOREIGN KEY (zip_code) REFERENCES zip_codes(zip_code)
-            )"""
-cursor.execute(sql)
+        sql = """CREATE TRIGGER update_date_trigger
+                    AFTER UPDATE OF validation_number ON validation
+                    FOR EACH ROW
+                    BEGIN
+                        UPDATE validation
+                        SET date = CURRENT_TIMESTAMP
+                        WHERE customer_id = NEW.customer_id;
+                END"""
 
-sql = """CREATE TABLE financials(
-            customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-            reference_account TEXT UNIQUE NOT NULL
-            )"""
-cursor.execute(sql)
+        cursor.execute(sql)
 
-sql = """ CREATE TABLE zip_codes(
-            zip_code_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            zip_code INTEGER,
-            city TEXT NOT NULL)"""
+        # financial related:
+        sql = """CREATE TABLE financial_transactions(
+                    financial_transfer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    customer_id INTEGER NOT NULL,
+                    bank_account TEXT NOT NULL,
+                    fin_amount REAL NOT NULL,
+                    fin_transaction_type_id INTEGER NOT NULL,
+                    usage TEXT,
+                    fin_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (customer_id) REFERENCES customers,
+                    FOREIGN KEY (fin_transaction_type_id) REFERENCES fin_transaction_types)"""
+        cursor.execute(sql)
 
-cursor.execute(sql)
+        sql = """CREATE TABLE fin_transaction_types(
+                    fin_transaction_type_id INTEGER PRIMARY KEY,
+                    fin_transaction_type TEXT NOT NULL)"""
+        cursor.execute(sql)
 
+        # stock related:
+        sql = """CREATE TABLE stocks(
+                    isin TEXT PRIMARY KEY,
+                    ticker_symbol TEXT NOT NULL,
+                    company_name TEXT NOT NULL)"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE authentication(
-            customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-            password TEXT NOT NULL
-            )"""
-cursor.execute(sql)  
+        sql = """CREATE TABLE stock_data(
+                    dataID INTEGER PRIMARY KEY,
+                    isin TEXT,
+                    date TEXT,
+                    open REAL,
+                    high REAL,
+                    low REAL,
+                    close REAL,
+                    volume INTEGER,
+                    dividends REAL,
+                    stock_splits REAL,
+                    FOREIGN KEY (isin) REFERENCES stocks(isin),
+                    UNIQUE (isin, date)
+                    )"""
+        cursor.execute(sql)
 
-# financial related:
-sql = """CREATE TABLE financial_transactions(
-            financial_transfer_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_id INTEGER NOT NULL,
-            bank_account TEXT NOT NULL,
-            fin_amount REAL NOT NULL,
-            fin_transaction_type_id INTEGER NOT NULL,
-            usage TEXT,
-            fin_transaction_date TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (customer_id) REFERENCES customers,
-            FOREIGN KEY (fin_transaction_type_id) REFERENCES fin_transaction_types)"""
-cursor.execute(sql)
+        sql = """CREATE TABLE watchlist(
+                    wl_nr INTEGER PRIMARY KEY AUTOINCREMENT,
+                    customer_id INTEGER,
+                    isin TEXT,
+                    price REAL,
+                    date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    UNIQUE (customer_id, isin),
+                    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+                    )"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE fin_transaction_types(
-            fin_transaction_type_id INTEGER PRIMARY KEY,
-            fin_transaction_type TEXT NOT NULL)"""
-cursor.execute(sql)
+        sql = """CREATE TABLE stock_indexes(
+                    index_id INTEGER PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    symbol INTERGER NOT NUll
+                    )"""
+        cursor.execute(sql)
 
-# stock related:
-sql = """CREATE TABLE stocks(
-            isin TEXT PRIMARY KEY,
-            ticker_symbol TEXT NOT NULL,
-            company_name TEXT)"""
-cursor.execute(sql)    
+        sql = """ CREATE TABLE index_members(
+                    isin NOT NULL,
+                    index_id NOT NULL,
+                    PRIMARY KEY (isin, index_id),
+                    FOREIGN KEY (isin) REFERENCES stocks,
+                    FOREIGN KEY (index_id) REFERENCES stock_indexes
+                    )"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE stock_data(
-            dataID INTEGER PRIMARY KEY,
-            isin TEXT,
-            date TEXT,
-            open REAL,
-            high REAL,
-            low REAL,
-            close REAL,
-            volume INTEGER,
-            dividends REAL,
-            stock_splits REAL,
-            FOREIGN KEY (isin) REFERENCES stocks(isin),
-            UNIQUE (isin, date)
-            )"""
-cursor.execute(sql) 
+        sql = """ CREATE TABLE transactions(
+                    transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    customer_id INTEGER,
+                    isin NOT NULL,
+                    transaction_type TEXT NOT NULL CHECK(transaction_type IN ('buy', 'sell')),
+                    amount INTEGER NOT NULL,
+                    price_per_stock NOT NULL,
+                    order_charge_id NOT NULL,
+                    transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    FOREIGN KEY (customer_id) REFERENCES customers,
+                    FOREIGN KEY (isin) REFERENCES stocks,
+                    FOREIGN KEY (order_charge_id) REFERENCES order_charges
+                    )"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE stock_watch(
-            watchlist_id INTEGER PRIMARY KEY,
-            customer_id INTERGER,
-            isin TEXT, price_per_stock REAL,
-            transaction_date TEXT,
-            FOREIGN KEY (customer_id) REFERENCES customers
-            )"""  
-cursor.execute(sql) 
+        sql = """ CREATE TABLE order_charges(
+                    order_charge_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    start_validation DATE NOT NULL,
+                    end_validation DATE NOT NULL,
+                    min_volumn REAL NOT NULL,
+                    order_charge REAL NOT NULL,
+                    UNIQUE (start_validation, min_volumn)
+                    )"""
+        cursor.execute(sql)
 
-sql = """CREATE TABLE stock_indexes(
-            index_id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            symbol INTERGER NOT NUll
-            )"""
-cursor.execute(sql)
-            
-sql = """ CREATE TABLE index_members(
-            isin NOT NULL,
-            index_id NOT NULL,
-            PRIMARY KEY (isin, index_id),
-            FOREIGN KEY (isin) REFERENCES stocks,
-            FOREIGN KEY (index_id) REFERENCES stock_indexes
-            )"""
-cursor.execute(sql)
+        connection.commit()
 
-sql = """ CREATE TABLE transactions(
-            transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_id INTEGER,
-            isin NOT NULL,
-            transaction_type TEXT NOT NULL CHECK(transaction_type IN ('buy', 'sell')),
-            amount INTEGER NOT NULL,
-            price_per_stock NOT NULL,
-            order_charge_id NOT NULL,
-            transaction_date TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            FOREIGN KEY (customer_id) REFERENCES customers,
-            FOREIGN KEY (isin) REFERENCES stocks,
-            FOREIGN KEY (order_charge_id) REFERENCES order_charges
-            )"""
-cursor.execute(sql)
+    except sqlite3.Error as e:
+        error_msg = ("Fehler beim Erstellen der Tabellen.\n"
+                     f"SQL: {sql}\n"
+                     f"Error: {str(e)}\n")
+        raise RuntimeError(error_msg) from e
 
-sql = """ CREATE TABLE order_charges(
-            order_charge_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            start_validation DATE NOT NULL,
-            end_validation DATE NOT NULL,
-            min_volumn DECIAML NOT NULL,
-            order_charge DECIMAL NOT NULL,
-            UNIQUE (start_validation, min_volumn)
-            )"""
-cursor.execute(sql)
-
-sql = """INSERT INTO stock_indexes(name, symbol) VALUES('DAX', '^GDAXI')"""
-cursor.execute(sql)
-
-sql = """INSERT INTO stock_indexes(name, symbol) VALUES('MDAX', '^MDAXI')"""
-cursor.execute(sql)
-
-
-sql = """INSERT INTO stock_indexes(name, symbol) VALUES('SDAX', '^SDAXI')"""
-cursor.execute(sql)
-
-
-sql = """INSERT INTO stock_indexes(name, symbol) VALUES('TecDAX', '^TECDAX')"""
-cursor.execute(sql)
-
-
-sql = """INSERT INTO stock_indexes(name, symbol) VALUES('EURO STOXX 50', '^STOXX50E')"""
-cursor.execute(sql)
-connection.commit()
+    finally:
+        connection.close()
 
 
-sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('deposit')"""
-cursor.execute(sql)
+def choice(question: str, function, path):
+    feedback = False
+    while feedback is False:
+        user_input = input(f"\n{question} (Ja/Nein): ")
+        user_input = user_input.lower()
+        if user_input == "ja" or user_input == "j":
+            function(path)
+            feedback = True
+        elif user_input == "nein" or user_input == "n":
+            feedback = True
+            return True
+        else:
+            print("Ungültige Eingabe, bitte wiederholen.")
 
-sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('withdrawal')"""
-cursor.execute(sql)
 
-sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('buy stocks')"""
-cursor.execute(sql)
+def create_db(path):
 
-sql = """INSERT INTO fin_transaction_types(fin_transaction_type) VALUES('sell stocks')"""
-cursor.execute(sql)
+    try:
+        create_tables(path)
+        insert_datas(path)
+
+        choice("Max Mustermann anlegen", insert_mustermann, path)
+        choice("Kundendaten einfügen", insert_customers, path)
+
+        insert_dax_members(path)
+        insert_stock_datas(path)
+
+        return "Datenbank Einsatzbereit", email, password
+
+    except Exception as e:
+        error_msg = ("Fehler bei 'create_db'.\n"
+                     f"Error: {e}\n")
+        raise RuntimeError(error_msg) from e
 
 
-connection.commit()
+if __name__ == "__main__":
 
+    path = os.path.join("..", "server", "database", "FoxFinanceData.db")
 
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2018-01-01',
-            '2020-12-31',
-            0,
-            0.1)"""
-cursor.execute(sql)
+    if os.path.exists(path):
+        print("Datenbank bereits vorhanden – Script wird nicht weiter ausgeführt")
+        sys.exit(0)
+    else:
+        print("Datenbank nicht vorhanden – Script ausgeführt")
 
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2018-01-01',
-            '2020-12-31',
-            1000,
-            0.05)"""
-cursor.execute(sql)
+    try:
+        answer = choice("Nur Tabellen ersellen (bei Nein, auch die Daten)", create_tables, path)
+        if answer:
+            create_db(path)
+            print("Datenbank erstellt, Tabellen eingefügt, Daten eingefügt")
+        else:
+            print("Datenbank erstellt, Tabellen eingefügt")
 
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2021-01-01',
-            '2023-12-31',
-            0,
-            0.08)"""
-cursor.execute(sql)
-
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2021-01-01',
-            '2023-12-31',
-            800,
-            0.06)"""
-cursor.execute(sql)
-
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2024-01-01',
-            '2025-12-31',
-            0,
-            0.07)"""
-cursor.execute(sql)
-
-sql = """INSERT INTO order_charges(
-            start_validation,
-            end_validation, 
-            min_volumn, 
-            order_charge 
-            ) VALUES(
-            '2024-01-01',
-            '2025-12-31',
-            600,
-            0.05)"""
-cursor.execute(sql)
-connection.commit()
-
-connection.close()
+    except Exception as e:
+        print(f"Fehler bei der Ausfürunng.\n Error:{str(e)}")
