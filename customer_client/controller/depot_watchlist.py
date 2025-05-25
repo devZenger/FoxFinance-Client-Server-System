@@ -30,8 +30,7 @@ class DepotWatchlist:
                     self.watchlist.get_watchlist()
 
                     if self.watchlist.success:
-                        display_menu.display_table(self.watchlist.response,
-                                                   self.watchlist.column_names)
+                        display_menu.display_table(self.watchlist.response, self.watchlist.column_names)
                     else:
                         display_menu.display_info(self.watchlist.response)
 
@@ -49,26 +48,22 @@ class DepotWatchlist:
                     choice = "search_stock"
 
                 case "search_stock":
-                    form_filled = display_menu.display_form(self.watchlist.search_form_names,
-                                                            self.watchlist)
+                    form_filled = display_menu.display_form(self.watchlist.search_form_names, self.watchlist)
                     if form_filled:
                         choice = self.watchlist.stock_search()
                     else:
                         choice = "options"
 
                 case "several_stocks":
-                    display_menu.display_title_and_infos(
-                        self.title_stock, self.watchlist.stock_list)
+                    display_menu.display_title_and_infos(self.title_stock, self.watchlist.stock_list)
                     choice = "search_stock"
 
                 case "single_stock":
                     self.watchlist.edit_watchlist()
                     if self.watchlist.success:
-                        display_menu.display_info(
-                            f"{self.watchlist.isin} wurde hinzugefügt")
+                        display_menu.display_info(f"{self.watchlist.isin} wurde hinzugefügt")
                     else:
-                        display_menu.display_info(
-                            f"EIn Fehler trat auf: {self.watchlist.response}")
+                        display_menu.display_info(f"EIn Fehler trat auf: {self.watchlist.response}")
                     choice = "start"
 
                 case "discontinue":

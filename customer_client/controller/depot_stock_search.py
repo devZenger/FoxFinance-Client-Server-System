@@ -25,8 +25,7 @@ class DepotStockSearch:
 
                 case "stock_search":
                     display_menu.display_info(self.information)
-                    form_filled = display_menu.display_form(
-                        stock_actions.search_form_names, stock_actions)
+                    form_filled = display_menu.display_form(stock_actions.search_form_names, stock_actions)
                     if form_filled:
                         choice = stock_actions.stock_search()
                     else:
@@ -34,14 +33,12 @@ class DepotStockSearch:
 
                 case "several_stocks":
                     stock_information = stock_actions.stock_list
-                    display_menu.display_title_and_infos(
-                        self.title_findings, stock_information)
+                    display_menu.display_title_and_infos(self.title_findings, stock_information)
                     choice = "options"
 
                 case "single_stock":
                     display_menu.display_title(self.title_result)
-                    display_menu.display_dic_in_dic(
-                        stock_actions.stock_information)
+                    display_menu.display_dic_in_dic(stock_actions.stock_information)
                     choice = "options"
 
                 case "no_stocks":

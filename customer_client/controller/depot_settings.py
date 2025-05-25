@@ -49,12 +49,10 @@ class Settings:
                     choice = "options"
 
                 case "options":
-                    choice = display_menu.display_options(
-                        self.options_settings)
+                    choice = display_menu.display_options(self.options_settings)
 
                 case "adress":
-                    form_filled = display_menu.display_form(self.settings.form_names_adress,
-                                                            self.settings)
+                    form_filled = display_menu.display_form(self.settings.form_names_adress, self.settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "adress"
@@ -93,8 +91,7 @@ class Settings:
                         choice = "options"
 
                 case "password":
-                    form_filled = display_menu.display_form(
-                        self.settings.form_names_password, self.settings)
+                    form_filled = display_menu.display_form(self.settings.form_names_password, self.settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "password"
@@ -103,8 +100,7 @@ class Settings:
                         choice = "options"
 
                 case "conform_change":
-                    choice = display_menu.display_options(
-                        self.options_make_change)
+                    choice = display_menu.display_options(self.options_make_change)
 
                 case "make_change":
                     response = self.settings.transmit_changes(setting_type)

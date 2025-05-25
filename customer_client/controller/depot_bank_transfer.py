@@ -34,12 +34,10 @@ class DepotBankTransfer:
                         choice = "options"
 
                 case "transfer":
-                    form_filled = display_menu.display_form(form_names,
-                                                            self.transfer)
+                    form_filled = display_menu.display_form(form_names, self.transfer)
                     if form_filled:
                         display_menu.display_filled_form()
-                        choice = display_menu.display_options(
-                                self.options_make_transfer)
+                        choice = display_menu.display_options(self.options_make_transfer)
                     else:
                         "options"
 

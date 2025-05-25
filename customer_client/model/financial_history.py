@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
-from .server_request import ServerRequest
+from service import ServerRequest
 
-from .utility import time_check
+from .model_utilitys import check_date_input
 
 
 class FinancialHistory:
@@ -30,12 +30,12 @@ class FinancialHistory:
     def start_time(self, input: str):
         input = input.strip()
 
-        check = time_check(input)
+        check, date, message = check_date_input(input)
 
         if check:
-            self._start_time = input
+            self._start_time = date
         else:
-            raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
+            raise ValueError(message)
 
     @property
     def end_time(self):
@@ -43,13 +43,13 @@ class FinancialHistory:
 
     @end_time.setter
     def end_time(self, input: str):
-        input = input.strip()
-        check = time_check(input)
+
+        check, date, message = check_date_input(input)
 
         if check:
-            self._end_time = input
+            self._end_time = date
         else:
-            raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
+            raise ValueError(message)
 
     def get_actual_balance(self):
 
@@ -68,8 +68,7 @@ class FinancialHistory:
 
         url_part = 'pastfinancialtransactions/'
 
-        status, self.response = self.server_request.get_with_parameters(
-            url_part, self.start_time, self.end_time)
+        status, self.response = self.server_request.get_with_parameters(url_part, self.start_time, self.end_time)
 
         return status
 

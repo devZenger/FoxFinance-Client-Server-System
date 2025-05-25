@@ -1,10 +1,8 @@
-from .server_request import ServerRequest
+from datetime import datetime, timedelta
 
-from .utility import (time_check_two, email_check,
-                      password_check,
-                      house_number_check,
-                      phone_number_check,
-                      age_check)
+from service import ServerRequest
+
+from .model_utilitys import check_date_input, email_check
 
 
 class RegistrationForm:
@@ -83,12 +81,12 @@ class RegistrationForm:
     @house_number.setter
     def house_number(self, input: str):
         if len(input) >= 1:
-            check = house_number_check(input)
-
-            if check:
-                self._house_number = input
-            else:
-                raise ValueError("Hausnummer muss eine Zahl beinhalten")
+            for inp in input:
+                if inp.isdigit():
+                    self._house_number = input
+                    break
+                else:
+                    raise ValueError("Hausnummer muss eine Zahl beinhalten")
         else:
             raise ValueError("mindestens ein Zeichen")
 
@@ -112,7 +110,7 @@ class RegistrationForm:
     @zip_code.setter
     def zip_code(self, input: int):
         try:
-            input = int(input) 
+            input = int(input)
             if input >= 1067 and input <= 99998:
                 self._zip_code = input
             else:
@@ -128,16 +126,18 @@ class RegistrationForm:
 
     @birthday.setter
     def birthday(self, input: str):
-        input = input.strip()
-        test = time_check_two(input)
-        if test:
-            test = age_check(input)
-            if test:
-                self._birthday = input
+        check, date, message = check_date_input(input, False)
+        if check:
+            today = datetime.today()
+            adult_date = today - timedelta(days=18*365)
+
+            birthday_obj = datetime.strptime(date, "%d.%m.%Y")
+            if birthday_obj <= adult_date:
+                self._birthday = date
             else:
                 raise ValueError("unter 18")
         else:
-            raise ValueError("Bitte das Format tt.mm.jjjj beachten")
+            raise ValueError(message)
 
     # email
     @property
@@ -160,11 +160,10 @@ class RegistrationForm:
     @phone_number.setter
     def phone_number(self, input):
         if len(input) >= 11 and len(input) <= 13:
-            test = phone_number_check(input)
-            if test:
-                self._phone_number = input
-            else:
-                raise ValueError("Telfeonnummer darf nur Zahlen beinhalten")
+            for number in input:
+                if not number.isdigit():
+                    raise ValueError("Telfeonnummer darf nur Zahlen beinhalten")
+            self._phone_number = input
         else:
             raise ValueError("ungülitge Länge")
 
@@ -204,12 +203,35 @@ class RegistrationForm:
     @password.setter
     def password(self, input: str):
         if len(input) >= 12:
-            check, error = password_check(input)
-            if check:
+
+            upper = 0
+            lower = 0
+            special = 0
+            numbers = 0
+
+            for char in input:
+                if char.isupper() and char.isalpha():
+                    upper += 1
+                elif char.islower() and char.isalpha():
+                    lower += 1
+                elif char.isdigit():
+                    numbers += 1
+                elif not char.isalnum():
+                    special += 1
+
+            if upper > 1 and lower > 1 and numbers > 1 and special > 1:
                 self._password = input
             else:
-                raise ValueError("Passwort muss mindestens "
-                                 f"{error} enthalten")
+                if upper > 1:
+                    error = "einen Großbuchstaben"
+                if upper > 1:
+                    error = "einen Kleinbuchstaben"
+                if numbers > 1:
+                    error = "eine Zahl"
+                if special > 1:
+                    error = "ein Sonderzeichen"
+
+                raise ValueError(f"Passwort muss mindestens {error} enthalten")
         else:
             raise ValueError("Fehler, mindestens zwölf Zeichen")
 
@@ -235,10 +257,9 @@ class RegistrationForm:
 
         server_request = ServerRequest()
 
-        url_part = "create_costumer_account/"
+        url_part = "create_customer_account/"
 
-        success, self.response = server_request.make_post_request(url_part,
-                                                                  to_transmit)
+        success, self.response = server_request.make_post_request(url_part, to_transmit)
 
         del server_request
 

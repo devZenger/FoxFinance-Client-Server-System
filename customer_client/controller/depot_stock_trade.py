@@ -31,8 +31,7 @@ class DepotStockTrade:
             match choice:
 
                 case "input_stock":
-                    form_filled = display_menu.display_form(
-                        search_form_names, self.stock_actions)
+                    form_filled = display_menu.display_form(search_form_names, self.stock_actions)
                     if form_filled:
                         choice = self.stock_actions.stock_search()
                     else:
@@ -40,17 +39,16 @@ class DepotStockTrade:
 
                 case "several_stocks":
                     stock_information = self.stock_actions.stock_list
-                    display_menu.display_title_and_infos(
-                        self.title_stock, stock_information)
+                    display_menu.display_title_and_infos(self.title_stock, stock_information)
                     choice = "input_stock"
 
                 case "single_stock":
-                    display_menu.display_form(trade_form_names, self.stock_actions)
-
-                    display_menu.display_dic(self.stock_actions.to_dict())
-
-                    choice = display_menu.display_options(
-                        self.options_make_trade)
+                    form_filled = display_menu.display_form(trade_form_names, self.stock_actions)
+                    if form_filled:
+                        display_menu.display_dic(self.stock_actions.to_dict())
+                        choice = display_menu.display_options(self.options_make_trade)
+                    else:
+                        choice = "options"
 
                 case "no_stocks":
                     title_no_stocks = "Ergebnis"

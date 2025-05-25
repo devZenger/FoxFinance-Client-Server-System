@@ -1,5 +1,6 @@
+from service import ServerRequest
+
 from .registration_form import RegistrationForm
-from .server_request import ServerRequest
 
 
 class SettingsForm(RegistrationForm):
@@ -68,8 +69,7 @@ class SettingsForm(RegistrationForm):
 
         url_part = "changesettings/"
 
-        status, self.response = server_request.make_post_request(
-            url_part, to_transmit)
+        status, self.response = server_request.make_post_request(url_part, to_transmit)
 
         del server_request
 

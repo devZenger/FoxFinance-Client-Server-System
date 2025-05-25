@@ -22,7 +22,7 @@ class ServerRequest:
         try:
             server_response = server_response.json()
 
-        except:
+        except Exception:
             pass
 
         if status_code >= 200 and status_code <= 300:
@@ -40,13 +40,12 @@ class ServerRequest:
             try:
                 server_response = server_response.json()
 
-            except:
+            except Exception:
                 pass
 
             if "detail" not in server_response:
                 server_response = {}
-                server_response["detail"] = f"Unbekannter Fehler," \
-                                            f"Status Code: {status_code}"
+                server_response["detail"] = f"Unbekannter Fehler, Status Code: {status_code}"
 
             # server_response is string
             return False, server_response["detail"]
@@ -77,8 +76,6 @@ class ServerRequest:
 
         url = f"{self.url_server}{url_part}"
 
-        server_response = requests.post(url,
-                                        json=to_transmit,
-                                        headers=self.headers)
+        server_response = requests.post(url, json=to_transmit, headers=self.headers)
 
         return self.process_response(server_response)

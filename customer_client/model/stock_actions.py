@@ -1,4 +1,4 @@
-from .server_request import ServerRequest
+from service import ServerRequest
 
 
 def match_server_response(input: dict):
@@ -106,8 +106,7 @@ class StockActions:
     def stock_search(self):
         url_part = "stocksearch/"
 
-        get_data, response = self.server_request.get_with_parameters(
-            url_part, self.search_term)
+        get_data, response = self.server_request.get_with_parameters(url_part, self.search_term)
 
         if get_data is False:
             return f"\tFehler, {self.response.status_code}\n\t" \
@@ -165,7 +164,6 @@ class StockActions:
                  "amount": self.amount,
                  "transaction_type": self.type_of_action_en}
 
-        success, self.response = self.server_request.make_post_request(
-            url_part, order)
+        success, self.response = self.server_request.make_post_request(url_part, order)
 
         return success

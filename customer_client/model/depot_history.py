@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
-from .server_request import ServerRequest
+from service import ServerRequest
 
-from .utility import time_check
+from .model_utilitys import check_date_input
 
 
 class DepotHistory:
@@ -14,8 +14,8 @@ class DepotHistory:
         self._start_time = ""
         self._end_time = ""
 
-        self.form_names = {"start_time": "Startdatum (jjjj-mm-tt) ",
-                           "end_time": "Enddatum (jjjj-mm-tt) "}
+        self.form_names = {"start_time": "Startdatum (tt.mm.jjjj) ",
+                           "end_time": "Enddatum (tt.mm.jjjj) "}
 
         self.column_names = {"isin": "ISIN",
                              "company_name": "Unternehmen",
@@ -40,13 +40,12 @@ class DepotHistory:
     @start_time.setter
     def start_time(self, input: str):
 
-        input = input.strip()
-        check = time_check(input)
+        check, date, message = check_date_input(input)
 
         if check:
-            self._start_time = input
+            self._start_time = date
         else:
-            raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
+            raise ValueError(message)
 
     @property
     def end_time(self):
@@ -54,21 +53,19 @@ class DepotHistory:
 
     @end_time.setter
     def end_time(self, input: str):
-        input = input.strip()
 
-        check = time_check(input)
+        check, date, message = check_date_input(input)
 
         if check:
-            self._end_time = input
+            self._end_time = date
         else:
-            raise ValueError("Eingabeformat muss yyyy-mm-dd entsprechen")
+            raise ValueError(message)
 
     def get_all_stocks(self):
 
         url_part = "depotoverview/"
 
-        success, self.response = self.server_request.get_without_parameters(
-            url_part)
+        success, self.response = self.server_request.get_without_parameters(url_part)
 
         return success
 
@@ -76,8 +73,7 @@ class DepotHistory:
 
         url_part = "pasttransactions/"
 
-        success, self.response = self.server_request.get_with_parameters(
-            url_part, self.start_time, self.end_time)
+        success, self.response = self.server_request.get_with_parameters(url_part, self.start_time, self.end_time)
 
         return success
 

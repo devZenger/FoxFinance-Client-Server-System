@@ -40,8 +40,7 @@ class DepotOverview:
                     choice = "option"
 
                 case "timespan":
-                    form_filled = self.display_menu.display_form(self.form_names,
-                                                                 self.depot)
+                    form_filled = self.display_menu.display_form(self.form_names, self.depot)
                     if form_filled:
                         request = self.depot.get_transaction_by_timespan()
                         self.show_table_timespan(request)
@@ -59,8 +58,7 @@ class DepotOverview:
     def show_table(self, input):
 
         if input is True:
-            self.display_menu.display_table(
-                self.depot.response, self.depot.column_names)
+            self.display_menu.display_table(self.depot.response, self.depot.column_names)
 
         else:
             self.display_menu.display_info(self.depot.response)
@@ -71,8 +69,7 @@ class DepotOverview:
             if title is None:
                 title = f"Vom {self.depot.start_time} bis {self.depot.end_time}:"
             self.display_menu.display_title(title)
-            self.display_menu.display_table(
-                self.depot.response, self.depot.column_names_timespan)
+            self.display_menu.display_table(self.depot.response, self.depot.column_names_timespan)
 
         else:
             self.display_menu.display_info(self.depot.response)

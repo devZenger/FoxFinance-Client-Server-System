@@ -1,4 +1,4 @@
-from .server_request import ServerRequest
+from service import ServerRequest
 
 
 class Welcome:

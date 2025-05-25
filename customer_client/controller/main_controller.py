@@ -13,7 +13,8 @@ class MainControl:
         self.title = "Hauptmenü"
         self.options = {"1. Login": "login",
                         "2. Konto erstellen": "create_account",
-                        "3. Informationen": "information",
+                        "3. Beispiel Depot testen": "example_account",
+                        "4. Informationen": "information",
                         "4. Beenden": "exit"}
 
     def run(self):
@@ -49,6 +50,19 @@ class MainControl:
                         del depot_controller
                         del token
 
+                    choice = "start"
+
+                case "example_account":
+                    example_login = LoginMenu()
+                    success, token = example_login.start_example_account()
+                    if success:
+                        depot_controller = DepotControl(token)
+                        depot_controller.run()
+
+                        del depot_controller
+                        del token
+                    else:
+                        display.display_info(token)
                     choice = "start"
 
                 case "information":

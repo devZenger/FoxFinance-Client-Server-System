@@ -93,8 +93,7 @@ class DepotControl:
                     choice = self.account_overview.run()
 
                 case "bank_transfer":
-                    self.bank_transaction = DepotBankTransfer(
-                        self.token, self.options)
+                    self.bank_transaction = DepotBankTransfer(self.token, self.options)
                     choice = self.bank_transaction.run()
 
                 case "information":

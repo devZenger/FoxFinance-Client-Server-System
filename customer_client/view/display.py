@@ -1,8 +1,6 @@
 import getpass
 
-from .utility import (make_table, 
-                      get_length_from_subdic, 
-                      get_key_value_max_length)
+from .view_utilitys import make_table, get_length_from_subdic, get_key_value_max_length
 
 
 class Display:
@@ -39,9 +37,9 @@ class Display:
                         return options[key]
 
                 if test is False:
-                    print("\tFehlerhafte eingabe")
+                    print("\tFehlerhafte Eingabe")
             else:
-                print("\tFehlerhafte eingabe")
+                print("\tFehlerhafte Eingabe")
 
     def display_form(self, form_names: dict, to_fill):
         self.form_names = form_names
@@ -53,7 +51,8 @@ class Display:
                     if value == "Passwort_Login":
                         user_input = getpass.getpass("\tPasswort eingeben: ").strip()
                     elif value == "Passwort":
-                        user_input = getpass.getpass("\tPasswort (min. 12 Zeichen und \n, mit A-Z, a-z, 0-9 und Sonderzeichen)\n"
+                        user_input = getpass.getpass("\tPasswort min. 12 Zeichen und \n"
+                                                     "mit A-Z, a-z, 0-9 und Sonderzeichen\n"
                                                      "eingeben: ").strip()
                     else:
                         user_input = input(f"\t{value} eingeben: ").strip()
@@ -69,7 +68,7 @@ class Display:
                         return False
                     else:
                         print(f"\tFehlerhafte Eingabe: {e}")
-                        print("\t'Abbrechen' eingeben, um abzubrechen")
+                        print("\tOder 'Abbrechen' eingeben, um abzubrechen")
         print(self.line)
         return True
 

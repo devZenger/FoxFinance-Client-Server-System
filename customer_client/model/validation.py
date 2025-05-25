@@ -1,4 +1,4 @@
-from .server_request import ServerRequest
+from service import ServerRequest
 
 
 class Validation:
@@ -20,8 +20,8 @@ class Validation:
             try:
                 self._validation_number = int(input)
 
-            except:
-                raise ValueError("Eingabe muss eine ganze Zahl sein")
+            except Exception:
+                raise ValueError("Eingabe muss aus Zahlen bestehen")
         else:
             raise ValueError("Mindestens sechs Zahlen")
 
@@ -55,7 +55,6 @@ class Validation:
         url_part = "/activateaccount/"
         to_transmit = self.to_dict()
 
-        success, self.response = self.server_request.make_post_request(
-            url_part, to_transmit)
+        success, self.response = self.server_request.make_post_request(url_part, to_transmit)
 
         return success

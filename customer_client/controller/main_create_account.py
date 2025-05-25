@@ -25,8 +25,7 @@ class CreateAccountMenu:
         while True:
             match choice:
                 case "start":
-                    display_menu.display_title_and_infos(self.title,
-                                                         self.information)
+                    display_menu.display_title_and_infos(self.title, self.information)
                     form_filled = display_menu.display_form(form_names,
                                                             regis_form)
                     if form_filled:
@@ -42,11 +41,11 @@ class CreateAccountMenu:
                         choice = "options"
 
                 case "options":
+                    display_menu.display_info("Konto konnte nicht erstellt werden")
                     choice = display_menu.display_options(self.options_failure)
 
                 case "validation":
-                    success, code = validation.get_activate_code(
-                        regis_form.email)
+                    success, code = validation.get_activate_code(regis_form.email)
 
                     if success:
                         display_menu.display_dict(code)

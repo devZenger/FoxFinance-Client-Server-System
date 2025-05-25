@@ -40,8 +40,7 @@ class AccountOverview:
                     choice = "option"
 
                 case "timespan":
-                    form_filled = self.display_menu.display_form(
-                                    self.form_names, self.account)
+                    form_filled = self.display_menu.display_form(self.form_names, self.account)
                     if form_filled:
                         request = self.account.get_fin_transaction_by_timespan()
                         self.show_table(request)
@@ -69,8 +68,7 @@ class AccountOverview:
     def show_table(self, input):
 
         if input is True:
-            self.display_menu.display_table(
-                self.account.response, self.account.column_names)
+            self.display_menu.display_table(self.account.response, self.account.column_names)
 
         elif input is False:
             self.display_menu.display_info(self.account.response)

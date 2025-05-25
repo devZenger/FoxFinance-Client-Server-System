@@ -1,5 +1,5 @@
 from .stock_actions import StockActions
-from .server_request import ServerRequest
+from service import ServerRequest
 
 
 class Watchlist(StockActions):
@@ -29,5 +29,4 @@ class Watchlist(StockActions):
         else:
             to_transmit["transaction_type"] = False
 
-        self.success, self.response = self.server_request.make_post_request(
-            url_part, to_transmit)
+        self.success, self.response = self.server_request.make_post_request(url_part, to_transmit)
