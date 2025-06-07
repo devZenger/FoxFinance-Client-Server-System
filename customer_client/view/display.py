@@ -1,26 +1,46 @@
 import getpass
 
-from .view_utilitys import make_table, get_length_from_subdic, get_key_value_max_length
+# from .view_utilites import make_table, get_length_from_subdic, get_key_value_max_length
+###################
+# class Display:
+#   1. display_title()
+#   2. display_info()
+#   3. display_titlle_and_info()
+#   4. display_options()
+#   5. display_form()
+#   6. display_fiiled_form()
+#   7. display_table()
+#   8. display_dict()
+#   9. 
+#  (class utilities function):
+#   10. _get_key_value_max_length()
+#   11. _make_table()
+#   12. _get_length_from_subdic()
+#   
 
 
 class Display:
     line = "-" * 90
     line = f"\t{line}"
 
+    # 1. display_title()
     def display_title(self, title):
         print(self.line)
         print(f"\t{title}")
         print(self.line)
 
+    # 2. display_info()
     def display_info(self, info):
         print(f"\t{info}")
         print(self.line)
 
+    # 3. display_titlle_and_info()
     def display_title_and_infos(self, title, info):
         self.display_title(title)
         self.display_info(info)
 
-    def display_options(self, options):
+    # 4. display_options()
+    def display_options(self, options: dict):
         print("")
         count = 1
         for key in options:
@@ -76,7 +96,7 @@ class Display:
         if form_names_input is None:
             form_names_input = self.form_names
 
-        length_keys, length_values = get_key_value_max_length(form_names_input)
+        length_keys, length_values = self._get_key_value_max_length(form_names_input)
 
         print(" ")
         print("\tBitte Eingaben überprüfen:")
@@ -92,7 +112,7 @@ class Display:
         print(self.line)
 
     def display_table(self, input: dict, column_names: dict):
-        transform_input = make_table(input, column_names)
+        transform_input = self._make_table(input, column_names)
 
         for transform in transform_input:
             print(f"\t{transform}")
@@ -106,7 +126,7 @@ class Display:
         print(self.line)
 
     def display_dic(self, input: dict):
-        length_key, length_values = get_key_value_max_length(input)
+        length_key, length_values = self._get_key_value_max_length(input)
 
         for k, v in input.items():
             print(f"\t{k.ljust(length_key)} : {v.rjust(length_values)}")
@@ -114,7 +134,7 @@ class Display:
 
     def display_dic_in_dic(self, input: dict):
 
-        length_keys, length_values = get_length_from_subdic(input)
+        length_keys, length_values = self._get_length_from_subdic(input)
 
         line = f"\t{"-" * (length_keys + length_values + 1)}"
 
@@ -126,3 +146,75 @@ class Display:
                 print(f"\t{k.ljust(length_keys)}:{v.rjust(length_values)}")
         print(self.line)
         print("")
+
+    def _get_key_value_max_length(self, input: dict):
+        max_length_keys = 0
+        max_length_values = 0
+
+        for k, v in input.items():
+            if len(k) > max_length_keys:
+                max_length_keys = len(k)
+
+            if len(v) > max_length_values:
+                max_length_values = len(v)
+
+        return max_length_keys, max_length_values
+
+    def _make_table(self, input: dict, column_names: dict):
+
+        for dic_in in input.values():
+
+            for k, v in dic_in.items():
+
+                if isinstance(v, int):
+                    dic_in[k] = str(v)
+                elif isinstance(v, float):
+                    dic_in[k] = str(round(v, 2))
+
+        column_lengths = []
+
+        for v in column_names.values():
+
+            vol = len(v)
+            column_lengths.append(len(v))
+
+        for dic_in in input.values():
+
+            for i, v in enumerate(dic_in.values()):
+
+                vol = len(v)
+
+                if vol > column_lengths[i]:
+                    column_lengths[i] = vol
+
+        tabelle = ["| "]
+
+        for i, v in enumerate(column_names.values()):
+
+            tabelle[0] = f"{tabelle[0]} {v.ljust(column_lengths[i])} |"
+            if i == 0:
+                tabelle.append("|-")
+            tabelle[1] = f"{tabelle[1]}{"-"*(column_lengths[i]+3)}"
+
+        for i, dic_in in enumerate(input.values()):
+
+            tabelle.append("| ")
+            for j, k in enumerate(column_names.keys()):
+
+                tabelle[i+2] = f"{tabelle[i+2]} {dic_in[k].ljust(column_lengths[j])} |"
+
+        return tabelle
+
+    def _get_length_from_subdic(self, input: dict):
+
+        length_keys = 0
+        length_values = 0
+        for dic in input.values():
+            for k, v in dic.items():
+                if len(k) > length_keys:
+                    length_keys = len(k)
+
+                if len(v) > length_values:
+                    length_values = len(v)
+
+        return length_keys, length_values
