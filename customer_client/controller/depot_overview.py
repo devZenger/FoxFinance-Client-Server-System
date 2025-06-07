@@ -3,10 +3,7 @@ from view import Display
 
 
 class DepotOverview:
-    def __init__(self, token):
-
-        self.depot = DepotHistory(token)
-
+    def __init__(self):
         self.title = "Depotübersicht"
         self.options = {"1. Aktienhandel der letzten dreißig Tage": "last_30days",
                         "2. Aktienhandel der letzten drei Monate": "last_three",
@@ -15,8 +12,8 @@ class DepotOverview:
                         "5. zurück": "back"}
         self.display_menu = Display()
 
-    def run(self):
-
+    def run(self, token):
+        self.depot = DepotHistory()
         self.form_names = self.depot.form_names
         self.display_menu.display_title(self.title)
 
@@ -25,24 +22,24 @@ class DepotOverview:
         while True:
             match choice:
                 case "start":
-                    request = self.depot.get_all_stocks()
+                    request = self.depot.get_all_stocks(token)
                     self.show_table(request)
                     choice = "option"
 
                 case "last_30days":
-                    request = self.depot.get_last_thirty_days()
+                    request = self.depot.get_last_thirty_days(token)
                     self.show_table_timespan(request, "Die letzten dreißig Tage:")
                     choice = "option"
 
                 case "last_three":
-                    request = self.depot.get_last_three_months()
+                    request = self.depot.get_last_three_months(token)
                     self.show_table_timespan(request, "Die letzten drei Monate:")
                     choice = "option"
 
                 case "timespan":
                     form_filled = self.display_menu.display_form(self.form_names, self.depot)
                     if form_filled:
-                        request = self.depot.get_transaction_by_timespan()
+                        request = self.depot.get_transaction_by_timespan(token)
                         self.show_table_timespan(request)
                     choice = "option"
 

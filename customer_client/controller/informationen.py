@@ -3,10 +3,9 @@ from model import Information
 
 
 class AllInformation:
-    def __init__(self, options, token=None):
+    def __init__(self, options):
         self.title = "Informationen"
         self.options = options
-        self.token = token
 
     def run(self):
         display_menu = Display()

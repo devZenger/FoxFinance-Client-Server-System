@@ -15,7 +15,7 @@ class MainControl:
                         "2. Konto erstellen": "create_account",
                         "3. Beispiel Depot testen": "example_account",
                         "4. Informationen": "information",
-                        "4. Beenden": "exit"}
+                        "5. Beenden": "exit"}
 
     def run(self):
 
@@ -56,8 +56,8 @@ class MainControl:
                     example_login = LoginMenu()
                     success, token = example_login.start_example_account()
                     if success:
-                        depot_controller = DepotControl(token)
-                        depot_controller.run()
+                        depot_controller = DepotControl()
+                        depot_controller.run(token)
 
                         del depot_controller
                         del token

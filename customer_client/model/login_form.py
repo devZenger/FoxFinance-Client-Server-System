@@ -1,5 +1,7 @@
 from service import ServerRequest
 
+from .model_utilites import check_email
+
 
 class LoginForm:
     def __init__(self):
@@ -16,10 +18,11 @@ class LoginForm:
 
     @email.setter
     def email(self, input: str):
-        if len(input) > 2:
+        check = check_email(input)
+        if check:
             self._email = input
         else:
-            raise ValueError("Fehler")
+            raise ValueError("Ungültige Eingabe")
 
     @property
     def password(self):
@@ -30,7 +33,7 @@ class LoginForm:
         if len(input) >= 12:
             self._password = input
         else:
-            raise ValueError("min. 12 Zeichen")
+            raise ValueError("Passwort ist zu kurz, min. 12 Zeichen")
 
     def to_dict(self):
         return {
@@ -46,7 +49,8 @@ class LoginForm:
 
         server_request = ServerRequest()
 
-        success, self.response = server_request.make_post_request(url_part,
-                                                                  to_transmit)
+        success, self.response = server_request.make_post_request(url_part=url_part,
+                                                                  token=None,
+                                                                  to_transmit=to_transmit)
 
         return success

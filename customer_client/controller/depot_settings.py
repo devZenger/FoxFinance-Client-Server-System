@@ -3,10 +3,7 @@ from model import SettingsForm
 
 
 class Settings:
-    def __init__(self, token, options):
-
-        self.settings = SettingsForm(token)
-
+    def __init__(self, options):
         self.title = "Kontoeinstelungen ändern"
         self.information = "Was möchten Sie ändern?"
         self.information_2time = "Möchten Sie noch weiteres ändern ?"
@@ -22,8 +19,8 @@ class Settings:
         self.options_make_change = {"1. Änderungen vornehmen": "make_change",
                                     "2. abbrechen": "start"}
 
-    def run(self):
-
+    def run(self, token):
+        settings = SettingsForm()
         display_menu = Display()
         choice = "start"
         first = True
@@ -34,9 +31,9 @@ class Settings:
                 case "start":
                     display_menu.display_title(self.title)
 
-                    status = self.settings.current_settings()
+                    status = settings.current_settings(token)
                     if status:
-                        display_menu.display_dic_in_dic(self.settings.data)
+                        display_menu.display_dic_in_dic(settings.data)
 
                         if first is True:
                             display_menu.display_info(self.information)
@@ -44,7 +41,7 @@ class Settings:
                         else:
                             display_menu.display_info(self.information_2time)
                     else:
-                        display_menu.display_info(self.settings.response)
+                        display_menu.display_info(settings.response)
 
                     choice = "options"
 
@@ -52,7 +49,7 @@ class Settings:
                     choice = display_menu.display_options(self.options_settings)
 
                 case "adress":
-                    form_filled = display_menu.display_form(self.settings.form_names_adress, self.settings)
+                    form_filled = display_menu.display_form(settings.form_names_adress, settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "adress"
@@ -61,8 +58,7 @@ class Settings:
                         choice = "options"
 
                 case "phone_number":
-                    form_filled = display_menu.display_form(
-                        self.settings.form_names_phone_number, self.settings)
+                    form_filled = display_menu.display_form(settings.form_names_phone_number, settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "phone_number"
@@ -71,8 +67,7 @@ class Settings:
                         choice = "options"
 
                 case "email_adress":
-                    form_filled = display_menu.display_form(
-                        self.settings.form_names_email_adress, self.settings)
+                    form_filled = display_menu.display_form(settings.form_names_email_adress, settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "email"
@@ -81,8 +76,7 @@ class Settings:
                         choice = "options"
 
                 case "reference_account":
-                    form_filled = display_menu.display_form(
-                        self.settings.form_names_ref_account, self.settings)
+                    form_filled = display_menu.display_form(settings.form_names_ref_account, settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "reference_account"
@@ -91,7 +85,7 @@ class Settings:
                         choice = "options"
 
                 case "password":
-                    form_filled = display_menu.display_form(self.settings.form_names_password, self.settings)
+                    form_filled = display_menu.display_form(settings.form_names_password, settings)
                     if form_filled:
                         display_menu.display_filled_form()
                         setting_type = "password"
@@ -103,12 +97,12 @@ class Settings:
                     choice = display_menu.display_options(self.options_make_change)
 
                 case "make_change":
-                    response = self.settings.transmit_changes(setting_type)
+                    response = settings.transmit_changes(setting_type, token)
                     choice = response
 
                 case "error":
                     display_menu.display_title(self.title)
-                    display_menu.display_info(self.settings.response)
+                    display_menu.display_info(settings.response)
                     choice = "options"
 
                 case "discountinue":

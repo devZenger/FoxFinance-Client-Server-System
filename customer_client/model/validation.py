@@ -31,7 +31,7 @@ class Validation:
     def get_activate_code(self, email):
         url_part = "startvalidation/"
 
-        success, code = self.server_request.get_with_parameters(url_part, email)
+        success, code = self.server_request.get_with_parameters(url_part=url_part, token=None, inputs=email)
 
         if success is True:
 
@@ -55,6 +55,7 @@ class Validation:
         url_part = "/activateaccount/"
         to_transmit = self.to_dict()
 
-        success, self.response = self.server_request.make_post_request(url_part, to_transmit)
-
+        success, self.response = self.server_request.make_post_request(url_part=url_part,
+                                                                       token=None,
+                                                                       to_transmit=to_transmit)
         return success

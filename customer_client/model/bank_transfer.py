@@ -4,8 +4,7 @@ from .financial_history import FinancialHistory
 
 
 class BankTransfer:
-    def __init__(self, token):
-        self.token = token
+    def __init__(self):
         self._fin_amount = 0.0
         self._transaction_type = ""
         self._usage = ""
@@ -68,24 +67,23 @@ class BankTransfer:
 
         self._usage = input
 
-    def actual_balance(self):
-        balance = FinancialHistory(self.token)
-        balance.get_actual_balance()
+    def actual_balance(self, token):
+        balance = FinancialHistory()
+        balance.get_actual_balance(token)
         result = balance.response
         del balance
         return result
 
-    def make_transfer(self):
+    def make_transfer(self, token):
         url_part = 'banktransfer/'
 
-        server_request = ServerRequest(self.token)
+        server_request = ServerRequest()
 
         to_transmit = {"fin_amount": self.fin_amount,
                        "transfer_type": self.transaction_type_en,
                        "usage": self.usage}
 
-        self.success, response = server_request.make_post_request(
-            url_part, to_transmit)
+        self.success, response = server_request.make_post_request(url_part, to_transmit, token)
 
         if self.success:
             response = response["row_result0"]

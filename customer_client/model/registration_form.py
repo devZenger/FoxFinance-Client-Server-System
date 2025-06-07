@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from service import ServerRequest
 
-from .model_utilitys import check_date_input, email_check
+from .model_utilites import check_date_input, check_email
 
 
 class RegistrationForm:
@@ -11,7 +11,7 @@ class RegistrationForm:
         self._first_name = ""
         self._street = ""
         self._house_number = ""
-        self._zip_code = ""
+        self._zip_code = None
         self._city = ""
         self._birthday = ""
         self._email = ""
@@ -34,7 +34,7 @@ class RegistrationForm:
             "phone_number": "Handynummer",
             "reference_account": "Referenzkonto",
             "fin_amount": "Startgeld einzahlen",
-            "password": "Passwort (min. 12 Zeichen, mit A-Z, a-z, 0-9 und Sonderzeichen)"
+            "password": "Passwort"
         }
 
     # last name
@@ -61,7 +61,7 @@ class RegistrationForm:
         else:
             raise ValueError("mindestens zwei Zeichen")
 
-    #  street
+    # street
     @property
     def street(self):
         return self._street
@@ -126,7 +126,7 @@ class RegistrationForm:
 
     @birthday.setter
     def birthday(self, input: str):
-        check, date, message = check_date_input(input, False)
+        check, date, message = check_date_input(input)
         if check:
             today = datetime.today()
             adult_date = today - timedelta(days=18*365)
@@ -146,7 +146,7 @@ class RegistrationForm:
 
     @email.setter
     def email(self, input):
-        test = email_check(input)
+        test = check_email(input)
         if test:
             self._email = input
         else:
@@ -259,7 +259,7 @@ class RegistrationForm:
 
         url_part = "create_customer_account/"
 
-        success, self.response = server_request.make_post_request(url_part, to_transmit)
+        success, self.response = server_request.make_post_request(url_part, token=None, to_transmit=to_transmit)
 
         del server_request
 

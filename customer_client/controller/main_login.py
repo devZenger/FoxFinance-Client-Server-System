@@ -47,7 +47,7 @@ class LoginMenu:
                     return False, None
 
     def start_example_account(self):
-        email = "max@mustermann1.de"
+        email = "max@mustermann.de"
         pwd = "12345+-QWert"
 
         login_form = LoginForm()
@@ -60,4 +60,4 @@ class LoginMenu:
         if login_success:
             return True, login_form.response
         else:
-            return False, "Tut uns leide, das Beispieldepot steht derzeit nicht zur Verfügung"
+            return False, "Tut uns leidet, das Beispieldepot steht derzeit nicht zur Verfügung"

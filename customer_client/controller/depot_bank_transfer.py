@@ -3,17 +3,14 @@ from model import BankTransfer
 
 
 class DepotBankTransfer:
-    def __init__(self, token, options):
-
-        self.transfer = BankTransfer(token)
-
+    def __init__(self, options):
         self.title = "Überweisung"
         self.options = options
         self.options_make_transfer = {"1. Geld überweisen": "make_transfer",
                                       "2. Abrechen": "options"}
 
-    def run(self):
-
+    def run(self, token):
+        self.transfer = BankTransfer()
         display_menu = Display()
         form_names = self.transfer.form_names
         display_menu.display_title(self.title)
@@ -25,8 +22,7 @@ class DepotBankTransfer:
             match choice:
 
                 case "start":
-                    display_menu.display_title_and_infos(
-                        self.title, self.transfer.actual_balance())
+                    display_menu.display_title_and_infos(self.title, self.transfer.actual_balance(token))
                     if start:
                         start = False
                         choice = "transfer"
@@ -42,7 +38,7 @@ class DepotBankTransfer:
                         "options"
 
                 case "make_transfer":
-                    success, result = self.transfer.make_transfer()
+                    success, result = self.transfer.make_transfer(token)
                     if success:
                         display_menu.display_dic_in_dic(result)
                     else:

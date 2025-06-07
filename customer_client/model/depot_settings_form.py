@@ -4,8 +4,8 @@ from .registration_form import RegistrationForm
 
 
 class SettingsForm(RegistrationForm):
-    def __init__(self, token):
-        self.token = token
+    def __init__(self):
+        #self.server_request = ServerRequest()
         self.data = None
 
         self.form_names_adress = {
@@ -36,55 +36,44 @@ class SettingsForm(RegistrationForm):
         self.name_settings = self.form_names
         del self.name_settings["fin_amount"]
 
-    def transmit_changes(self, type: str):
+    def transmit_changes(self, type: str, token):
 
         to_transmit = {}
 
         match type:
 
             case "adress":
-                to_transmit = {"transmission_type": "adress",
-                               "street": self.street,
+                to_transmit = {"street": self.street,
                                "house_number": self.house_number,
                                "city": self.city,
                                "zip_code": self.zip_code}
 
             case "phone_number":
-                to_transmit = {"transmission_type": "phone_number",
-                               "phone_number": self.phone_number}
+                to_transmit = {"phone_number": self.phone_number}
             case "email":
-                to_transmit = {"transmission_type": "email",
-                               "email": self.email}
+                to_transmit = {"email": self.email}
             case "reference_account":
-                to_transmit = {"transmission_type": "reference_account",
-                               "reference_account": self.reference_account}
+                to_transmit = {"reference_account": self.reference_account}
             case "password":
-                to_transmit = {"transmission_type": "password",
-                               "password": self.password}
+                to_transmit = {"password": self.password}
             case _:
                 self.response = "Fehler, type konnte nicht zugeordnet werden"
                 return "error"
 
-        server_request = ServerRequest(self.token)
-
         url_part = "changesettings/"
 
-        status, self.response = server_request.make_post_request(url_part, to_transmit)
-
-        del server_request
+        status, self.response = self.server_request.make_patch_request(url_part, token, to_transmit)
 
         if status:
             return "start"
         else:
             return "error"
 
-    def current_settings(self):
-
-        server_request = ServerRequest(self.token)
+    def current_settings(self, token):
 
         url_part = "settings/"
 
-        status, response = server_request.get_without_parameters(url_part)
+        status, response = self.server_request.get_without_parameters(url_part, token)
 
         data_adress = {"Straße": f"{response["adress"]["street"]}",
                        "Hausnummer": f"{response["adress"]["house_number"]}",
@@ -101,7 +90,5 @@ class SettingsForm(RegistrationForm):
         data_bank = {"Referenzkonto": f"{response["reference_account"]["reference_account"]}"}
 
         self.data["Bankverbindung"] = data_bank
-
-        del server_request
 
         return status
