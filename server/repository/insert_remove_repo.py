@@ -1,33 +1,7 @@
-from utilities import DBOperationError, SQlExecutionError
+from utilities import DBOperationError, SQLExecutionError, error_forwarding_msg
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
-
-
-def key_to_column(to_form: dict):
-
-    key_str = ""
-    for k in to_form.keys():
-        key_str = f"{key_str}{k},"
-
-    return key_str[:-1]
-
-
-def key_to_value(to_form: dict):
-
-    key_str = ""
-    for k in to_form.keys():
-        key_str = f"{key_str} :{k},"
-
-    return key_str[:-1]
-
-
-def key_to_where(to_form: dict):
-    key_str = ""
-    for k in to_form.keys():
-        key_str = f"{key_str} {k}=:{k} and"
-
-    return key_str[:-3]
 
 
 def insert_one_table(table, insert: dict):
@@ -35,8 +9,13 @@ def insert_one_table(table, insert: dict):
     try:
         db_op.open_connection_db()
 
-        key_column = key_to_column(insert)
-        key_value = key_to_value(insert)
+        key_list_c = []
+        key_list_v = []
+        for k in insert.keys():
+            key_list_c.append(f"{k}")
+            key_list_v.append(f":{k}")
+        key_column = ",".join(key_list_c)
+        key_value = ",".join(key_list_v)
 
         sql = f"""INSERT INTO {table} ({key_column}) VALUES({key_value})"""
         execute_id = db_op.execute_and_commit(sql, insert).lastrowid
@@ -44,7 +23,7 @@ def insert_one_table(table, insert: dict):
         return execute_id
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler beim Einfügen in einer Datenbanktabelle:"
@@ -53,7 +32,7 @@ def insert_one_table(table, insert: dict):
             f"SQL: {sql}\n"
             "Ort: insert_one_table (insert_remove_repo.py)\n"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close
@@ -62,7 +41,12 @@ def insert_one_table(table, insert: dict):
 def remove_from_one_table(table, condition: dict):
 
     try:
-        key_condition = key_to_where(condition)
+        key_list = []
+        for k in condition.keys():
+            key_list.append(f"{k}=:{k}")
+
+        key_condition = " and ".join(key_list)
+
         db_op.open_connection_db()
 
         sql = f"""DELETE FROM {table} WHERE {key_condition}"""
@@ -70,7 +54,7 @@ def remove_from_one_table(table, condition: dict):
         db_op.execute_and_commit(sql, condition)
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler bim Entfernen eines Datensatzes:"
@@ -79,7 +63,7 @@ def remove_from_one_table(table, condition: dict):
             f"SQL: {sql}\n"
             "Ort: delete_from_one_table (insert_remove_repo.py)\n"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

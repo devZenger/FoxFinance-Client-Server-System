@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError, make_dictionary
+from utilities import DBOperationError, SQLExecutionError, make_dictionary, error_forwarding_msg
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -35,7 +35,7 @@ def customer_balance(customer_id):
         return dic
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler bei Datenbankabfrage:\n"
@@ -43,7 +43,7 @@ def customer_balance(customer_id):
             f"SQL: {sql}"
             f"Ort: customer_balance (financial_repo.py)"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
@@ -58,6 +58,7 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
                     ft.fin_transaction_date,
                     ftt.fin_transaction_type,
                     ft.fin_amount,
+                    ft.usage,
                     ft.bank_account
                     FROM (
                         SELECT *
@@ -79,11 +80,11 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
         names = db_op.col_names()
 
         result = make_dictionary(datas, names)
-
+        print(result)
         return result
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler bei der Datenabfrage:\n"
@@ -93,7 +94,7 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
             f"SQL: {sql}\n"
             f"Ort: search_past_financial_transactions (financial_repo.py)\n"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
@@ -124,7 +125,7 @@ def insert_bank_transfer(b_transfer: dict):
         return balance_id
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         db_op.rollback()
         error_msg = (
@@ -134,7 +135,7 @@ def insert_bank_transfer(b_transfer: dict):
             f"Ort: insert_bank_transfer (financial_repo.py)\n"
             f"Error: {e}\n"
             )
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

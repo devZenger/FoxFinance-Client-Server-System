@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError, make_dictionary
+from utilities import DBOperationError, SQLExecutionError, make_dictionary, error_forwarding_msg
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -46,14 +46,14 @@ def insert_stock_transaction(transaction: dict, balance: dict):
         print("ende try stock transaction")
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = f"Fehler bei insert_stock_transaction(" \
                 f"transaction:dict: {transaction},"\
                 f"balance:dict: {balance}).\nError: {e}"
 
         db_op.rollback()
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
@@ -115,7 +115,7 @@ def stock_transactions_overview(customer_id):
         return result
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler bei Datenbankabfrage:\n"
@@ -123,7 +123,7 @@ def stock_transactions_overview(customer_id):
             f"SQL: {sql}\n"
             "Ort: stock_transactions_overview (transaction_repo.py)"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
@@ -165,7 +165,7 @@ def search_past_transactions(customer_id, search_start, search_end):
         return result
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             f"Fehler bei search_past_transactions:\n"
@@ -175,7 +175,7 @@ def search_past_transactions(customer_id, search_start, search_end):
             f"SQL: {sql}\n"
             "Ort: search_past_transaction (transaction_repo.py)"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

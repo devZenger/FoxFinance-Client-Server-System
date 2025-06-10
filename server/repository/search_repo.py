@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError, make_dictionary
+from utilities import DBOperationError, SQLExecutionError, make_dictionary, error_forwarding_msg
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -20,7 +20,7 @@ def simple_search(table, column, search_term):
         return result
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             f"Fehler bei simple_search:\n"
@@ -30,7 +30,7 @@ def simple_search(table, column, search_term):
             f"SQL: {sql}"
             "Ort: simple_search (search_repo)"
             f"Error: {e}")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

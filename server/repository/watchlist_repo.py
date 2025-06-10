@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError, make_dictionary
+from utilities import DBOperationError, SQLExecutionError, make_dictionary
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -46,7 +46,7 @@ def watchlist_overview(customer_id):
             f"SQL: {sql}"
             f"Ort: watchlist_overview (watchlist_repo.py)"
             f"Error: {str(e)}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

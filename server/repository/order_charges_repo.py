@@ -1,7 +1,8 @@
 from utilities import (DBOperationError,
-                      SQlExecutionError,
-                      make_dictionary,
-                      make_dictionary_one_result)
+                       SQLExecutionError,
+                       make_dictionary,
+                       make_dictionary_one_result,
+                       error_forwarding_msg)
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -24,7 +25,7 @@ def search_order_charges(volume, date):
         result = make_dictionary_one_result(datas[0], names)
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             f"Fehler bei Abfrage nach Ordergebühren:\n"
@@ -33,7 +34,7 @@ def search_order_charges(volume, date):
             f"SQL: {sql}\n"
             "Ort: search_order_charges (order_charges_repo.py)"
             f"Error: {str(e)}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
@@ -59,7 +60,7 @@ def search_all_order_charges(date):
         return result
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             f"Fehler bei der Abfrage nach allen Ordergebühren:\n"
@@ -67,7 +68,7 @@ def search_all_order_charges(date):
             f"SQL: {sql}\n"
             "Ort: search_all_order_charges (order_charges_repo.py)\n"
             f"Error: {e}\n")
-        raise SQlExecutionError(error_msg)
+        raise SQLExecutionError(error_msg)
 
     finally:
         db_op.close()

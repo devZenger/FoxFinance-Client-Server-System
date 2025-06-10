@@ -26,7 +26,6 @@ class DBOperator:
         try:
             self.connection = sqlite3.connect(self.path)
             self.cursor = self.connection.cursor()
-            status_message("Mit Datenbank verbunden")
         except sqlite3.Error as e:
             error_msg = (
                 "Verbindungsprobleme mit der Datenbank:\n"

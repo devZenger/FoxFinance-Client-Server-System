@@ -1,8 +1,9 @@
 import yfinance as yf
 
 from utilities import (DBOperationError,
-                      SQlExecutionError,
-                      make_dictionary_one_result)
+                       SQLExecutionError,
+                       make_dictionary_one_result,
+                       error_forwarding_msg)
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -27,7 +28,7 @@ def latest_trade_day_entry(search_term):
         result = make_dictionary_one_result(datas[0], names)
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error = f"Fehler bei latest_trade_day_entry(" \
                 f"search_term: {search_term})" \
@@ -57,8 +58,8 @@ def trade_day_by_period(search_term, time):
         result = make_dictionary_one_result(datas[0], names)
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
-    except SQlExecutionError as e:
+        raise DBOperationError(error_forwarding_msg) from e
+    except SQLExecutionError as e:
         error = f"Fehler bei trade_day_by_period(" \
                 f"search_term: {search_term}, time: {time}).\nError: {e}\n"
         print(error)
@@ -93,7 +94,7 @@ def all_stocks_by_customer(customer_id, isin):
         result = datas[0][0]
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error = f"Fehler bei all_stocks_by_customer:\nsql: {sql}\n" \
                 f"customer_id: {customer_id}\nisin: {isin}\nError: {e}\n"

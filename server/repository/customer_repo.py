@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError
+from utilities import DBOperationError, SQLExecutionError
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -21,18 +21,20 @@ def insert_customer(input):
                     last_name,
                     email,
                     phone_number,
-                    birthday)
+                    birthday,
+                    client_ip)
                     VALUES(
                     :first_name,
                     :last_name,
                     :email,
                     :phone_number,
-                    :birthday
+                    :birthday,
+                    :client_ip
             )"""
         customer_id = db_op.execute(sql, input).lastrowid
         input["customer_id"] = customer_id
 
-        sql = """INSERT INTO customer_adresses VALUES(
+        sql = """INSERT INTO customer_addresses VALUES(
                     :customer_id,
                     :street,
                     :house_number,
@@ -76,13 +78,13 @@ def insert_customer(input):
                 f"SQL: {sql}\n"
                 f"Ort: update_customer_settings (customer_repo.py)"
                 f"Error: {e}\n")
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
 
 
-def update_customer_settings(table, customer_id, insert: dict):
+def _update_customer_settings(table, customer_id, insert: dict):
 
     db_op.open_connection_db()
 
@@ -115,7 +117,7 @@ def update_customer_settings(table, customer_id, insert: dict):
             f"Ort: update_customer_settings (customer_repo.py)"
             f"Error: {e}\n")
 
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()

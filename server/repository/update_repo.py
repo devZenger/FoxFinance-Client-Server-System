@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError
+from utilities import DBOperationError, SQLExecutionError
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -36,8 +36,8 @@ def update_one_table(table, update: dict, condition_dic: dict):
             f"Tabelle: {table}\n"
             f"Bedingung (dict): {condition_dic}\n"
             f"SQL: {sql}\n"
-            "Ort: update_one_table (update_repo)\n" \
+            "Ort: update_one_table (update_repo)\n"
             f"update:{update}\ncondition_dic:{condition_dic}\n"
             f"Error:{str(e)}\n"
             )
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e

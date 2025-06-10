@@ -1,4 +1,4 @@
-from utilities import DBOperationError, SQlExecutionError
+from utilities import DBOperationError, SQLExecutionError, error_forwarding_msg
 
 # db_op - Instanz von DBOperator
 from .db_operator import db_op
@@ -38,7 +38,7 @@ def get_auth_datas(email):
         return auth_dic
 
     except DBOperationError as e:
-        raise DBOperationError("Fehler während der Datenbankoperation") from e
+        raise DBOperationError(error_forwarding_msg) from e
     except Exception as e:
         error_msg = (
             "Fehler bei Datenbankabfrage:\n"
@@ -47,17 +47,17 @@ def get_auth_datas(email):
             f"Position: get_auth_datas:\n"
             f"Error: {e}\n"
             )
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
 
 
-def insert_login_time(customer_id):
+def update_login_time(customer_id, client_ip):
     try:
-        value = (customer_id,)
+        value = (client_ip, customer_id)
         db_op.open_connection_db()
-        sql = """UPDATE customers SET last_login = CURRENT_TIMESTAMP
+        sql = """UPDATE customers SET last_login = CURRENT_TIMESTAMP, client_ip = ?
                     WHERE customer_id = ?"""
 
         db_op.execute_and_commit(sql, value)
@@ -72,7 +72,7 @@ def insert_login_time(customer_id):
             f"Ort: insert_login_time (authentication_repo.py)\n"
             f"Error: {e}\n"
             )
-        raise SQlExecutionError(error_msg) from e
+        raise SQLExecutionError(error_msg) from e
 
     finally:
         db_op.close()
