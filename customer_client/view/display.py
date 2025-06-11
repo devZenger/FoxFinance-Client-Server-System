@@ -1,6 +1,5 @@
 import getpass
 
-# from .view_utilites import make_table, get_length_from_subdic, get_key_value_max_length
 ###################
 # class Display:
 #   1. display_title()
@@ -11,35 +10,31 @@ import getpass
 #   6. display_fiiled_form()
 #   7. display_table()
 #   8. display_dict()
-#   9. 
+#
 #  (class utilities function):
 #   10. _get_key_value_max_length()
 #   11. _make_table()
 #   12. _get_length_from_subdic()
-#   
+#
 
 
 class Display:
-    line = "-" * 90
+    line = "-" * 105
     line = f"\t{line}"
 
-    # 1. display_title()
     def display_title(self, title):
         print(self.line)
         print(f"\t{title}")
         print(self.line)
 
-    # 2. display_info()
     def display_info(self, info):
         print(f"\t{info}")
         print(self.line)
 
-    # 3. display_titlle_and_info()
     def display_title_and_infos(self, title, info):
         self.display_title(title)
         self.display_info(info)
 
-    # 4. display_options()
     def display_options(self, options: dict):
         print("")
         count = 1
@@ -71,9 +66,10 @@ class Display:
                     if value == "Passwort_Login":
                         user_input = getpass.getpass("\tPasswort eingeben: ").strip()
                     elif value == "Passwort":
-                        user_input = getpass.getpass("\tPasswort min. 12 Zeichen und \n"
-                                                     "mit A-Z, a-z, 0-9 und Sonderzeichen\n"
-                                                     "eingeben: ").strip()
+                        user_input = getpass.getpass("\tBitte beachten:\n\tDas Passwort muss mindestens 12"
+                                                     " Zeichen lang sein und  Groß- \n"
+                                                     "\tund Kleinbuchstaben, Zahlen sowie Sonderzeichen enthalten.\n"
+                                                     "\tPasswort eingeben: ").strip()
                     else:
                         user_input = input(f"\t{value} eingeben: ").strip()
 
@@ -143,6 +139,8 @@ class Display:
             print(f"\n\t{key}")
             print(line)
             for k, v in dic.items():
+                if type(v) is not str:
+                    v = str(v)
                 print(f"\t{k.ljust(length_keys)}:{v.rjust(length_values)}")
         print(self.line)
         print("")
@@ -211,9 +209,11 @@ class Display:
         length_values = 0
         for dic in input.values():
             for k, v in dic.items():
+
                 if len(k) > length_keys:
                     length_keys = len(k)
-
+                if type(v) is not str:
+                    v = str(v)
                 if len(v) > length_values:
                     length_values = len(v)
 
