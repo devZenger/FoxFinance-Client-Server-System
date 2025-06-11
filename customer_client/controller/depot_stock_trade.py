@@ -59,7 +59,6 @@ class DepotStockTrade:
                         else:
                             display_menu.display_dic_in_dic(stock_actions.response)
                     else:
-                        # trade = "Handel konnte nicht abgechlossen werden."
                         display_menu.display_title_and_infos(self.title, stock_actions.response)
                     choice = "options"
 
