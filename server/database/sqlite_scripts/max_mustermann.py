@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 from passlib.context import CryptContext
+import base64
 from cryptography.fernet import Fernet
 
 
@@ -33,8 +34,9 @@ def bank_account_encode(account: str):
     if fernet is None:
         raise RuntimeError("Fernet wurd nicht initialisiert")
 
-    encode = fernet.encrypt(account.encode('utf-8'))
-    return encode
+    encode_byte = fernet.encrypt(account.encode('utf-8'))
+    encode_str = base64.urlsafe_b64encode(encode_byte).decode('utf-8')
+    return encode_str
 
 
 # Start Insert Mustermann
@@ -78,7 +80,9 @@ def insert_mustermann(path):
                       "fin_transaction_type_id": 1,
                       "password": password_hash,
                       "disabled": False,
-                      "fin_amount": 100}
+                      "fin_amount": 100,
+                      "client_ip": "127.0.0.1",
+                      "fin_transaction_date": "2023-01-01 08:00:01"}
     try:
         sql = """INSERT INTO customers(
                     first_name,
@@ -87,7 +91,8 @@ def insert_mustermann(path):
                     phone_number,
                     birthday,
                     registration_date,
-                    disabled)
+                    disabled,
+                    client_ip)
                 VALUES(
                     :first_name,
                     :last_name,
@@ -95,7 +100,8 @@ def insert_mustermann(path):
                     :phone_number,
                     :birthday,
                     :registration_date,
-                    :disabled
+                    :disabled,
+                    :client_ip
                 )"""
         cursor.execute(sql, max_mustermann)
 
@@ -103,7 +109,7 @@ def insert_mustermann(path):
 
         max_mustermann["customer_id"] = customer_id
 
-        sql = """INSERT INTO customer_adresses(
+        sql = """INSERT INTO customer_addresses(
                     customer_id,
                     street,
                     house_number,
@@ -138,13 +144,15 @@ def insert_mustermann(path):
                     bank_account,
                     fin_amount,
                     fin_transaction_type_id,
-                    usage)
+                    usage,
+                    fin_transaction_date)
                 VALUES (
                     :customer_id,
                     :bank_account,
                     :fin_amount,
                     :fin_transaction_type_id,
-                    :usage
+                    :usage,
+                    :fin_transaction_date
                 )"""
         cursor.execute(sql, max_mustermann)
 
@@ -203,7 +211,7 @@ def insert_mustermann(path):
                              "price_per_stock": float(row_list[3]),
                              "date": row_list[4],
                              "transaction_date": f"{row_list[4]} 10:00:00",
-                             "bank_account": "MB001002003004005"}
+                             "bank_account": account_encode}
 
                 volume = new_order["amount"] * new_order["price_per_stock"]
                 order_charge_total, new_order["order_charge_id"] = order_charge(volume, new_order["transaction_date"])
@@ -230,7 +238,7 @@ def insert_mustermann(path):
                 if new_order["transaction_type"] == "buy":
                     new_order["fin_amount"] = volume + order_charge_total
                     new_order["fin_transaction_type_id"] = 1
-                    new_order["fin_transaction_date"] = f"{new_order["date"]} 09:00:00"
+                    new_order["fin_transaction_date"] = f"{new_order['date']} 09:00:00"
                     new_order["usage"] = "Einzahlung"
 
                     sql = """INSERT INTO financial_transactions(
@@ -238,11 +246,13 @@ def insert_mustermann(path):
                         bank_account,
                         fin_amount,
                         fin_transaction_type_id,
+                        fin_transaction_date,
                         usage) VALUES (
                         :customer_id,
                         :bank_account,
                         :fin_amount,
                         :fin_transaction_type_id,
+                        :fin_transaction_date,
                         :usage)"""
                     cursor.execute(sql, new_order)
 
@@ -253,24 +263,26 @@ def insert_mustermann(path):
                     new_order["fin_transaction_type_id"] = 4
 
                 new_order["usage"] = f"Aktientransaktions Nr.: {transaction_id}"
-                new_order["fin_transaction_date"] = f"{new_order["transaction_date"]} 10:00:00"
+                new_order["fin_transaction_date"] = f"{new_order['date']} 10:00:00"
 
                 sql = """INSERT INTO financial_transactions(
                         customer_id,
                         bank_account,
                         fin_amount,
                         fin_transaction_type_id,
+                        fin_transaction_date,
                         usage) VALUES (
                         :customer_id,
                         :bank_account,
                         :fin_amount,
                         :fin_transaction_type_id,
+                        :fin_transaction_date,
                         :usage)"""
                 cursor.execute(sql, new_order)
 
                 if new_order["transaction_type"] == "sell":
                     new_order["fin_transaction_type_id"] = 2
-                    new_order["fin_transaction_date"] = f"{new_order["transaction_date"]} 11:00:00"
+                    new_order["fin_transaction_date"] = f"{new_order['date']} 11:00:00"
                     new_order["usage"] = "Auszahlung"
 
                     sql = """INSERT INTO financial_transactions(
@@ -278,11 +290,13 @@ def insert_mustermann(path):
                         bank_account,
                         fin_amount,
                         fin_transaction_type_id,
+                        fin_transaction_date,
                         usage) VALUES (
                         :customer_id,
                         :bank_account,
                         :fin_amount,
                         :fin_transaction_type_id,
+                        :fin_transaction_date,
                         :usage)"""
                     cursor.execute(sql, new_order)
 

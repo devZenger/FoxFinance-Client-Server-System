@@ -30,12 +30,13 @@ def create_tables(path):
                     disabled BOOL DEFAULT TRUE,
 
                     last_login TEXT DEFAULT CURRENT_TIMESTAMP,
+                    client_ip TEXT NOT NULL,
                     UNIQUE (customer_id, registration_date),
                     UNIQUE (first_name, last_name, birthday)
                     )"""
         cursor.execute(sql)
 
-        sql = """CREATE TABLE customer_adresses(
+        sql = """CREATE TABLE customer_addresses(
                     customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
                     street TEXT NOT NULL,
                     house_number TEXT NOT NULL,
@@ -46,7 +47,7 @@ def create_tables(path):
 
         sql = """CREATE TABLE financials(
                     customer_id INTEGER PRIMARY KEY REFERENCES customers(customer_id),
-                    reference_account BLOB UNIQUE NOT NULL
+                    reference_account TEXT UNIQUE NOT NULL
                     )"""
         cursor.execute(sql)
 

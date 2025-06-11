@@ -37,6 +37,10 @@ def insert_stock_datas(path):
         current_name = ""
         for i, row in historical_data.iterrows():
             try:
+                if name != current_name:
+                    print(f"\nDaten eingegeben für {name}, isin {isin}")
+                    current_name = name
+                print(".", end="")
                 cursor.execute("""INSERT INTO stock_data(
                                     isin,
                                     date,
@@ -46,7 +50,7 @@ def insert_stock_datas(path):
                                     close,
                                     volume,
                                     dividends,
-                                    stock_splits) 
+                                    stock_splits)
                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""", (isin, i.strftime('%Y-%m-%d'),
                                                                             row['Open'],
                                                                             row['High'],
@@ -55,21 +59,14 @@ def insert_stock_datas(path):
                                                                             row['Volume'],
                                                                             row['Dividends'],
                                                                             row['Stock Splits']))
-                connection.commit()
-                if name != current_name:
-                    print(f"\nDaten eingegeben für {name}, isin {isin}")
-                    current_name = name
-                else:
-                    print(".", end="")
+
             except sqlite3.Error as e:
                 error_msg = ("Aktiendaten konnten nicht eingefügt werden.\n"
                              f"Name: {name}\n"
                              f"ISIN: {isin}\n"
                              f"Error: {str(e)}\n")
                 raise RuntimeError(error_msg) from e
-
     print("\n")
-
     connection.commit()
     connection.close()
 

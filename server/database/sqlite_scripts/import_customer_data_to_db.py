@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 from passlib.context import CryptContext
+import base64
 from cryptography.fernet import Fernet
 
 
@@ -29,21 +30,22 @@ def bank_account_encode(account: str):
     if fernet is None:
         raise RuntimeError("Fernet wurd nicht initialisiert")
 
-    encode = fernet.encrypt(account.encode('utf-8'))
-    return encode
+    encode_byte = fernet.encrypt(account.encode('utf-8'))
+    encode_str = base64.urlsafe_b64encode(encode_byte).decode('utf-8')
+    return encode_str
 
 
 def insert_customers(path):
 
     read_key()
 
-    path_csv = os.path.join("..", "server", "database", "sqlite_scripts", "customer_adresses.csv")
+    path_csv = os.path.join("..", "server", "database", "sqlite_scripts", "customer_addresses.csv")
 
     try:
         d = open(path_csv, encoding='utf-8')
 
     except FileNotFoundError as e:
-        error_msg = ("Die 'customer_adresses.csv' konnte nicht geöffnet werden\n"
+        error_msg = ("Die 'customer_addresses.csv' konnte nicht geöffnet werden\n"
                      f"Pfad: {path_csv}\n"
                      f"Error: {str(e)}\n")
         raise RuntimeError(error_msg) from e
@@ -101,7 +103,8 @@ def insert_customers(path):
                             "fin_transaction_type_id": 1,
                             "password": password_hash,
                             "disabled": False,
-                            "fin_amount": 30000}
+                            "fin_amount": 30000,
+                            "client_ip": "127.0.0.1"}
 
                 sql = """INSERT INTO customers(
                             first_name,
@@ -110,7 +113,8 @@ def insert_customers(path):
                             phone_number,
                             birthday,
                             registration_date,
-                            disabled)
+                            disabled,
+                            client_ip)
                         VALUES(
                             :first_name,
                             :last_name,
@@ -118,7 +122,8 @@ def insert_customers(path):
                             :phone_number,
                             :birthday,
                             :registration_date,
-                            :disabled
+                            :disabled,
+                            :client_ip
                         )"""
                 cursor.execute(sql, new_user)
 
@@ -126,7 +131,7 @@ def insert_customers(path):
 
                 new_user["customer_id"] = customer_id
 
-                sql = """INSERT INTO customer_adresses(
+                sql = """INSERT INTO customer_addresses(
                             customer_id,
                             street,
                             house_number,
@@ -179,10 +184,10 @@ def insert_customers(path):
                              f"'new_user': {new_user}\n"
                              f"SQL: {sql}\n"
                              f"Error: {str(e)}")
+                connection.close()
                 raise RuntimeError(error_msg) from e
 
-            finally:
-                connection.close()
+    connection.close()
 
 
 if __name__ == "__main__":
