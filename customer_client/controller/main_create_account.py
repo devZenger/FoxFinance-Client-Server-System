@@ -7,12 +7,12 @@ class CreateAccountMenu:
         self.title = "Konto erstellen"
         self.information = "Bitte Ausfüllen"
         self.options = {
-            "1. Account erstellen": "create_account",
-            "2. abbrechen Zurück zum Hauptmenü:": "discontinue"
+            "1. Konto erstellen": "create_account",
+            "2. Abbrechen – Zurück zum Hauptmenü": "discontinue"
         }
         self.options_failure = {
             "1. Wollen Sie wiederholen?": "start",
-            "2. abbrechen Zurück zum Hauptmenü:": "discontinue"
+            "2. Abbrechen – Zurück zum Hauptmenü": "discontinue"
         }
 
     def run(self):

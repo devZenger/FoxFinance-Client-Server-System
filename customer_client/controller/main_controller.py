@@ -28,7 +28,7 @@ class MainControl:
             match choice:
                 case "welcome":
                     display.display_title(self.title)
-                    info = "Willkommen bei Fox"
+                    info = "Willkommen bei Fox Finance"
                     display.display_info(info)
                     choice = display.display_options(self.options)
 
@@ -44,8 +44,8 @@ class MainControl:
                     login_menu = LoginMenu()
                     success, token = login_menu.run()
                     if success:
-                        depot_controller = DepotControl(token)
-                        depot_controller.run()
+                        depot_controller = DepotControl()
+                        depot_controller.run(token)
 
                         del depot_controller
                         del token

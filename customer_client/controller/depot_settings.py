@@ -14,10 +14,10 @@ class Settings:
                                  "3. Email Adresse": "email_adress",
                                  "4. Referenzkonto": "reference_account",
                                  "5. Passwort": "password",
-                                 "6. abbrechen": "discountinue"}
+                                 "6. Menü verlassen": "discountinue"}
 
         self.options_make_change = {"1. Änderungen vornehmen": "make_change",
-                                    "2. abbrechen": "start"}
+                                    "2. Abbrechen": "start"}
 
     def run(self, token):
         settings = SettingsForm()

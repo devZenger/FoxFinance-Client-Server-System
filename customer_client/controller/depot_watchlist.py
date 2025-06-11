@@ -11,7 +11,7 @@ class DepotWatchlist:
         self.options = {"1. Aktie hinzufürgen": "add_stock",
                         "2. Aktie entfernen": "remove_stock",
                         "3. Übersicht erneuern": "start",
-                        "4. zurück": "discontinue"}
+                        "4. Menü verlassen": "discontinue"}
 
     def run(self, token):
         watchlist = Watchlist()

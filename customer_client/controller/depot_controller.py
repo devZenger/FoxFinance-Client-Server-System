@@ -23,8 +23,8 @@ class DepotControl:
                         " 6. Geld ein-/auszahlen": "bank_transfer",
                         " 7. Informationen": "information",
                         " 8. Daten ändern": "settings",
-                        " 9. Abmelden": "loggout",
-                        "10. Abmelden und benden": "loggout_and_exit"}
+                        " 9. Abmelden": "logout",
+                        "10. Abmelden und Beenden": "logout_and_exit"}
 
         self.depot_menu_start = None
         self.depot_overview = None
@@ -97,10 +97,10 @@ class DepotControl:
                     self.settings = Settings(self.options)
                     choice = self.settings.run(token)
 
-                case "loggout":
+                case "logout":
                     self.delete_token_instance()
                     return
 
-                case "loggout_and_exit":
+                case "logout_and_exit":
                     self.delete_token_instance()
                     sys.exit(0)

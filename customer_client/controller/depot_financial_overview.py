@@ -9,7 +9,7 @@ class DepotFinancialOverview:
                         "2. Die letzten zwölf Monate": "last_twelve",
                         "3. Zeitraum eingeben": "timespan",
                         "4. Konto anzeigen": "start",
-                        "5. zurück": "back"}
+                        "5. Menü verlassen": "back"}
 
         self.display_menu = Display()
 

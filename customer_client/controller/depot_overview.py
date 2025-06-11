@@ -9,7 +9,7 @@ class DepotOverview:
                         "2. Aktienhandel der letzten drei Monate": "last_three",
                         "3. Zeitraum eingeben": "timespan",
                         "4. Depot anzeigen": "start",
-                        "5. zurück": "back"}
+                        "5. Menü verlassen": "back"}
         self.display_menu = Display()
 
     def run(self, token):

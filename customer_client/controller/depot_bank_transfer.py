@@ -7,13 +7,12 @@ class DepotBankTransfer:
         self.title = "Überweisung"
         self.options = options
         self.options_make_transfer = {"1. Geld überweisen": "make_transfer",
-                                      "2. Abrechen": "options"}
+                                      "2. Abbrechen": "options"}
 
     def run(self, token):
         self.transfer = BankTransfer()
         display_menu = Display()
         form_names = self.transfer.form_names
-        display_menu.display_title(self.title)
 
         choice = "start"
         start = True
