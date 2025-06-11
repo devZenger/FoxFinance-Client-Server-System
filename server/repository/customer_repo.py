@@ -89,7 +89,6 @@ def _update_customer_settings(table, customer_id, insert: dict):
     db_op.open_connection_db()
 
     try:
-
         columns = ""
         for k in insert.keys():
             columns = f"{columns}{k}=:{k}, "
@@ -127,4 +126,3 @@ if __name__ == "__main__":
 
     dic = {'reference_account': 'z-bank'}
     table = "financials"
-    test = update_customer_settings(table, 1, dic)

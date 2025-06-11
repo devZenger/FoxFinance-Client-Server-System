@@ -5,7 +5,7 @@ from .db_operator import db_op
 
 
 def insert_stock_transaction(transaction: dict, balance: dict):
-    print("start insert stock transaction")
+
     try:
         db_op.open_connection_db()
         db_op.start_transaction()
@@ -43,7 +43,6 @@ def insert_stock_transaction(transaction: dict, balance: dict):
         balance_id = db_op.execute(sql, balance).lastrowid
 
         db_op.connection_commit()
-        print("ende try stock transaction")
 
     except DBOperationError as e:
         raise DBOperationError(error_forwarding_msg) from e

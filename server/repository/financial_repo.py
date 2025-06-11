@@ -80,7 +80,7 @@ def search_past_financial_transactions(customer_id, search_start, search_end):
         names = db_op.col_names()
 
         result = make_dictionary(datas, names)
-        print(result)
+
         return result
 
     except DBOperationError as e:
