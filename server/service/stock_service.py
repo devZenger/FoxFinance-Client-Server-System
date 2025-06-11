@@ -8,7 +8,8 @@ from repository import (simple_search,
                         customer_balance,
                         insert_stock_transaction,
                         update_single_stock_datas)
-from schemas import StockTrade
+
+from utilities import bank_account_decode
 
 
 def search_stock(search_input):
@@ -65,7 +66,7 @@ def stock_performence(stocks_row: dict):
 
         result = trade_day_by_period(isin, search_date)
 
-        performance = result["open"]/last_trade_day["close"] * 100
+        performance = (last_trade_day["close"]/result["open"] * 100) - 100
         data = {}
         data["date"] = result["date"]
         data["price"] = result["open"]
@@ -80,12 +81,12 @@ def stock_performence(stocks_row: dict):
 
 
 # prepare for database
-def stocks_trade(customer_id, stock_trade: StockTrade):
+def stocks_trade(customer_id, stock_trade: dict):
 
-    update_single_stock_datas(stock_trade.isin)
+    update_single_stock_datas(stock_trade["isin"])
 
-    current_market = latest_trade_day_entry(stock_trade.isin)
-    trade_vol = current_market["close"] * stock_trade.amount
+    current_market = latest_trade_day_entry(stock_trade["isin"])
+    trade_vol = current_market["close"] * stock_trade["amount"]
 
     current_day = date.today()
 
@@ -93,15 +94,15 @@ def stocks_trade(customer_id, stock_trade: StockTrade):
 
     trade_charge = trade_vol * current_charges["order_charge"]
 
-    if (stock_trade.transaction_type != "buy" and
-            stock_trade.transaction_type != "sell"):
+    if (stock_trade["transaction_type"] != "buy" and
+            stock_trade["transaction_type"] != "sell"):
         raise ValueError("transaction_type is wrong")
 
     transaction = {
             "customer_id": customer_id,
-            "isin": stock_trade.isin,
-            "transaction_type": stock_trade.transaction_type,
-            "amount": stock_trade.amount,
+            "isin": stock_trade["isin"],
+            "transaction_type": stock_trade["transaction_type"],
+            "amount": stock_trade["amount"],
             "price_per_stock": current_market["close"],
             "order_charge_id": current_charges["order_charge_id"]
         }
@@ -131,7 +132,64 @@ def customer_finance_data(customer_id, kind_of):
     return customer_finance, balance
 
 
-def buy_stocks(customer_id, stock_trade: StockTrade):
+# input in database
+def trade_transaction(transaction: dict, balance: dict):
+
+    customer_msg = {}
+
+    try:
+        transaction_id, balance_id = insert_stock_transaction(transaction,
+                                                              balance)
+
+        transaction_insert = simple_search("transactions", "transaction_id",
+                                           transaction_id)
+        balance_insert = simple_search("financial_transactions",
+                                       "financial_transfer_id",
+                                       balance_id)
+
+        if transaction_insert["row_result0"]["transaction_type"] == "buy":
+            tradetype = "Kaufen"
+        else:
+            tradetype = "Verkaufen"
+        customer_msg["Aktienhandel:"] = {"Transaktonsnr.": transaction_insert["row_result0"]["transaction_id"],
+                                         "Isin": transaction_insert["row_result0"]["isin"],
+                                         "Transaktionstpy": tradetype,
+                                         "Anzahl": transaction_insert["row_result0"]["amount"],
+                                         "Ordergebühren": "test",
+                                         "Transaktionsdatum": transaction_insert["row_result0"]["transaction_date"]}
+        bank_account = bank_account_decode(balance_insert["row_result0"]["bank_account"])
+        customer_msg["Kontobuchung"] = {"Bankkonto": bank_account,
+                                        "Summe": balance_insert["row_result0"]["fin_amount"],
+                                        "Verwendungszweck": balance_insert["row_result0"]["usage"],
+                                        "Buchungsdatum": balance_insert["row_result0"]["fin_transaction_date"]}
+
+    except Exception as e:
+        customer_msg["error"] = f"Transaktion konnte nicht ausgeführt werden: {e}"
+
+    finally:
+        return customer_msg
+
+
+def sell_stocks(customer_id, stock_trade: dict):
+
+    ownership = all_stocks_by_customer(customer_id, stock_trade["isin"])
+
+    if stock_trade["amount"] > ownership:
+
+        return "Nicht genügend Aktien"
+
+    else:
+
+        transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
+
+        customer_finance, balance = customer_finance_data(customer_id, "sell stocks")
+
+        balance["fin_amount"] = (trade_vol - trade_charge)
+
+        return trade_transaction(transaction, balance)
+
+
+def buy_stocks(customer_id, stock_trade: dict):
 
     transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
 
@@ -149,60 +207,16 @@ def buy_stocks(customer_id, stock_trade: StockTrade):
         return trade_transaction(transaction, balance)
 
 
-# input in database
-def trade_transaction(transaction: dict, balance: dict):
-
-    validation = {}
+def start_stock_transaction(customer_id, stock_trade: dict):
 
     try:
-        transaction_id, balance_id = insert_stock_transaction(transaction,
-                                                              balance)
-
-        transaction_insert = simple_search("transactions", "transaction_id",
-                                           transaction_id)
-        balance_insert = simple_search("financial_transactions",
-                                       "financial_transfer_id",
-                                       balance_id)
-
-        validation["stock_trade"] = transaction_insert["row_result0"]
-        validation["balance_statement"] = balance_insert["row_result0"]
-
-    except Exception as e:
-        validation["error"] = f"Transaktion konnte nicht ausgeführt werden: {e}"
-
-    finally:
-        return validation
-
-
-def sell_stocks(customer_id, stock_trade: StockTrade):
-
-    ownership = all_stocks_by_customer(customer_id, stock_trade.isin)
-
-    if stock_trade.amount > ownership:
-
-        return "Nicht genügend Aktien"
-
-    else:
-
-        transaction, trade_charge, trade_vol = stocks_trade(customer_id, stock_trade)
-
-        customer_finance, balance = customer_finance_data(customer_id, "sell stocks")
-
-        balance["fin_amount"] = (trade_vol - trade_charge)
-
-        return trade_transaction(transaction, balance)
-
-
-def start_stock_transaction(customer_id, stock_trade: StockTrade):
-
-    try:
-        if stock_trade.transaction_type == "buy":
+        if stock_trade["transaction_type"] == "buy":
 
             validation = buy_stocks(customer_id, stock_trade)
 
             return validation
 
-        elif stock_trade.transaction_type == "sell":
+        elif stock_trade["transaction_type"] == "sell":
 
             validation = sell_stocks(customer_id, stock_trade)
 

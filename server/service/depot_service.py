@@ -3,8 +3,6 @@ from repository import (simple_search,
                         search_past_transactions,
                         search_order_charges)
 
-from utilities import date_form_validation
-
 
 def customer_name(customer_id):
 
@@ -24,9 +22,6 @@ def depot_overview(customer_id):
 
 
 def past_transactions(customer_id, start_date, end_date):
-
-    date_form_validation(start_date)
-    date_form_validation(end_date)
 
     transactions = search_past_transactions(customer_id, start_date, end_date)
     for trans in transactions.values():

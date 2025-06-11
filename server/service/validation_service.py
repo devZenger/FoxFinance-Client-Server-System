@@ -2,7 +2,6 @@ import random
 from datetime import datetime, timezone, timedelta
 
 from repository import simple_search, insert_one_table, update_one_table
-from schemas import Code
 
 
 def find_customer_id(search):
@@ -22,7 +21,9 @@ def create_validation(email):
 
         result = result["row_result0"]
 
-    except:
+    except RuntimeError as e:
+        raise RuntimeError() from e
+    except Exception:
         error = "Email Addresse konnte nicht gefunden werden."
         print(error)
         raise Exception(error)
@@ -44,16 +45,14 @@ def create_validation(email):
     return {"validation_number": code}
 
 
-def activate_account(code: Code):
+def activate_account(code: dict):
 
-    code_dic = code.model_dump()
-
-    result = simple_search("validation", "validation_number", code_dic["validation_number"])
+    result = simple_search("validation", "validation_number", code["validation_number"])
 
     try:
         result = result["row_result0"]
 
-        if result["validation_number"] == code_dic["validation_number"]:
+        if result["validation_number"] == code["validation_number"]:
 
             current_time = datetime.now(timezone.utc)
 
@@ -70,16 +69,14 @@ def activate_account(code: Code):
                 return "Ihr Konto wurde aktiviert"
             else:
                 return "Aktivierungscode abgelaufen"
-    except:
+    except Exception:
         error = "Der Aktivierungscode ist Fehlerhaft"
         raise Exception(error)
 
 
 if __name__ == "__main__":
 
-    code = Code()
-
-    code.validation_number = 772220
+    code = {"validation_number": 772220}
 
     email = "toe"
 

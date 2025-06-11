@@ -3,7 +3,6 @@ from repository import (insert_one_table,
                         latest_trade_day_entry,
                         watchlist_overview,
                         update_single_stock_datas)
-from schemas import WatchlistOrder
 
 
 def load_watchlist(customer_id):
@@ -13,30 +12,24 @@ def load_watchlist(customer_id):
     return result
 
 
-def editing_watchlist(customer_id, watchlist_order: WatchlistOrder):
+def editing_watchlist(customer_id, add, to_eddit: dict):
 
-    result = latest_trade_day_entry(watchlist_order.isin)
+    to_eddit["customer_id"] = customer_id
 
-    to_eddit = {"customer_id": customer_id,
-                "isin": watchlist_order.isin}
-
-    if watchlist_order.transaction_type is False:
+    if add is False:
         remove_from_one_table("watchlist", to_eddit)
 
-    elif watchlist_order.transaction_type:
+    else:
+        update_single_stock_datas(to_eddit["isin"])
+        result = latest_trade_day_entry(to_eddit["isin"])
         to_eddit["price"] = result["close"]
 
-        update_single_stock_datas(to_eddit["isin"])
-
         insert_one_table("watchlist", to_eddit)
-
-    else:
-        raise ValueError("Transaction_type is not bool")
 
 
 if __name__ == "__main__":
 
-    test = WatchlistOrder(isin="DE000SYM9999", transaction_type=True)
+    test = {"isin": "DE000SYM9999"}
 
     answer = editing_watchlist(1, test)
 
