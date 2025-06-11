@@ -37,8 +37,7 @@ def bank_account_encode(account: str):
 def bank_account_decode(encode: str):
     encode_byte = base64.urlsafe_b64decode(encode.encode('utf-8'))
     decode = _get_fernet().decrypt(encode_byte).decode('utf-8')
-    print("*"*30)
-    print(decode)
+
     return decode
 
 
