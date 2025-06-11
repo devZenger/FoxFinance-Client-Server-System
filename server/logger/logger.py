@@ -43,7 +43,11 @@ def load_config():
     save_status_msg = config["save_status_msg"]
 
 
-def format_Exception_e(e):
+def format_Exception_e(e: Exception | str):
+
+    if type(e) is str:
+        return f"e ist ein string: {e}"
+
     error_message_list = []
     current_e = e
     space_depth = 0
@@ -110,6 +114,7 @@ def message_to_log(message: str, m_type: str | None, print_head: bool = True):
 
     if print_errors_msg or print_status_msg:
         if print_head:
+            print("")
             print(head)
         print(message)
 
@@ -125,8 +130,14 @@ def message_to_log(message: str, m_type: str | None, print_head: bool = True):
               f"Error: {str(e)}")
 
 
-def error_message(e):
-    error_message = format_Exception_e(e)
+def error_message(e, error_msg: str | None = None):
+
+    error_message = ""
+    if error_msg is not None:
+        error_message = f"{error_msg}\n"
+
+    error_message = f"{error_message}{format_Exception_e(e)}"
+
     message_to_log(error_message, "error", True)
 
 
@@ -136,6 +147,14 @@ def error_login_message(message: str):
 
 def status_message(message: str, print_head: bool = True):
     message_to_log(message, "status", print_head)
+
+
+def http442_message(message: str, e=None):
+
+    if e is not None:
+        message_e = format_Exception_e(e)
+        message = f"{message}\n{message_e}"
+    message_to_log(message)
 
 
 if __name__ == "__main__":

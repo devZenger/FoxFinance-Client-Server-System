@@ -1,4 +1,0 @@
-Start Logger
-
-0. Fehlermeldung um 2025-05-20 10:48:20:
-Fehler bei create_customer_account (create_customer_account_api.py). Error: data must be bytes

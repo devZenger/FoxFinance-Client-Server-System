@@ -1,0 +1,588 @@
+
+
+========================================
+Logging gestartet um 2025-06-09 14:38:55
+----------------------------------------
+Stausmeldung - 2025-06-09 14:38:55
+----------------------------------------
+Datenbank vorhanden
+Stausmeldung - 2025-06-09 14:38:55
+----------------------------------------
+Mit Datenbank verbunden.
+Stausmeldung - 2025-06-09 14:38:55
+----------------------------------------
+Börsendaten werden abgerufen - update_stock_datas()
+Aktuell für Adidas Symbol:ADS.DE
+Füge Daten ein - ISIN: DE000A1EWWW0
+Aktualisiere Daten - ISIN: DE000A1EWWW0
+Aktuell für Airbus Symbol:AIR.DE
+Füge Daten ein - ISIN: NL0000235190
+Aktualisiere Daten - ISIN: NL0000235190
+Aktuell für Allianz Symbol:ALV.DE
+Füge Daten ein - ISIN: DE0008404005
+Aktualisiere Daten - ISIN: DE0008404005
+Aktuell für BASF Symbol:BAS.DE
+Füge Daten ein - ISIN: DE000BASF111
+Aktualisiere Daten - ISIN: DE000BASF111
+Aktuell für Bayer Symbol:BAYN.DE
+Füge Daten ein - ISIN: DE000BAY0017
+Aktualisiere Daten - ISIN: DE000BAY0017
+Aktuell für Beiersdorf Symbol:BEI.DE
+Füge Daten ein - ISIN: DE0005200000
+Aktualisiere Daten - ISIN: DE0005200000
+Aktuell für BMW St Symbol:BMW.DE
+Füge Daten ein - ISIN: DE0005190003
+Aktualisiere Daten - ISIN: DE0005190003
+Aktuell für Brenntag Symbol:BNR.DE
+Füge Daten ein - ISIN: DE000A1DAHH0
+Aktualisiere Daten - ISIN: DE000A1DAHH0
+Aktuell für Commerzbank Symbol:CBK.DE
+Füge Daten ein - ISIN: DE000CBK1001
+Aktualisiere Daten - ISIN: DE000CBK1001
+Aktuell für Continental Symbol:CON.DE
+Füge Daten ein - ISIN: DE0005439004
+Aktualisiere Daten - ISIN: DE0005439004
+Aktuell für Daimler Truck Symbol:DTG.DE
+Füge Daten ein - ISIN: DE000DTR0CK8
+Aktualisiere Daten - ISIN: DE000DTR0CK8
+Aktuell für Deutsche Bank Symbol:DBK.DE
+Füge Daten ein - ISIN: DE0005140008
+Aktualisiere Daten - ISIN: DE0005140008
+Aktuell für Deutsche Börse Symbol:DB1.DE
+Füge Daten ein - ISIN: DE0005810055
+Aktualisiere Daten - ISIN: DE0005810055
+Aktuell für Deutsche Post DHL Symbol:DHL.DE
+Füge Daten ein - ISIN: DE0005552004
+Aktualisiere Daten - ISIN: DE0005552004
+Aktuell für Deutsche Telekom Symbol:DTE.DE
+Füge Daten ein - ISIN: DE0005557508
+Aktualisiere Daten - ISIN: DE0005557508
+Aktuell für E.ON Symbol:EOAN.DE
+Füge Daten ein - ISIN: DE000ENAG999
+Aktualisiere Daten - ISIN: DE000ENAG999
+Aktuell für Fresenius Symbol:FRE.DE
+Füge Daten ein - ISIN: DE0005785604
+Aktualisiere Daten - ISIN: DE0005785604
+Aktuell für Fresenius Medical Care Symbol:FME.DE
+Füge Daten ein - ISIN: DE0005785802
+Aktualisiere Daten - ISIN: DE0005785802
+Aktuell für Hannover Rück Symbol:HNR1.DE
+Füge Daten ein - ISIN: DE0008402215
+Aktualisiere Daten - ISIN: DE0008402215
+Aktuell für Heidelberg Materials Symbol:HEI.DE
+Füge Daten ein - ISIN: DE0006047004
+Aktualisiere Daten - ISIN: DE0006047004
+Aktuell für Henkel Vz Symbol:HEN3.DE
+Füge Daten ein - ISIN: DE0006048432
+Aktualisiere Daten - ISIN: DE0006048432
+Aktuell für Infineon Symbol:IFX.DE
+Füge Daten ein - ISIN: DE0006231004
+Aktualisiere Daten - ISIN: DE0006231004
+Aktuell für Mercedes-Benz Group Symbol:MBG.DE
+Füge Daten ein - ISIN: DE0007100000
+Aktualisiere Daten - ISIN: DE0007100000
+Aktuell für Merck Symbol:MRK.DE
+Füge Daten ein - ISIN: DE0006599905
+Aktualisiere Daten - ISIN: DE0006599905
+Aktuell für MTU Aero Engines Symbol:MTX.DE
+Füge Daten ein - ISIN: DE000A0D9PT0
+Aktualisiere Daten - ISIN: DE000A0D9PT0
+Aktuell für Münchener Rück Symbol:MUV2.DE
+Füge Daten ein - ISIN: DE0008430026
+Aktualisiere Daten - ISIN: DE0008430026
+Aktuell für Porsche AG Vz. Symbol:P911.DE
+Füge Daten ein - ISIN: DE000PAG9113
+Aktualisiere Daten - ISIN: DE000PAG9113
+Aktuell für Porsche Automobil Holding Symbol:PAH3.DE
+Füge Daten ein - ISIN: DE000PAH0038
+Aktualisiere Daten - ISIN: DE000PAH0038
+Aktuell für Qiagen Symbol:QIA.DE
+Füge Daten ein - ISIN: NL0012169213
+Aktualisiere Daten - ISIN: NL0012169213
+Aktuell für Rheinmetall Symbol:RHM.DE
+Füge Daten ein - ISIN: DE0007030009
+Aktualisiere Daten - ISIN: DE0007030009
+Aktuell für RWE Symbol:RWE.DE
+Füge Daten ein - ISIN: DE0007037129
+Aktualisiere Daten - ISIN: DE0007037129
+Aktuell für SAP Symbol:SAP.DE
+Füge Daten ein - ISIN: DE0007164600
+Aktualisiere Daten - ISIN: DE0007164600
+Aktuell für Sartorius Vz Symbol:SRT3.DE
+Füge Daten ein - ISIN: DE0007165631
+Aktualisiere Daten - ISIN: DE0007165631
+Aktuell für Siemens Symbol:SIE.DE
+Füge Daten ein - ISIN: DE0007236101
+Aktualisiere Daten - ISIN: DE0007236101
+Aktuell für Siemens Energy Symbol:ENR.DE
+Füge Daten ein - ISIN: DE000ENER6Y0
+Aktualisiere Daten - ISIN: DE000ENER6Y0
+Aktuell für Siemens Healthineers Symbol:SHL.DE
+Füge Daten ein - ISIN: DE000SHL1006
+Aktualisiere Daten - ISIN: DE000SHL1006
+Aktuell für Symrise Symbol:SY1.DE
+Füge Daten ein - ISIN: DE000SYM9999
+Aktualisiere Daten - ISIN: DE000SYM9999
+Aktuell für Volkswagen Vz Symbol:VOW3.DE
+Füge Daten ein - ISIN: DE0007664039
+Aktualisiere Daten - ISIN: DE0007664039
+Aktuell für Vonovia Symbol:VNA.DE
+Füge Daten ein - ISIN: DE000A1ML7J1
+Aktualisiere Daten - ISIN: DE000A1ML7J1
+Aktuell für Zalando Symbol:ZAL.DE
+Füge Daten ein - ISIN: DE000ZAL1111
+Aktualisiere Daten - ISIN: DE000ZAL1111
+Stausmeldung - 2025-06-09 14:39:07
+----------------------------------------
+Daten erfolgreich eingefügt.
+Stausmeldung - 2025-06-09 14:39:07
+----------------------------------------
+Start Server.
+Konfiguration:
+Host: 127.0.0.1
+Port: 8000
+Log Level: debug
+Reload: True
+
+
+========================================
+Logging gestartet um 2025-06-09 16:02:49
+----------------------------------------
+Stausmeldung - 2025-06-09 16:02:49
+----------------------------------------
+Datenbank vorhanden
+Stausmeldung - 2025-06-09 16:02:49
+----------------------------------------
+Mit Datenbank verbunden.
+Stausmeldung - 2025-06-09 16:02:49
+----------------------------------------
+Börsendaten werden abgerufen - update_stock_datas()
+Aktuell für Adidas Symbol:ADS.DE
+Füge Daten ein - ISIN: DE000A1EWWW0
+Aktualisiere Daten - ISIN: DE000A1EWWW0
+Aktuell für Airbus Symbol:AIR.DE
+Füge Daten ein - ISIN: NL0000235190
+Aktualisiere Daten - ISIN: NL0000235190
+Aktuell für Allianz Symbol:ALV.DE
+Füge Daten ein - ISIN: DE0008404005
+Aktualisiere Daten - ISIN: DE0008404005
+Aktuell für BASF Symbol:BAS.DE
+Füge Daten ein - ISIN: DE000BASF111
+Aktualisiere Daten - ISIN: DE000BASF111
+Aktuell für Bayer Symbol:BAYN.DE
+Füge Daten ein - ISIN: DE000BAY0017
+Aktualisiere Daten - ISIN: DE000BAY0017
+Aktuell für Beiersdorf Symbol:BEI.DE
+Füge Daten ein - ISIN: DE0005200000
+Aktualisiere Daten - ISIN: DE0005200000
+Aktuell für BMW St Symbol:BMW.DE
+Füge Daten ein - ISIN: DE0005190003
+Aktualisiere Daten - ISIN: DE0005190003
+Aktuell für Brenntag Symbol:BNR.DE
+Füge Daten ein - ISIN: DE000A1DAHH0
+Aktualisiere Daten - ISIN: DE000A1DAHH0
+Aktuell für Commerzbank Symbol:CBK.DE
+Füge Daten ein - ISIN: DE000CBK1001
+Aktualisiere Daten - ISIN: DE000CBK1001
+Aktuell für Continental Symbol:CON.DE
+Füge Daten ein - ISIN: DE0005439004
+Aktualisiere Daten - ISIN: DE0005439004
+Aktuell für Daimler Truck Symbol:DTG.DE
+Füge Daten ein - ISIN: DE000DTR0CK8
+Aktualisiere Daten - ISIN: DE000DTR0CK8
+Aktuell für Deutsche Bank Symbol:DBK.DE
+Füge Daten ein - ISIN: DE0005140008
+Aktualisiere Daten - ISIN: DE0005140008
+Aktuell für Deutsche Börse Symbol:DB1.DE
+Füge Daten ein - ISIN: DE0005810055
+Aktualisiere Daten - ISIN: DE0005810055
+Aktuell für Deutsche Post DHL Symbol:DHL.DE
+Füge Daten ein - ISIN: DE0005552004
+Aktualisiere Daten - ISIN: DE0005552004
+Aktuell für Deutsche Telekom Symbol:DTE.DE
+Füge Daten ein - ISIN: DE0005557508
+Aktualisiere Daten - ISIN: DE0005557508
+Aktuell für E.ON Symbol:EOAN.DE
+Füge Daten ein - ISIN: DE000ENAG999
+Aktualisiere Daten - ISIN: DE000ENAG999
+Aktuell für Fresenius Symbol:FRE.DE
+Füge Daten ein - ISIN: DE0005785604
+Aktualisiere Daten - ISIN: DE0005785604
+Aktuell für Fresenius Medical Care Symbol:FME.DE
+Füge Daten ein - ISIN: DE0005785802
+Aktualisiere Daten - ISIN: DE0005785802
+Aktuell für Hannover Rück Symbol:HNR1.DE
+Füge Daten ein - ISIN: DE0008402215
+Aktualisiere Daten - ISIN: DE0008402215
+Aktuell für Heidelberg Materials Symbol:HEI.DE
+Füge Daten ein - ISIN: DE0006047004
+Aktualisiere Daten - ISIN: DE0006047004
+Aktuell für Henkel Vz Symbol:HEN3.DE
+Füge Daten ein - ISIN: DE0006048432
+Aktualisiere Daten - ISIN: DE0006048432
+Aktuell für Infineon Symbol:IFX.DE
+Füge Daten ein - ISIN: DE0006231004
+Aktualisiere Daten - ISIN: DE0006231004
+Aktuell für Mercedes-Benz Group Symbol:MBG.DE
+Füge Daten ein - ISIN: DE0007100000
+Aktualisiere Daten - ISIN: DE0007100000
+Aktuell für Merck Symbol:MRK.DE
+Füge Daten ein - ISIN: DE0006599905
+Aktualisiere Daten - ISIN: DE0006599905
+Aktuell für MTU Aero Engines Symbol:MTX.DE
+Füge Daten ein - ISIN: DE000A0D9PT0
+Aktualisiere Daten - ISIN: DE000A0D9PT0
+Aktuell für Münchener Rück Symbol:MUV2.DE
+Füge Daten ein - ISIN: DE0008430026
+Aktualisiere Daten - ISIN: DE0008430026
+Aktuell für Porsche AG Vz. Symbol:P911.DE
+Füge Daten ein - ISIN: DE000PAG9113
+Aktualisiere Daten - ISIN: DE000PAG9113
+Aktuell für Porsche Automobil Holding Symbol:PAH3.DE
+Füge Daten ein - ISIN: DE000PAH0038
+Aktualisiere Daten - ISIN: DE000PAH0038
+Aktuell für Qiagen Symbol:QIA.DE
+Füge Daten ein - ISIN: NL0012169213
+Aktualisiere Daten - ISIN: NL0012169213
+Aktuell für Rheinmetall Symbol:RHM.DE
+Füge Daten ein - ISIN: DE0007030009
+Aktualisiere Daten - ISIN: DE0007030009
+Aktuell für RWE Symbol:RWE.DE
+Füge Daten ein - ISIN: DE0007037129
+Aktualisiere Daten - ISIN: DE0007037129
+Aktuell für SAP Symbol:SAP.DE
+Füge Daten ein - ISIN: DE0007164600
+Aktualisiere Daten - ISIN: DE0007164600
+Aktuell für Sartorius Vz Symbol:SRT3.DE
+Füge Daten ein - ISIN: DE0007165631
+Aktualisiere Daten - ISIN: DE0007165631
+Aktuell für Siemens Symbol:SIE.DE
+Füge Daten ein - ISIN: DE0007236101
+Aktualisiere Daten - ISIN: DE0007236101
+Aktuell für Siemens Energy Symbol:ENR.DE
+Füge Daten ein - ISIN: DE000ENER6Y0
+Aktualisiere Daten - ISIN: DE000ENER6Y0
+Aktuell für Siemens Healthineers Symbol:SHL.DE
+Füge Daten ein - ISIN: DE000SHL1006
+Aktualisiere Daten - ISIN: DE000SHL1006
+Aktuell für Symrise Symbol:SY1.DE
+Füge Daten ein - ISIN: DE000SYM9999
+Aktualisiere Daten - ISIN: DE000SYM9999
+Aktuell für Volkswagen Vz Symbol:VOW3.DE
+Füge Daten ein - ISIN: DE0007664039
+Aktualisiere Daten - ISIN: DE0007664039
+Aktuell für Vonovia Symbol:VNA.DE
+Füge Daten ein - ISIN: DE000A1ML7J1
+Aktualisiere Daten - ISIN: DE000A1ML7J1
+Aktuell für Zalando Symbol:ZAL.DE
+Füge Daten ein - ISIN: DE000ZAL1111
+Aktualisiere Daten - ISIN: DE000ZAL1111
+Stausmeldung - 2025-06-09 16:02:55
+----------------------------------------
+Daten erfolgreich eingefügt.
+Stausmeldung - 2025-06-09 16:02:55
+----------------------------------------
+Start Server.
+Konfiguration:
+Host: 127.0.0.1
+Port: 8000
+Log Level: debug
+Reload: True
+
+
+========================================
+Logging gestartet um 2025-06-09 16:03:23
+----------------------------------------
+Stausmeldung - 2025-06-09 16:03:23
+----------------------------------------
+Neue Schlüssel für Bankkonto und Token wurden erstellt.
+
+Stausmeldung - 2025-06-09 16:03:38
+----------------------------------------
+Datenbank Einsatzbereit
+Stausmeldung - 2025-06-09 16:03:38
+----------------------------------------
+Mit Datenbank verbunden.
+Stausmeldung - 2025-06-09 16:03:38
+----------------------------------------
+Börsendaten werden abgerufen - update_stock_datas()
+Aktuell für Adidas Symbol:ADS.DE
+Füge Daten ein - ISIN: DE000A1EWWW0
+Aktualisiere Daten - ISIN: DE000A1EWWW0
+Aktuell für Airbus Symbol:AIR.DE
+Füge Daten ein - ISIN: NL0000235190
+Aktualisiere Daten - ISIN: NL0000235190
+Aktuell für Allianz Symbol:ALV.DE
+Füge Daten ein - ISIN: DE0008404005
+Aktualisiere Daten - ISIN: DE0008404005
+Aktuell für BASF Symbol:BAS.DE
+Füge Daten ein - ISIN: DE000BASF111
+Aktualisiere Daten - ISIN: DE000BASF111
+Aktuell für Bayer Symbol:BAYN.DE
+Füge Daten ein - ISIN: DE000BAY0017
+Aktualisiere Daten - ISIN: DE000BAY0017
+Aktuell für Beiersdorf Symbol:BEI.DE
+Füge Daten ein - ISIN: DE0005200000
+Aktualisiere Daten - ISIN: DE0005200000
+Aktuell für BMW St Symbol:BMW.DE
+Füge Daten ein - ISIN: DE0005190003
+Aktualisiere Daten - ISIN: DE0005190003
+Aktuell für Brenntag Symbol:BNR.DE
+Füge Daten ein - ISIN: DE000A1DAHH0
+Aktualisiere Daten - ISIN: DE000A1DAHH0
+Aktuell für Commerzbank Symbol:CBK.DE
+Füge Daten ein - ISIN: DE000CBK1001
+Aktualisiere Daten - ISIN: DE000CBK1001
+Aktuell für Continental Symbol:CON.DE
+Füge Daten ein - ISIN: DE0005439004
+Aktualisiere Daten - ISIN: DE0005439004
+Aktuell für Daimler Truck Symbol:DTG.DE
+Füge Daten ein - ISIN: DE000DTR0CK8
+Aktualisiere Daten - ISIN: DE000DTR0CK8
+Aktuell für Deutsche Bank Symbol:DBK.DE
+Füge Daten ein - ISIN: DE0005140008
+Aktualisiere Daten - ISIN: DE0005140008
+Aktuell für Deutsche Börse Symbol:DB1.DE
+Füge Daten ein - ISIN: DE0005810055
+Aktualisiere Daten - ISIN: DE0005810055
+Aktuell für Deutsche Post DHL Symbol:DHL.DE
+Füge Daten ein - ISIN: DE0005552004
+Aktualisiere Daten - ISIN: DE0005552004
+Aktuell für Deutsche Telekom Symbol:DTE.DE
+Füge Daten ein - ISIN: DE0005557508
+Aktualisiere Daten - ISIN: DE0005557508
+Aktuell für E.ON Symbol:EOAN.DE
+Füge Daten ein - ISIN: DE000ENAG999
+Aktualisiere Daten - ISIN: DE000ENAG999
+Aktuell für Fresenius Symbol:FRE.DE
+Füge Daten ein - ISIN: DE0005785604
+Aktualisiere Daten - ISIN: DE0005785604
+Aktuell für Fresenius Medical Care Symbol:FME.DE
+Füge Daten ein - ISIN: DE0005785802
+Aktualisiere Daten - ISIN: DE0005785802
+Aktuell für Hannover Rück Symbol:HNR1.DE
+Füge Daten ein - ISIN: DE0008402215
+Aktualisiere Daten - ISIN: DE0008402215
+Aktuell für Heidelberg Materials Symbol:HEI.DE
+Füge Daten ein - ISIN: DE0006047004
+Aktualisiere Daten - ISIN: DE0006047004
+Aktuell für Henkel Vz Symbol:HEN3.DE
+Füge Daten ein - ISIN: DE0006048432
+Aktualisiere Daten - ISIN: DE0006048432
+Aktuell für Infineon Symbol:IFX.DE
+Füge Daten ein - ISIN: DE0006231004
+Aktualisiere Daten - ISIN: DE0006231004
+Aktuell für Mercedes-Benz Group Symbol:MBG.DE
+Füge Daten ein - ISIN: DE0007100000
+Aktualisiere Daten - ISIN: DE0007100000
+Aktuell für Merck Symbol:MRK.DE
+Füge Daten ein - ISIN: DE0006599905
+Aktualisiere Daten - ISIN: DE0006599905
+Aktuell für MTU Aero Engines Symbol:MTX.DE
+Füge Daten ein - ISIN: DE000A0D9PT0
+Aktualisiere Daten - ISIN: DE000A0D9PT0
+Aktuell für Münchener Rück Symbol:MUV2.DE
+Füge Daten ein - ISIN: DE0008430026
+Aktualisiere Daten - ISIN: DE0008430026
+Aktuell für Porsche AG Vz. Symbol:P911.DE
+Füge Daten ein - ISIN: DE000PAG9113
+Aktualisiere Daten - ISIN: DE000PAG9113
+Aktuell für Porsche Automobil Holding Symbol:PAH3.DE
+Füge Daten ein - ISIN: DE000PAH0038
+Aktualisiere Daten - ISIN: DE000PAH0038
+Aktuell für Qiagen Symbol:QIA.DE
+Füge Daten ein - ISIN: NL0012169213
+Aktualisiere Daten - ISIN: NL0012169213
+Aktuell für Rheinmetall Symbol:RHM.DE
+Füge Daten ein - ISIN: DE0007030009
+Aktualisiere Daten - ISIN: DE0007030009
+Aktuell für RWE Symbol:RWE.DE
+Füge Daten ein - ISIN: DE0007037129
+Aktualisiere Daten - ISIN: DE0007037129
+Aktuell für SAP Symbol:SAP.DE
+Füge Daten ein - ISIN: DE0007164600
+Aktualisiere Daten - ISIN: DE0007164600
+Aktuell für Sartorius Vz Symbol:SRT3.DE
+Füge Daten ein - ISIN: DE0007165631
+Aktualisiere Daten - ISIN: DE0007165631
+Aktuell für Siemens Symbol:SIE.DE
+Füge Daten ein - ISIN: DE0007236101
+Aktualisiere Daten - ISIN: DE0007236101
+Aktuell für Siemens Energy Symbol:ENR.DE
+Füge Daten ein - ISIN: DE000ENER6Y0
+Aktualisiere Daten - ISIN: DE000ENER6Y0
+Aktuell für Siemens Healthineers Symbol:SHL.DE
+Füge Daten ein - ISIN: DE000SHL1006
+Aktualisiere Daten - ISIN: DE000SHL1006
+Aktuell für Symrise Symbol:SY1.DE
+Füge Daten ein - ISIN: DE000SYM9999
+Aktualisiere Daten - ISIN: DE000SYM9999
+Aktuell für Volkswagen Vz Symbol:VOW3.DE
+Füge Daten ein - ISIN: DE0007664039
+Aktualisiere Daten - ISIN: DE0007664039
+Aktuell für Vonovia Symbol:VNA.DE
+Füge Daten ein - ISIN: DE000A1ML7J1
+Aktualisiere Daten - ISIN: DE000A1ML7J1
+Aktuell für Zalando Symbol:ZAL.DE
+Füge Daten ein - ISIN: DE000ZAL1111
+Aktualisiere Daten - ISIN: DE000ZAL1111
+Stausmeldung - 2025-06-09 16:03:45
+----------------------------------------
+Daten erfolgreich eingefügt.
+Stausmeldung - 2025-06-09 16:03:45
+----------------------------------------
+Start Server.
+Konfiguration:
+Host: 127.0.0.1
+Port: 8000
+Log Level: debug
+Reload: True
+
+
+========================================
+Logging gestartet um 2025-06-09 16:35:00
+----------------------------------------
+Stausmeldung - 2025-06-09 16:35:00
+----------------------------------------
+Neue Schlüssel für Bankkonto und Token wurden erstellt.
+
+Stausmeldung - 2025-06-09 16:35:16
+----------------------------------------
+Datenbank Einsatzbereit
+Stausmeldung - 2025-06-09 16:35:16
+----------------------------------------
+Mit Datenbank verbunden.
+Stausmeldung - 2025-06-09 16:35:16
+----------------------------------------
+Börsendaten werden abgerufen - update_stock_datas()
+Aktuell für Adidas Symbol:ADS.DE
+Füge Daten ein - ISIN: DE000A1EWWW0
+Aktualisiere Daten - ISIN: DE000A1EWWW0
+Aktuell für Airbus Symbol:AIR.DE
+Füge Daten ein - ISIN: NL0000235190
+Aktualisiere Daten - ISIN: NL0000235190
+Aktuell für Allianz Symbol:ALV.DE
+Füge Daten ein - ISIN: DE0008404005
+Aktualisiere Daten - ISIN: DE0008404005
+Aktuell für BASF Symbol:BAS.DE
+Füge Daten ein - ISIN: DE000BASF111
+Aktualisiere Daten - ISIN: DE000BASF111
+Aktuell für Bayer Symbol:BAYN.DE
+Füge Daten ein - ISIN: DE000BAY0017
+Aktualisiere Daten - ISIN: DE000BAY0017
+Aktuell für Beiersdorf Symbol:BEI.DE
+Füge Daten ein - ISIN: DE0005200000
+Aktualisiere Daten - ISIN: DE0005200000
+Aktuell für BMW St Symbol:BMW.DE
+Füge Daten ein - ISIN: DE0005190003
+Aktualisiere Daten - ISIN: DE0005190003
+Aktuell für Brenntag Symbol:BNR.DE
+Füge Daten ein - ISIN: DE000A1DAHH0
+Aktualisiere Daten - ISIN: DE000A1DAHH0
+Aktuell für Commerzbank Symbol:CBK.DE
+Füge Daten ein - ISIN: DE000CBK1001
+Aktualisiere Daten - ISIN: DE000CBK1001
+Aktuell für Continental Symbol:CON.DE
+Füge Daten ein - ISIN: DE0005439004
+Aktualisiere Daten - ISIN: DE0005439004
+Aktuell für Daimler Truck Symbol:DTG.DE
+Füge Daten ein - ISIN: DE000DTR0CK8
+Aktualisiere Daten - ISIN: DE000DTR0CK8
+Aktuell für Deutsche Bank Symbol:DBK.DE
+Füge Daten ein - ISIN: DE0005140008
+Aktualisiere Daten - ISIN: DE0005140008
+Aktuell für Deutsche Börse Symbol:DB1.DE
+Füge Daten ein - ISIN: DE0005810055
+Aktualisiere Daten - ISIN: DE0005810055
+Aktuell für Deutsche Post DHL Symbol:DHL.DE
+Füge Daten ein - ISIN: DE0005552004
+Aktualisiere Daten - ISIN: DE0005552004
+Aktuell für Deutsche Telekom Symbol:DTE.DE
+Füge Daten ein - ISIN: DE0005557508
+Aktualisiere Daten - ISIN: DE0005557508
+Aktuell für E.ON Symbol:EOAN.DE
+Füge Daten ein - ISIN: DE000ENAG999
+Aktualisiere Daten - ISIN: DE000ENAG999
+Aktuell für Fresenius Symbol:FRE.DE
+Füge Daten ein - ISIN: DE0005785604
+Aktualisiere Daten - ISIN: DE0005785604
+Aktuell für Fresenius Medical Care Symbol:FME.DE
+Füge Daten ein - ISIN: DE0005785802
+Aktualisiere Daten - ISIN: DE0005785802
+Aktuell für Hannover Rück Symbol:HNR1.DE
+Füge Daten ein - ISIN: DE0008402215
+Aktualisiere Daten - ISIN: DE0008402215
+Aktuell für Heidelberg Materials Symbol:HEI.DE
+Füge Daten ein - ISIN: DE0006047004
+Aktualisiere Daten - ISIN: DE0006047004
+Aktuell für Henkel Vz Symbol:HEN3.DE
+Füge Daten ein - ISIN: DE0006048432
+Aktualisiere Daten - ISIN: DE0006048432
+Aktuell für Infineon Symbol:IFX.DE
+Füge Daten ein - ISIN: DE0006231004
+Aktualisiere Daten - ISIN: DE0006231004
+Aktuell für Mercedes-Benz Group Symbol:MBG.DE
+Füge Daten ein - ISIN: DE0007100000
+Aktualisiere Daten - ISIN: DE0007100000
+Aktuell für Merck Symbol:MRK.DE
+Füge Daten ein - ISIN: DE0006599905
+Aktualisiere Daten - ISIN: DE0006599905
+Aktuell für MTU Aero Engines Symbol:MTX.DE
+Füge Daten ein - ISIN: DE000A0D9PT0
+Aktualisiere Daten - ISIN: DE000A0D9PT0
+Aktuell für Münchener Rück Symbol:MUV2.DE
+Füge Daten ein - ISIN: DE0008430026
+Aktualisiere Daten - ISIN: DE0008430026
+Aktuell für Porsche AG Vz. Symbol:P911.DE
+Füge Daten ein - ISIN: DE000PAG9113
+Aktualisiere Daten - ISIN: DE000PAG9113
+Aktuell für Porsche Automobil Holding Symbol:PAH3.DE
+Füge Daten ein - ISIN: DE000PAH0038
+Aktualisiere Daten - ISIN: DE000PAH0038
+Aktuell für Qiagen Symbol:QIA.DE
+Füge Daten ein - ISIN: NL0012169213
+Aktualisiere Daten - ISIN: NL0012169213
+Aktuell für Rheinmetall Symbol:RHM.DE
+Füge Daten ein - ISIN: DE0007030009
+Aktualisiere Daten - ISIN: DE0007030009
+Aktuell für RWE Symbol:RWE.DE
+Füge Daten ein - ISIN: DE0007037129
+Aktualisiere Daten - ISIN: DE0007037129
+Aktuell für SAP Symbol:SAP.DE
+Füge Daten ein - ISIN: DE0007164600
+Aktualisiere Daten - ISIN: DE0007164600
+Aktuell für Sartorius Vz Symbol:SRT3.DE
+Füge Daten ein - ISIN: DE0007165631
+Aktualisiere Daten - ISIN: DE0007165631
+Aktuell für Siemens Symbol:SIE.DE
+Füge Daten ein - ISIN: DE0007236101
+Aktualisiere Daten - ISIN: DE0007236101
+Aktuell für Siemens Energy Symbol:ENR.DE
+Füge Daten ein - ISIN: DE000ENER6Y0
+Aktualisiere Daten - ISIN: DE000ENER6Y0
+Aktuell für Siemens Healthineers Symbol:SHL.DE
+Füge Daten ein - ISIN: DE000SHL1006
+Aktualisiere Daten - ISIN: DE000SHL1006
+Aktuell für Symrise Symbol:SY1.DE
+Füge Daten ein - ISIN: DE000SYM9999
+Aktualisiere Daten - ISIN: DE000SYM9999
+Aktuell für Volkswagen Vz Symbol:VOW3.DE
+Füge Daten ein - ISIN: DE0007664039
+Aktualisiere Daten - ISIN: DE0007664039
+Aktuell für Vonovia Symbol:VNA.DE
+Füge Daten ein - ISIN: DE000A1ML7J1
+Aktualisiere Daten - ISIN: DE000A1ML7J1
+Aktuell für Zalando Symbol:ZAL.DE
+Füge Daten ein - ISIN: DE000ZAL1111
+Aktualisiere Daten - ISIN: DE000ZAL1111
+Stausmeldung - 2025-06-09 16:35:23
+----------------------------------------
+Daten erfolgreich eingefügt.
+Stausmeldung - 2025-06-09 16:35:23
+----------------------------------------
+Start Server.
+Konfiguration:
+Host: 127.0.0.1
+Port: 8000
+Log Level: debug
+Reload: True
