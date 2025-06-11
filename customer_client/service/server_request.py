@@ -2,20 +2,22 @@ import requests
 
 
 class ServerRequest:
-    def __init__(self, token: str | None = None):
-        self.token = token
+    def __init__(self):
 
-        self.url_server = 'http://127.0.0.1:8000/'
+        self.url_server_base = 'http://127.0.0.1:8000/'
 
-        if self.token is None:
-            self.headers = None
+    def _get_header(self, token: str | None):
+        if token is None:
+            headers = None
+            self.url_server = self.url_server_base
 
         else:
-            self.headers = {"Authorization":
-                            f"Bearer {self.token['access_token']}"}
-            self.url_server = f"{self.url_server}depot/"
+            headers = {"Authorization": f"Bearer {token['access_token']}"}
+            self.url_server = f"{self.url_server_base}depot/"
 
-    def process_response(sef, server_response):
+        return headers
+
+    def _process_response(sef, server_response: requests.models.Response):
 
         status_code = server_response.status_code
 
@@ -30,6 +32,7 @@ class ServerRequest:
             if server_response is None:
                 return True, None
             elif "access_token" in server_response:
+
                 return True, server_response
 
             else:
@@ -50,19 +53,28 @@ class ServerRequest:
             # server_response is string
             return False, server_response["detail"]
 
-    def _make_get_request(self, url: str):
+    def _offline(self):
+        return False, "Keine Verbindung zum Server."
 
-        server_response = requests.get(url, headers=self.headers)
+    def _make_get_request(self, url: str, headers):
+        try:
+            server_response = requests.get(url, headers=headers)
 
-        return self.process_response(server_response)
+            return self._process_response(server_response)
+        except Exception:
+            return self._offline()
 
-    def get_without_parameters(self, url_part: str):
+    def get_without_parameters(self, url_part: str, token: str | None = None):
+
+        headers = self._get_header(token)
 
         url = f"{self.url_server}{url_part}"
 
-        return self._make_get_request(url)
+        return self._make_get_request(url, headers)
 
-    def get_with_parameters(self, url_part, *inputs):
+    def get_with_parameters(self, url_part: str, token: str | None = None, *inputs):
+
+        headers = self._get_header(token)
 
         parameters = ""
         for input in inputs:
@@ -70,12 +82,42 @@ class ServerRequest:
 
         url = f"{self.url_server}{url_part}{parameters}"
 
-        return self._make_get_request(url)
+        return self._make_get_request(url, headers)
 
-    def make_post_request(self, url_part: str, to_transmit):
+    def make_post_request(self, url_part: str, token: str | None, to_transmit: dict):
+
+        headers = self._get_header(token)
 
         url = f"{self.url_server}{url_part}"
 
-        server_response = requests.post(url, json=to_transmit, headers=self.headers)
+        try:
+            server_response = requests.post(url, json=to_transmit, headers=headers)
 
-        return self.process_response(server_response)
+            return self._process_response(server_response)
+        except Exception:
+            return self._offline()
+
+    def make_delete_request(self, url_part: str, token: str, to_transmit):
+
+        headers = self._get_header(token)
+        url = f"{self.url_server}{url_part}"
+
+        try:
+            server_response = requests.delete(url, json=to_transmit, headers=headers)
+
+            return self._process_response(server_response)
+        except Exception:
+            return self._offline()
+
+    def make_patch_request(self, url_part: str, token: str, to_transmit):
+
+        headers = self._get_header(token)
+        url = f"{self.url_server}{url_part}"
+
+        try:
+            server_response = requests.patch(url, json=to_transmit, headers=headers)
+
+            return self._process_response(server_response)
+
+        except Exception:
+            return self._offline()
