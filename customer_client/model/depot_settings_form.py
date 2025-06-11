@@ -1,11 +1,8 @@
-from service import ServerRequest
-
 from .registration_form import RegistrationForm
 
 
 class SettingsForm(RegistrationForm):
     def __init__(self):
-        #self.server_request = ServerRequest()
         self.data = None
 
         self.form_names_adress = {

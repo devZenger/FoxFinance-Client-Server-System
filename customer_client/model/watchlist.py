@@ -1,11 +1,9 @@
 from .stock_actions import StockActions
-from service import ServerRequest
 
 
 class Watchlist(StockActions):
     def __init__(self):
 
-        self.server_request = ServerRequest()
         self.type_of_editing = None
         self.column_names = {"isin": "ISIN",
                              "company_name": "Unternehmen",

@@ -83,7 +83,7 @@ class BankTransfer:
                        "transfer_type": self.transaction_type_en,
                        "usage": self.usage}
 
-        self.success, response = server_request.make_post_request(url_part, to_transmit, token)
+        self.success, response = server_request.make_post_request(url_part, token, to_transmit)
 
         if self.success:
             response = response["row_result0"]
@@ -96,7 +96,7 @@ class BankTransfer:
                 transaction_type = "Fehler"
 
             transfer_data = {"Bankkonto": f"{response["bank_account"]}",
-                             "Betrag": f"{response["fin_amount"]} Euro",
+                             "Betrag": f"{response["fin_amount"]:.2f} Euro",
                              "Verwendungszweck": f"{response["usage"]}",
                              "T.Art": f"{transaction_type}",
                              "Datum": f"{response["fin_transaction_date"]}"

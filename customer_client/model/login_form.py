@@ -7,7 +7,7 @@ class LoginForm:
     def __init__(self):
         self._email = ""
         self._password = ""
-        self.response = None
+        self.response = ""
 
         self.form_names = {"email": "Email Adresse",
                            "password": "Passwort_Login"}

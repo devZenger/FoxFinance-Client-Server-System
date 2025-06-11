@@ -7,6 +7,7 @@ from .model_utilites import check_date_input, check_email
 
 class RegistrationForm:
     def __init__(self):
+        self.server_request = ServerRequest()
         self._last_name = ""
         self._first_name = ""
         self._street = ""
@@ -19,8 +20,6 @@ class RegistrationForm:
         self._reference_account = ""
         self._fin_amount = 0.0
         self._password = ""
-
-        self.response = None
 
         self.form_names = {
             "last_name": "Familiennamen",
@@ -219,19 +218,21 @@ class RegistrationForm:
                 elif not char.isalnum():
                     special += 1
 
-            if upper > 1 and lower > 1 and numbers > 1 and special > 1:
+            if upper > 1 and lower > 1 and numbers > 1 and special >= 1:
                 self._password = input
             else:
+                missing_char = []
                 if upper > 1:
-                    error = "einen Großbuchstaben"
+                    missing_char.append("zwei Großbuchstaben")
                 if upper > 1:
-                    error = "einen Kleinbuchstaben"
+                    missing_char.append("zwei Kleinbuchstaben")
                 if numbers > 1:
-                    error = "eine Zahl"
+                    missing_char.append("zwei Zahlen")
                 if special > 1:
-                    error = "ein Sonderzeichen"
+                    missing_char.append("ein Sonderzeichen")
 
-                raise ValueError(f"Passwort muss mindestens {error} enthalten")
+                missings = " und ".join(missing_char)
+                raise ValueError(f"Passwort muss mindestens {missings} enthalten")
         else:
             raise ValueError("Fehler, mindestens zwölf Zeichen")
 
@@ -255,12 +256,10 @@ class RegistrationForm:
 
         to_transmit = self.to_dict()
 
-        server_request = ServerRequest()
-
         url_part = "create_customer_account/"
 
-        success, self.response = server_request.make_post_request(url_part, token=None, to_transmit=to_transmit)
+        success, response = self.server_request.make_post_request(url_part, token=None, to_transmit=to_transmit)
 
-        del server_request
+        del self.server_request
 
         return success

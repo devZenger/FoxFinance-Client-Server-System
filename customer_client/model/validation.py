@@ -6,7 +6,7 @@ class Validation:
 
         self.server_request = ServerRequest()
 
-        self._validation_number = None
+        self._validation_number = ""
 
         self.form_name = {"validation_number": "Bitte Aktivierungscode"}
 
@@ -31,7 +31,7 @@ class Validation:
     def get_activate_code(self, email):
         url_part = "startvalidation/"
 
-        success, code = self.server_request.get_with_parameters(url_part=url_part, token=None, inputs=email)
+        success, code = self.server_request.get_with_parameters(url_part, None, email)
 
         if success is True:
 

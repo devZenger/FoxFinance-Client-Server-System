@@ -1,14 +1,9 @@
-from service import ServerRequest
-
 from .base_history import BaseHistory
 
 
 class DepotHistory(BaseHistory):
 
     def __init__(self):
-
-        # self.server_request = ServerRequest()
-
         self.column_names = {"isin": "ISIN",
                              "company_name": "Unternehmen",
                              "amount": "Anzahl",

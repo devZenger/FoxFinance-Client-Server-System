@@ -67,7 +67,7 @@ class StockActions:
         else:
             raise ValueError("Fehler, keine ganze Zahl größer 0")
 
-    def match_server_response(self, input: dict):
+    def _match_server_response(self, input: dict):
 
         data_dict = {}
 
@@ -78,15 +78,15 @@ class StockActions:
         data_dict["Informationen"] = dic_info
 
         dic_lastest_day = {"Datum": f"{input["latest_day"]["date"]}",
-                        "Öffnungskurs": f"{input["latest_day"]["open"]:.2f} €",
-                        "höchster Kurs": f"{input["latest_day"]["high"]:.2f} €",
-                        "tiefster Kurs": f"{input["latest_day"]["low"]:.2f} €",
-                        "Schlusskurs": f"{input["latest_day"]["close"]:.2f} €"}
+                           "Öffnungskurs": f"{input["latest_day"]["open"]:.2f} €",
+                           "höchster Kurs": f"{input["latest_day"]["high"]:.2f} €",
+                           "tiefster Kurs": f"{input["latest_day"]["low"]:.2f} €",
+                           "Schlusskurs": f"{input["latest_day"]["close"]:.2f} €"}
 
         data_dict["Aktuellster Handelstag"] = dic_lastest_day
 
         dic_six_months = {"Kurs": f"{input["6 months"]["price"]:.2f} €",
-                        "Veränderung": f"{input["6 months"]["performance"]:.2f} %"}
+                          "Veränderung": f"{input["6 months"]["performance"]:.2f} %"}
 
         data_dict["Performance über 6 Monate"] = dic_six_months
 
@@ -143,7 +143,7 @@ class StockActions:
                 self.isin = results["one"]["latest_day"]["isin"]
                 self.stock_name = results["one"]["stocks_row"]["company_name"]
 
-                self.stock_information = self.match_server_response(results["one"])
+                self.stock_information = self._match_server_response(results["one"])
 
                 return "single_stock"
 

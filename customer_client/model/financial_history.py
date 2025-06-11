@@ -8,7 +8,9 @@ class FinancialHistory(BaseHistory):
         self.column_names = {"fin_transaction_date": "Datum",
                              "fin_transaction_type": "Art der T.",
                              "fin_amount": "Betrag",
-                             "bank_account": "Bankkonto"}
+                             "usage": "Verwendungszweck",
+                             "bank_account": "Bankkonto"
+                             }
 
         super().__init__('pastfinancialtransactions/')
 
@@ -19,8 +21,8 @@ class FinancialHistory(BaseHistory):
         status, self.response = self.server_request.get_without_parameters(url_part, token)
 
         if status:
-            current_balance = str(round(self.response["actual_balance"], 2))
-            self.response = f"AKtueller Kontostand: {current_balance} EUR"
+            current_balance = f"{self.response["actual_balance"]:.2f}"
+            self.response = f"AKtueller Kontostand: {current_balance:} EUR"
 
         return status
 
