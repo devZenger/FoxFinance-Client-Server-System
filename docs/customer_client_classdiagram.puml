@@ -1,44 +1,51 @@
 @startuml
+
     package "datetime" {
         class datetime
         class timedelta
     }
 
+    class getpass {
+
+    }
+
 
     package "customer_client" {
 
-    package "display" {
+    package "view" {
     class Display {
         + line: str
-        + display_title(title: str): void
-        + display_info(info: str): void
-        + display_title_and_info(title: str, info: str): void
-        + display_options(options: str): str
-        + display_form(form_names: [str, str]), to_fill: object): void
-        + display_filled_form(form_names: dict[str, str]): void
-        + display_table(input: dict[str, Any], column_names: dict[str, str]): void
+        + display_title(title: str): None
+        + display_info(info: str): None
+        + display_title_and_info(title: str, info: str): None
+        + display_options(options: dict[str, str]): str
+        + display_form(form_names: [str, str]), to_fill: Any): None
+        + display_filled_form(form_names: dict[str, str] | None): None
+        + display_table(input: dict[str, Any], column_names: dict[str, str]): None
+        + display_dict(input: dict[str, str]): None
+        + display_dict_in_dict(input: dict[str, [dict[]])
+        # _get_key_value_max_length(input: dict[str, str]): tuple(int, int)
+        # _make_table(input: dict[str, ?], column_names: dict[str, ?]): list
+        # _get_length_from_subdic(input: dict[str, dict[str, str]]): tuple(int, int)
         }
 
-    class "utility.py" as utility_py {
-        + get_key_value_max_length(input:dic[str, str]): (int, int)
-        + make_tabe(input: dict[str, Any], column_names: dict[str, str]): list[str]
-        + get_length_grom_subdic(input: dict[str, dict[str, str]]): (int, int)
-    }
     }
 
     package "control" {
     class MainControl{
         + title: str
         + options: dict[str, str]
-        + init(): void
-        + run(): void
+
+        + init(): None
+        + run(): None
     }
     class CreateAccountMenu {
         + title: str
         + information: str
         + options: dict[str, str]
         + options_failure : dict[str, str]
-        + init(): void
+
+        + init(): None
         + run(): str
     }
 
@@ -47,69 +54,62 @@
         + options: dict[str, str]
         + options_failure: dict[str, str]
 
-        + init() void
-        + run() (bool, str | None)
+        + init(): None
+        + run(): tulpe(bool, str | None)
+        + start_example_account(): tulpe(bool, str)
     }
     class AllInformation {
         + title: str
         + options: dict[str, str]
-        + token: str
 
-        + init(options: dict, token: str | None)
+        + init(options: dict[str, str])
         + run(): str
     }
     class DepotControl {
-        + token: str
-        + headers: str
-        + options: dict[str, str]
-        + depot_overview: DepotStartMenu | None
-        + stock_search = DepotStockSearch | None
-        + stock_trade = DepotStockTrade | None
-        + watchlist = DepotWatchlist | None
-        + account_overview = AccountOverview | None
-        + bank_transaction = DepotBankTransfer | None
-        + information = AllInformation | None
-        + settings = Settings | None
+        + options: dict[str, str] 
+        + depot_menu_start: DepotStartmenu | None
+        + depot_overview: DepotOverview | None
+        + stock_search: DepotStockSearch | None
+        + stock_trade: DepotStockTrade | None
+        + watchlist_ DepotWatchlist | None
+        + account_overview: AccountOverview | None
+        + bank_transaction: DepotBankTransfer | None
+        + settings: Settings | None
 
-        + init(token: str): void
-        + delete_token_instance(): void
-        + run(): void
+        + init(): None
+        + delete_token_instance(): None
+        + run(token: str): None
     }
-    }
-    package "control (depot)" {
     
     class DepotBankTransfer {
-        + transfer: BankTransfer
         + title: str
         + options: dict[str, str]
         + options_make_transfer: dict[str, str]
 
-        + init(token:str, options: dict[str, strs]): void
-        + run(): str
-    }
-    class AccountOverview {
-        + account: object
-        + title: str
-        + options: dict
-        + display_menu: object
-        + init(token: str) void
-        + run() str
-        + show_info(input: bool) void
-        + show_table(input: bool) void
+        + init(options: dict[str, str]): None
+        + run(token: str): str
     }
     class DepotOverview {
-        + depot: DepotHistory
         + title: str
         + options: dict[str, str]
         + display_menu: Display
 
-        + init(token: str): void
-        + run(): void
-        + show_table(input: bool): void
-        + show_table_timespan(input: bool): void
+        + init(): None
+        + run(token: str): None
+        + show_table(input: bool): None
+        + show_table_timespan(input: bool, title: str | None): None
+    }
+    class DepotFinancialOverview {
+        + title: str
+        + option: dict[str, str]
+        + display_menu: Display
+
+        + init()
+        + run(token:str): str
+        + show_info(input: bool): None
+        + show_table(input: bool): None
     }
     class Settings {
-        + depot: SettingsForm
         + title: str
         + information: str
         + information_2time: str
@@ -117,243 +117,260 @@
         + options_settings: dict[str, str]
         + otpions_make_change: dict[str, str]
 
-        + init(token: str, options: dict[str, str]): void
-        + run(): str
+        + init(options: dict[str, str]): None
+        + run(token: str): str
     }
     class DepotStockSearch {
         + title: str
         + title_findings: str
         + title_result: str
         + information: str
-        + token: str
         + options: dict[str, str]
 
-        + init(token: str, options: dict[str, str]) void
-        + run() str
+        + init(options: dict[str, str]): None
+        + run(token: str): str
     }
 
     class DepotStockTrade {
-        + stock_actions: StockActions
         + title: str
         + title_stock: str
         + information: str
         + options: dict[str, str]
         + options_make_trade: dict[str, str]
 
-        + init(token: str, options: str): void
-        + run(): str
+        + init(options: str): None
+        + run(token: str): str
     }
 
     class DepotWatchlist {
-        + watchlist: Watchlist
         + title: str
         + title_stock: str
         + information: str
         + options: dict[str, str]
 
-        + init(token: str): void
-        + run(): str
+        + init(): None
+        + run(token: str): str
     }
     }
-
 
 
     package "model" {
     
     class RegistrationForm {
-        - _last_name: str 
+        # _last_name: str 
         + last_name: str {property}
-        - _fist_name: str
+        # _fist_name: str
         + fist_name: str {property}
-        - _street: str
+        # _street: str
         + street: str {property}
-        - _house_number: str
+        # _house_number: str
         + house_number: str {property}
-        - _zip_code: str
+        # _zip_code: int
         + zip_code: str {property}
-        - _city: str
+        # _city: str
         + city: str {property}
-        - _birthday: str
+        # _birthday: str
         + birthday: str {property}
-        - _email: str
+        # _email: str
         + email: str {property}
-        - _phone_number: str
+        # _phone_number: str
         + phone_number: str {property}
-        - _reference_account: str
+        # _reference_account: str
         + reference_account: str {property}
-        - _fin_amount: float
+        # _fin_amount: float
         + fin_amount: float {property}
-        - _password: str
+        # _password: str
         + password: str {property}
-        + resonse: ?
         + form_names: dict[str, str]
 
-        + init() void
-        + to_dict() dict
-        + post_registration_form(9 bool)
+        + init(): None
+        + to_dict(): dict[str, str | int | float]
+        + post_registration_form(token: str): bool
     }
     class LoginForm {
-        - _email: str
+        # _email: str
         + email: str {property}
-        - _password: str
+        # _password: str
         + password: str {property}
-        + response: ?
+        + response: str
         + form_names: dict[str, str]
 
-        + init() void
-        + to_dict() dict[str, str]
-        + post_login_form() bool
+        + init(): None
+        + to_dict(): dict[str, str]
+        + post_login_form(token: str): bool
     }
 
-    ' klasse muss noch angepasst werden
     class StockActions {
         + server_request: ServerRequest
         + search_term: str
         + stock_list: str
-        + stock_informtaion: None
+        + stock_informtaion: dict[str, str] | None
         + response: Dict[str, str] | None
         + search_form_names: dict[str, str]
         + trade_form_names: dict[str, str]
         + isin: str
         + stock_name: str
-        - _amount: int
+        # _amount: int
         + amount: int {property}
-        - _type_of_action: str
+        # _type_of_action: str
         + type_of_action: str {property}
         + type_of_action_en: str {property}
     
-        + init(token: str) void
-        + stock_search() str
-        + to_dict() dict [str, str | int]
-        + stock_trade() bool
-
-
+        + init(): None
+        # _match_server_response(input:dict[str, str | float]): dict[str, str]
+        + stock_search(token: str): str
+        + to_dict(): dict[str, str | int]
+        + stock_trade(token: str): bool
     }
-    ' response üerprüfen
+
     class Information {
         + url_part: str
-        + response: Dict[str, str] | None
+        + response: str
         + server_request: ServerRequest
-        + init() void
-        + get_information() bool
+        + init(): None
+        + get_information(): bool
     }
-    ' test und was löschen
-    class DepotHistory {
+    class BaseHistory {
         + server_request: ServerRequest
+        + url_part: str
+        # _start_time: str
+        # _start_time_en: str
         + start_time: str {property}
+        + start_time_en: str {property}
+        # _end_time: str
+        # _end_time_en: str
         + end_time: str {property}
+        + end_time_en: str {property}
         + form_names: dict[str, str]
+        + response: dict[str, str | int | float] | None
+
+        + int(url_part: str): None
+        + get_information_by_timespan(token: str): bool
+        + timespan_for_x_days(days: int): None
+    }
+
+    class DepotHistory {
         + column_names: dict[str, str]
         + column_names: dict[str, str]
 
-        + init(): void
-        + get_all_stocks(): bool
-        + get_transaction_by_timespan(): bool
-        + get_last_three_months(): bool
-        + get_last_twelve_months(): bool
-
-
+        + init(): None
+        + get_all_stocks(token: str): bool
+        + get_last_three_months(token: str): bool
+        + get_last_twelve_months(token: str): bool
     }
 
     class FinancialHistory {
-        + server_request: ServerRequest
-        + start_time: str {property}
-        + end_time: str {property}
-        + form_names: dict[str, str]
         + column_names: dict[str, str]
-        + init(token: str): void
-        + get_actual_balance(): bool
-        + get_fin_transaction_by_timespan(): bool
-        + get_last_three_months(): bool
-        + get_last_twelve_months(): bool
+    
+        + init(token: str): None
+        + get_actual_balance(token: str): bool
+        + get_last_three_months(token: str): bool
+        + get_last_twelve_months(token: str): bool
     }
 
     class BankTransfer {
-        + token: str
+        # _fin_amount: float
         + fin_amoount: float {property}
+        # _transactions_type: str
         + transactions_type: str {property}
         + transaction_type_en: str {property, readOnly}
+        # usage: str
         + usage: str {property}
         + form_names: dict[str, str]
 
-        + init(token:str): void
-        + finamount(input: str): str
-        + transaction_type(input: str): str
-        + transaction_type_en(): str
-        + usage(input: str): str
-        + actual_balance()_ str
-        + make_transfer(): (bool, dict[str, dict[str, str]])
+        + init(): None
+        + actual_balance(token: str): str
+        + make_transfer(token: str): tuple(bool, dict[str, dict[str, str]] | str)
     }
 
     class SettingsForm {
-        + token: str
-        + data: dict=None
-        + form_names_adress: dict
-        + form_names_email_adress: dict
-        + form_names_ref_account: dict
-        + form_names_password: dict
-        + name_settings: dict
-        + init(token: str) void
-        + transmit_changes(type:str) str
-        + current_settings() bool
+        + data: dict | None
+        + form_names_adress: dict[str, str]
+        + form_names_email_adress: dict[str, str]
+        + form_names_ref_account: dict[str, str]
+        + form_names_password: dict[str, str]
+        + name_settings: dict[str, str]
+
+        + init(): None
+        + transmit_changes(type: str, token: str): str
+        + current_settings(token: str): bool
     }
     class Validation {
-        + init() void
-        + to_dict() dict
-        + get_activate_code() bool, ?
-        + send_activate_code() bool
+        + server_request: ServerRequest
+        # _validation_number: int
+        + init(): None
+        + to_dict(): dict[str, int]
+        + get_activate_code(email: str): tuple(bool, dict[str, str] | str)
+        + send_activate_code(): bool
     }
     class Watchlist {
         + server_request: ServerRequest
-        + type_of_editing: None
+        + type_of_editing: bool | None
         + colum_names: dict[str, str]
-        + init(token: str) void
-        + get_watchlist() void
-        + edit_watchlist void
+
+        + init(): None
+        + get_watchlist(token: str): None
+        + edit_watchlist(token: str): None
 
     }
-    class ServerRequest {
-        + token: str
-        + url_server: str
-        + headers: dict[str, str] | None
-        + init() void
-        + process_response(server_response: Any) (bool, dict | None)
-        + make_get_request(url: str) (bool, dict | None)
-        + get_without_parameters(url_part: str) (bool, dict | None)
-        + make_post_request(url_part: str, to_transmit: ?) (bool, dict | None)
-    }
-    class "utility.py" as utility_py {
-        + time_check(time: str): bool
-        + time_check_two(time: str): bool
+
+    class "model_utility.py" as model_utility_py {
+        + time_format_check_en(time: str): bool
+        + time_format_check_de(time: str): bool
+        + check_date(time: str): bool
+        + check_date_input(input: str): tuple(bool, str)
+        + format_time_to_de(value: str): str
+        + format_time_to_en(value:str): str
         + email_check(email: str): bool
-        + password_check(password: str): (bool, str)
-        + house_number_check(house_number: str): bool
-        + phone_number_check(phone_number: str): bool
-    }
+
     }
     }
 
+    package "service" {
+    class ServerRequest {
+        # _get_headers(token: str | None):
+ 
+        + init(): None
+        # _process_response(server_response: requests.models.Response): tuple(bool, dict[str, Any] | str)
+        # _offline(): tuple(bool, str)
+        # _make_get_request(url: str, headers:str): tuple(bool, dict[str, Any] | str)
+        + get_without_parameters(url_part: str): tuple(bool, dict[str, Any] | str)
+        + get_with_parameters(url_part: str): tuple(bool, dict[str, Any] | str)
+        + make_post_request(url_part: str, to_transmit: dict[str, Any]) (bool, dict[str, Any] | str)
+        + make_delete_request(url_part: str, to_transmit: dict[str, str]) (bool, dict[str, Any] | None)
+        + make_patch_request(url_part: str, to_transmit: dict[str, str | int]): tuple(bool, dict[str, str | int] | str)
+    }
+    }
+    }
+    ' Display
+    ' Display --> view_utility_py
+    getpass <-- Display
+
+    ' Display from Depot
     Display <-- DepotOverview 
     Display <-- Settings
-    Display <-- AccountOverview
     Display <-- DepotBankTransfer
     Display <-- DepotStockSearch
     Display <-- DepotStockTrade
     Display <-- DepotWatchlist
+    Display <-- DepotFinancialOverview
 
+    ' DepotControl
+    DepotOverview <-- DepotControl
+    Settings <-- DepotControl
+    DepotBankTransfer <-- DepotControl
+    DepotStockSearch <-- DepotControl
+    DepotStockTrade <-- DepotControl
+    DepotWatchlist <-- DepotControl
+    DepotFinancialOverview <-- DepotControl
+    DepotControl --> AllInformation
+
+    ' Maincontrol
     MainControl --> CreateAccountMenu
     MainControl --> LoginMenu
     MainControl --> AllInformation
     
     DepotControl <-- MainControl
-    
-    DepotOverview <-- DepotControl
-    Settings <-- DepotControl
-    AccountOverview <-- DepotControl
-    DepotBankTransfer <-- DepotControl
-    DepotStockSearch <-- DepotControl
-    DepotStockTrade <-- DepotControl
-    DepotWatchlist <-- DepotControl
 
     CreateAccountMenu --> Display 
     Display <-- LoginMenu
@@ -361,43 +378,46 @@
 
     CreateAccountMenu --> Validation
 
-    LoginMenu --> LoginForm
+    LoginMenu -[#Green]-> LoginForm
     CreateAccountMenu --> RegistrationForm
     AllInformation --> Information
 
     Settings --> SettingsForm
     DepotOverview --> DepotHistory
-    AccountOverview --> FinancialHistory
     DepotBankTransfer --> BankTransfer
-    DepotStockSearch --> StockActions
-    DepotStockTrade --> StockActions
+    DepotStockSearch -[#Cyan]-> StockActions
+    DepotStockTrade -[#Blue]-> StockActions
     DepotWatchlist --> Watchlist
-    
-    DepotHistory --> timedelta
-    DepotHistory --> datetime.datetime
-
-    DepotHistory --> utility_py
-    FinancialHistory --> utility_py
-
+    DepotFinancialOverview --> FinancialHistory
 
     LoginForm --> ServerRequest
-    DepotHistory --> ServerRequest
-    FinancialHistory --> ServerRequest
     RegistrationForm --> ServerRequest
-    SettingsForm --> ServerRequest
     Information --> ServerRequest
     BankTransfer --> ServerRequest
     StockActions --> ServerRequest
     Watchlist --> ServerRequest
+    Watchlist --|> StockActions
     Validation --> ServerRequest
     ServerRequest --> request
+    BaseHistory --> ServerRequest
+ 
 
-    ServerRequest -[hidden]-> datetime
+    ' ServerRequest -[hidden]-> datetime
 
     SettingsForm --|> RegistrationForm
 
-    Display --> utility_py
-    getpass <-- Display
+    DepotHistory --|> BaseHistory
+    FinancialHistory --|> BaseHistory
+
+    BaseHistory --> model_utility_py
+    RegistrationForm --> model_utility_py
+    LoginForm --> model_utility_py
+
+    BaseHistory ---> datetime.datetime
+    BaseHistory ---> timedelta
+    RegistrationForm ---> datetime.datetime
+    RegistrationForm --> timedelta
+
 
 
 @enduml

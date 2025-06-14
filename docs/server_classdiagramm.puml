@@ -1,9 +1,17 @@
 @startuml
 
-    package "pydantic" {
+    package pydantic {
          class BaseModel
     }
     class jwt {}
+
+    package "cryptography.fernet" as cryptography_fernet  {
+        class Fernet
+    }
+
+    package "jwt.exceptions" as jwt_exceptions {
+        class InvalidTokenError
+    }
 
     package fastapi {
         class FastAPI
@@ -12,7 +20,7 @@
         class status
     }
 
-    package "yfinance " {
+    package yfinance {
          class Ticker
     }
      
@@ -25,51 +33,35 @@
     }
 
     package datetime {
+        class date
          class datetime
          class timedelta
          class timezone
     }
 
 
-    package "server" {
+    package server {
         class "mainserver.py" as mainserver_py {
             + server: fastapi
-            + start_server(): void
-            + root(): void
+            + start_server(): None
+            + root(): None
         }
 
         package "logger" {
-            class "config.py" as config_py {
-                + print_out: bool
-                + get_log_path(): str
-            }
             class "logger.py" as logger_py {
-                + start: bool
-                + format_Exeception_e(e): str
-                + message_to_log(message: str, m_type: str | None): void
-                + error_message(e): void
-                + status_message(message: str): void
-            }
-        }
-
-        package "utilitys" {
-            class "bank_account_encryption.py" as bank_account_encryption {
-                + SECRET_KEY: str
-                + bank_account_encode(account: str): 
-                + bank_account_decode(encode: ):
-            }
-
-            class "exceptions.py" as exceptions_py {
-                + error_msg_no_service: str
-            }
-            class DBOperationError {
-
-            }
-            class SQLExecutionError {
-
-            }
-            class ValidationError {
-
+                + first_log: bool
+                + path_log_file: str
+                + print_errors_msg: bool
+                + print_status_msg: bool
+                + save_errors_msg: bool
+                + print_status_msg: bool
+                + load_config():
+                + format_Exeception_e(e: Exception | str): str
+                + message_to_log(message: str, m_type: str | None, print_head: bool): None
+                + error_message(e: Exception, error_msg: str | None): None
+                + error_login_message(message: str): None
+                + status_message(message: str, print_head: bool): None
+                + http442_message(message: str, e: Exception | None): None
             }
         }
 
@@ -86,12 +78,13 @@
 
             class Code {
                 + validation_number: int
+                + validate_number(v: int): int
             }
 
             class User {
                 + email: str
-                + customer_id: int
-                + disabled: bool
+                + customer_id: int | None
+                + disabled: bool | None
             }
 
        
@@ -108,7 +101,6 @@
             }
             class WatchlistOrder {
                 + isin: str
-                + transaction_type: bool
             }       
         }
 
@@ -116,10 +108,10 @@
 
             class AccountForm {
                 + last_name: str
-                + first_name: ste
+                + first_name: str
                 + street: str
                 + house_number: str
-                + zip_code: str
+                + zip_code: int
                 + city: str
                 + birthday: str
                 + email: str
@@ -127,17 +119,34 @@
                 + reference_account: str
                 + fin_amount: str
                 + password: str
+                + validate_names(v: str): str
+                + validate_house_number(v: str): str
+                + validete_birthday(v: str): str
+                + validate_zip_code(v: int): int
+                + validate_email(v: str): str
+                + validate_phone_number(v: str): str
+                + validate_fin_amount(v: float): float
+                + validate_bank_account(v: str): str
+                + validate_password(v: str): str
+
             }
             class Settings {
-                + transmission_type: str
                 + street: str
                 + house_number: str
                 + city: str
-                + zip_code: str
+                + zip_code: int
                 + phone_number: str
                 + email: str
                 + reference_account: str
                 + password: str
+                + validate_names(v: str): str
+                + validate_house_number(v: str): str
+                + validete_birthday(v: str): str
+                + validate_zip_code(v: int): int
+                + validate_email(v: str): str
+                + validate_phone_number(v: str): str
+                + validate_bank_account(v: str): str
+                + validate_password(v: str): str
             }
         }
 
@@ -146,54 +155,36 @@
 
         ' API
         package "api" {
-            
-            class "authentication_apis.py" as authentication_apis_py {
+
+            class "registraton_and_auth_apis.py" as registration_and_auth_apis_py {
                 + router: APIRouter
+                # _request_ip(client_ip: str): str
                 + customer_login_for_token(login_form: EmailOAuth2PasswordRequestForm): Token
                 + get_validation(email: str): dict[str, dict[str, int]
-                + post_activate_account(code: Code): dict[str str]
+                + post_activate_account(code: Code): dict[str, str]
+                + create_account(account_form: AccountForm): None
             }
 
-        
-
-            class "create_customer_accout_api.py" as create_customer_accout_api_py {
-                + router: APIRouter
-                + create_account(account_form: AccountForm): void
-            }
-
-            class "depot_overview_apis_py" as depot_overview_apis_py {
+            class "depot_apis.py" as depot_apis_py {
                 + router: APIRouter
                 + get_depot(current_customer: User): dict[str, str]
                 + get_depot_overview(current_customer: User): dict[str, dict[str, Any]]
-                + get_past_transactions(search_start: str, search_end: str, current_customer: User): dict[str, dict[str, Any]]
-            }
-
-            class "depot_stock_apis.py" as depot_stock_apis_py {
-                + router: APIRouter
                 + get_stock_search(search_term: str, current_customer: User): dict[str, str | dict[str, str] | dict[str, Any]]
-                + trade_stock(stock_trade: StockTrade, current_customer: User): void
                 + get_watchlist(current_customer: User): dict[str, dict[str, Any]]
-                + post_editing_watchlist(watchlist_order: object, currrent_customer: User): void
+                + post_editing_watchlist(watchlist_order: WatchlistOrder, currrent_customer: User): None
+                + delete_editing_watchlist(watchlist_order: WatchlistOrder, currrent_customer: User): None
+                + get_settings(current_customer: User): dict[str, dict[str, str | int]]
+                + change_settings(settings: Settings, current_customer: User): dict[str, dict[str, str]]                
             }
-            
 
-
-            class "depot_financial_apis.py" as depot_financial_apis_py {
+            class "depot_trade_and_transfer_apis.py" as depot_trade_and_transfer_apis_py {
                 + router: APIRouter
                 + get_current_balance(current_customer: User): dict[str, dict[str, float]]
                 + get_past_financial_transactions(search_start: str, search_end:str, current_customer: User): dict[str, dict[str, str | float]]
                 + post_bank_transfer(bank_transfer: BankTransfer, current_customer: User): dict[str, dict[str, str | float]]
+                + get_past_transactions(search_start: str, search_end: str, current_customer: User): dict[str, dict[str, Any]]
+                + trade_stock(stock_trade: StockTrade, current_customer: User): None     
             }
-            
-
-
-            class "depot_settings_apis.py" as depot_settings_apis_py {
-                + router: APIRouter
-                + get_settings(current_customer: User): dict[str, dict[ str, str | int]]
-                + change_settings(settings: Settings, current_customer: User): dict[str, dict[str, str]]
-            }
-        
-
 
             class "informtion_api.py" as informtion_api_py {
                 + router: APIRouter
@@ -201,34 +192,23 @@
             }
         }
 
-      
-        
-
-        
-
-    
-
-
-
     ' service
     
     package "service (without Registration)" {
-        class Authentication {
-            + pwd_context: CryptContext
-            + init(): void
-            # verfiy_password(input_password: str, hashed_password: str): bool
-            + authenticate_customer(email: str, password: str): (dict[str, str | int], bool)
-        }
-        
+
         class "authentication_token.py" as authentication_token_py {
-            + SECRET_KEY: str
+            # _secret_key: str | None
             + ALGORITHM: str
             + ACCESS_TOKEN_EXPIRE_MINUTES: int
             + oauth2_scheme: OAuth2PasswordBearer
+            + get_token_key(): str
+            # _verify_password(input_password: str, hashed_password: str): bool
+            + authenticate_customer(email: str, password: str, client_ip: str): tuple(dict[str, int | str], bool)
             + get_current_user(token: Annotated): dict[str, int | str]
             + get_current_active_user(current_user: Annotated): User
             + create_access_token(user: dict[str, str | int]): str
         }
+        ' weitermachen
         class "validation_service.py" as validation_service_py {
             + date_form_validation(input: str): bool
         }
@@ -248,68 +228,28 @@
             + all_order_charges(): str
         }
 
-        class SettingsService {
-            + init(): void
-            + update_service(customer_id: int, new_settings: Settings): void
-            + search_current_settings(customer_id: int): dict[str, str | int]
-        }
 
         class "stock_service.py" as stock_service_py {
-            + search_stock(search_input): str | dict[str, Any] | dict[str, dict[str, Any]]
+            + search_stock(search_input: str): str | dict[str, Any] | dict[str, dict[str, Any]]
             + stock_performence(stocks_row: dict[str, str]): dict[str, str | float]
-            + stocks_trade(customer_id: int, stock_trade_ StockTrade): (dict[str, Any], float, int)
-            + customer_finance_data(customer_id:int, kind_of: str): (dict[str, float], dict[str, str | int])
-            + buy_stocks(customer_id:str, stock_trade: StockTrade): dict[str, Any]
+            + stocks_trade(customer_id: int, stock_trade: dict[str, str | int]): dict[str, dict[str, Any]]
+            + customer_finance_data(customer_id:int, kind_of: str): tuple(dict[str, float], dict[str, str | int])
+            + buy_stocks(customer_id:str, stock_trade: dict[str, str | int]): dict[str, Any]
             + trade_transaction(transaction: dict[str, Any], balance: dict[str, Any]): dict[str, Any]
-            + sell_stocks(customer_id: int, stock_trade: StockTrade): dict[str, Any]
-            + start_stock_transaction(customer_id: int, stock_trade: StockTrade): dict[str, Any]
+            + sell_stocks(customer_id: int, stock_trade: dict[str, str | int]): dict[str, Any]
+            + start_stock_transaction(customer_id: int, stock_trade: dict[str, str | int]): dict[str, Any]
         }
-
 
 
         class "watchlist_service.py" as watchlist_service_py {
             + load_watchlist(customer_id: int): dict[str, dict[str, Any]]
-            + editing_watchlist(customer_id: int, watchlist_order: object): void
+            + editing_watchlist(customer_id: int, watchlist_order: dict[str, str]): None
         }
 
-        class "utility.py" as utility_py {
-            date_form_validation(input: str) bool
-        }
-
-
-    }
-
-    package "service (Registration)" {
-
-        class CustomerRegistration {
-            # _last_name: str
-            + last_name: str {property}
-            # _first_name:str
-            + first_name:str {property}
-            # _street: str
-            + street: str {property}
-            # _house_number: str
-            + house_number: str {property}
-            # _zip_code: str
-            + zip_code: str {property}
-            # _city: str
-            + city: str {property}
-            # _birthday: str
-            + birthday: str {property}
-            # _email: str
-            + email: str {property}
-            # _phone_number: str
-            + phone_number: str {property}
-            # _reference_account: str
-            + reference_account: str {property}
-            # _fin_amount: float
-            + fin_amount: float {property}
-            # _password: str
-            + password: str {property}
-            + init(): void
-            + fill_in(account_form: AccountForm): void
-            + to_dict(): dict[str, str | float]
-            + insert_db(): void
+        class "registration_and_settings_service.py" as registration_and_settings_service_py {
+            + make_registration(new_account: dict[str, Any]): None
+            + update_settings(customer_id: int, new_settings: dict[str, str | int]): None
+            + search_current_settings(customer_id: int): dict[str, str | int]
         }
     }
 
@@ -317,29 +257,33 @@
     package "repository" {
         class "autentication_repo.py" as autentication_repo_py {
             + get_auth_datas(email: str): dict[str, int | str]
-            + insert_login_time(customer_id: int): void
+            + insert_login_time(customer_id: int): None
         }
 
         class "customer_repo.py" as customer_repo_py {
-            + def insert_customer(input: dict[str, Any]): void
-            + update_customer_settings(tabel: str, customer_id: int, insert: dict[str, Any]): void
+            + def insert_customer(input: dict[str, Any]): None
+            + update_customer_settings(tabel: str, customer_id: int, insert: dict[str, Any]): None
         }
 
-        class DBExecuter {
+        class "db_operator.py" as db_operator_py {
+            + db_op: DBOperator
+        }
+
+        class DBOperator {
             + path: str
             + cursor: Cursor | None
-            + connection: Connection 
-            + init(): void
-            + open_connection_db(): void
-            + start_transaction(): void
-            + connection_commit(): void
-            + rollback(): void
+            + connection: Connection | None 
+            + init(): None
+            + open_connection_db(): None
+            + start_transaction(): None
+            + connection_commit(): None
+            + rollback(): None
             + execute(sql:str, value: Any): Cursor
             + execute_and_commit(sql: str, value: Any): Cursor
-            + col_names() : list
-            + colse(): void
+            + col_names(): list[str]
+            + close(): None
         }
-
+ 
         class "financial_repo.py" as financial_repo_py {
             + customer_balance(customer_id: int): dict[str, float]
             + search_past_financial_transactions(customer_id: int, search_start: str, search_end: str): dict[str, dict[str, Any]
@@ -349,220 +293,328 @@
         class "insert_remove_repo.py" as insert_remove_repo_py {
             + key_to_column(to_form: dict[str, Any]): str
             + key_to_value(to_form: dict[str, Any]): str
-            + insert_one_table(table: str, insert: dict): int
-            + remove_from_one_table(table, condition: dict[str, Any]): void
+            + insert_one_table(table: str, insert: dict[str, Any]): int
+            + remove_from_one_table(table: str, condition: dict[str, Any]): None
         }
 
         class "order_charges_repo.py" as order_charges_repo_py {
-            + search_order_charges(volumn: float, date:str): dict[str, Any] | str
+            + search_order_charges(volumn: float, date:str): dict[str, Any]
             + search_all_order_charges(date: str): dict[str, dict[str, Any]]
         }
 
         class "search_repo.py" as search_repo_py {
-            + make_dictionary(dates: list[Any], dict[str, Any]], names: list[str]): dict[str, dict[str, Any]]
-            + make_dictioney_one_result(datas: list[Any], names: list[str]): dict[str, Any]
-            + simple_dearch(table, column, search_term: Any): dict[str, dict[str, Any]]
+            + simple_dearch(table: str, column: str, search_term: Any): dict[str, dict[str, Any]]
         }
 
         class "transaction_repo.py" as transaction_repo_py {
             + insert_stock_transaction(transaction: dict[str, Any], balance: dict[str, Any]): (int, int)
             + stock_transactions_oververview(customer_id: int): dict[str, dict[str, Any]]
-            + search_past_transactions(customer_id, search_start: str, search_end: str): dict[str, dict[str, Any]]
+            + search_past_transactions(customer_id: int, search_start: str, search_end: str): dict[str, dict[str, Any]]
         }
 
         class "uptdate_repo.py" as uptdate_repo_py { 
-            + update_one_table(table, update: dict[str, Any], condition_dict: dict[str, Any]): void
+            + update_one_table(table, update: dict[str, Any], condition_dict: dict[str, Any]): None
         }
         
         class "stock_repo.py" as stock_repo_py {
             + latest_trade_day_entry(search_term: str): dict[str, Any]
             + trade_day_by_period(search_term: str, time: str): dict[str, Any]
             + all_stocks_by_custommer(customer_id: int, isin:str): int
-            + uptdate_single_stock_datas(isin: str): void
+            + uptdate_single_stock_datas(isin: str): None
             }
             
         class "watchlist_repo.py" as watchlist_repo_py {
-                + watchlist_overview(customer_id): dict[str, dict[str, Any]]
+                + watchlist_overview(customer_id: int): dict[str, dict[str, Any]]
 
         }
     }
 
     package "database" {
         class "update_database.py" as update_database_py {
-            update_stock_datas: void
+            update_stock_datas: None
         }
     }
 
+    package "utilities" {
+
+        class "bank_account_encryption.py" as bank_account_encryption_py {
+            # _fernt: Fernet | None
+            + read_bank_account_key(): str
+            # get_fernet(): Fernet
+            + bank_account_encode(account: str): str
+            + bank_account_dncode(encode: str): str
+        }
+
+        class "check_and_error_msg.py" as check_and_error_msg_py {
+            # error_msg: str
+            + error_msg_db_sql: str
+            + error_msg_no_service: str
+            + error_forwarding_msg: str
+            + check_not_None(value: Any): None
+            + check_not_empty(value: str | dict | list): None
+            + check_not_None_and_empty((value: str | dict[Any, Any] | list[Any]): None
+            + check_len_bg2(value: str): str
+            + check_house_number(value: str): str
+            + check_zip_code(value: int): int
+            + check_time_format(time: str): bool
+            + check_birthday(value: str): str
+            + check_email(value: str): str
+            + check_phone_number(value: str): str
+            + check_fin_amount(value: float): float
+            + check_password(value: str): str
+            + check_isin(value: str): str
+        }
+        
+        class "config_loader.py" as config_loader_py {
+            + path_db: str
+            + server_config: dict[str, str | bool]
+            + load_config(): None
+        }
+
+        class "exceptions_and_handler.py" as exceptions_and_handler_py {
+                + exceptions_handler(e: Exception, msg: str): None
+        }
+        class DBOperationError {
+
+        }
+        class SQLExecutionError {
+
+        }
+        class ValidationError {
+
+        }
+        }
+
+
     }
-    ' service
+
+    
  
-    BaseModel <|-- EmailOAuth2PasswordRequestForm
-    BaseModel <|-- Token
-    BaseModel <|-- Code
-    BaseModel <|-- User
+    BaseModel <|-[#Khaki]- EmailOAuth2PasswordRequestForm
+    BaseModel <|-[#Khaki]- Token
+    BaseModel <|-[#Khaki]- Code
+    BaseModel <|-[#Khaki]- User
 
-    BaseModel <|-- BankTransfer
-    BaseModel <|-- StockTrade
-    BaseModel <|-- WatchlistOrder
+    BaseModel <|-[#Yellow]- BankTransfer
+    BaseModel <|-[#DarkGoldenRod]- StockTrade
+    BaseModel <|-[#DarkGoldenRod]- WatchlistOrder
 
-    BaseModel <|-- Settings
-    BaseModel <|-- AccountForm
+    BaseModel <|-[#Gold]- Settings
+    BaseModel <|-[#GoldenRod]- AccountForm
 
-    EmailOAuth2PasswordRequestForm <.[#red]. authentication_apis_py
-    Code <.[#red]. authentication_apis_py
-    authentication_apis_py -[#red]-> Authentication
-    HTTPException <-[#red]-- authentication_apis_py
-    APIRouter <-[#red]-- authentication_apis_py
-    status <-[#red]-- authentication_apis_py
-    authentication_apis_py -[#red]-> authentication_token_py
-    authentication_apis_py -[#red]-> validation_service_py
-    authentication_apis_py -[#red]-> logger_py
+    BankTransfer -[#Yellow]-> check_and_error_msg_py
+    StockTrade -[#DarkGoldenRod]-> check_and_error_msg_py
+    WatchlistOrder -[#DarkGoldenRod]-> check_and_error_msg_py
 
-    AccountForm <.[#orange]. create_customer_accout_api_py
-    create_customer_accout_api_py -[#orange]-> CustomerRegistration
-    HTTPException <-[#orange]-- create_customer_accout_api_py
-    status <-[#orange]-- create_customer_accout_api_py
-    APIRouter <-[#orange]-- create_customer_accout_api_py
-    create_customer_accout_api_py -[#orange]-> logger_py
+    AccountForm -[#GoldenRod]-> check_and_error_msg_py
+    Settings -[#Gold]-> check_and_error_msg_py
 
-    User <.[#green]. depot_financial_apis_py
-    BankTransfer <.[#green]. depot_financial_apis_py
-    depot_financial_apis_py -[#green]-> financial_service_py
-    HTTPException <-[#green]-- depot_financial_apis_py
-    status <-[#green]-- depot_financial_apis_py
-    APIRouter <-[#green]-- depot_financial_apis_py
-    depot_financial_apis_py -[#green]-> logger_py
+    ' depot_apis_py
+    User <.[#magenta]. depot_apis_py
+    WatchlistOrder <.[#magenta]. depot_apis_py
+    Settings <.[#magenta]. depot_apis_py
 
-    User <.[#magenta]. depot_overview_apis_py
-    depot_overview_apis_py -[#magenta]-> depot_service_py
-    HTTPException <-[#magenta]-- depot_overview_apis_py
-    status<-[#magenta]-- depot_overview_apis_py
-    APIRouter <-[#magenta]-- depot_overview_apis_py
-    depot_overview_apis_py -[#magenta]-> logger_py 
+    Annotated <-[#magenta]-- depot_apis_py
+    APIRouter <-[#magenta]-- depot_apis_py
 
-    User <.[#blue]. depot_settings_apis_py
-    Settings <.[#blue]. depot_settings_apis_py
-    depot_settings_apis_py -[#blue]-> SettingsService
-    HTTPException <-[#blue]-- depot_settings_apis_py
-    status<-[#blue]-- depot_settings_apis_py
-    APIRouter <-[#blue]-- depot_settings_apis_py
-    depot_settings_apis_py -[#blue]-> logger_py
+    depot_apis_py -[#magenta]-> exceptions_and_handler_py
+    depot_apis_py -[#magenta]-> logger_py 
 
-    User <.[#brown]. depot_stock_apis_py
-    StockTrade <.[#brown]. depot_stock_apis_py
-    WatchlistOrder <.[#brown]. depot_stock_apis_py
-    depot_stock_apis_py -[#brown]-> stock_service_py
-    depot_stock_apis_py -[#brown]-> watchlist_service_py
-    HTTPException <-[#brown]-- depot_stock_apis_py
-    status <-[#brown]-- depot_stock_apis_py
-    APIRouter <-[#brown]-- depot_stock_apis_py
-    depot_stock_apis_py -[#brown]-> logger_py
-
-    informtion_api_py -[#LightSkyBlue]-> information_service_py
-    HTTPException <-[#LightSkyBlue]-- informtion_api_py
-    status <-[#LightSkyBlue]-- informtion_api_py
-    APIRouter <-[#LightSkyBlue]-- informtion_api_py
-    informtion_api_py -[#LightSkyBlue]-> logger_py
-
-    User <.[#cyan]. authentication_token_py
-    Token <.[#cyan]. authentication_token_py
-    authentication_token_py -[#cyan]-> OAuth2PasswordBearer
-    HTTPException <-[#cyan]- authentication_token_py
-    status <-[#cyan]- authentication_token_py
-    authentication_token_py -[#cyan]-> jwt
-    authentication_token_py -[#cyan]-> datetime.datetime
-    authentication_token_py -[#cyan]-> timezone
-    authentication_token_py -[#cyan]-> timedelta
-
-    Authentication ---> autentication_repo_py
-    Authentication ---> CryptContext
-
-    AccountForm <.[#LightSeaGreen]. CustomerRegistration
-    CustomerRegistration --[#LightSeaGreen]-> customer_repo_py
-
-    depot_service_py --[#DarkKhaki]-> transaction_repo_py
-    depot_service_py -[#DarkKhaki]-> utility_py
-
-    BankTransfer <.[#DarkGoldenRod]. financial_service_py
-    financial_service_py -[#DarkGoldenRod]-> utility_py
-    financial_service_py --[#DarkGoldenRod]-> financial_repo_py
-    financial_service_py --[#DarkGoldenRod]-> search_repo_py
-
-    information_service_py --[#DarkGreen]-> order_charges_repo_py
-    information_service_py -[#DarkGreen]-> datetime.datetime
-
-    Settings <.[#LightSalmon]. SettingsService
-    SettingsService --[#LightSalmon]-> customer_repo_py
-    SettingsService --[#LightSalmon]-> search_repo_py
-
-    StockTrade <.[#purple]. stock_service_py
-    stock_service_py --[#purple]-> search_repo_py
-    stock_service_py --[#purple]-> stock_repo_py
-    stock_service_py --[#purple]-> order_charges_repo_py
-    stock_service_py --[#purple]-> financial_repo_py
-    stock_service_py --[#purple]-> transaction_repo_py
-    stock_service_py --[#purple]-> Ticker
-
-    Code <.[#YellowGreen]. validation_service_py
-    validation_service_py -[#YellowGreen]-> datetime.datetime
-    validation_service_py -[#YellowGreen]-> timezone
-    validation_service_py -[#YellowGreen]-> timedelta
-    validation_service_py --[#YellowGreen]-> search_repo_py
-    validation_service_py --[#YellowGreen]-> insert_remove_repo_py
-    validation_service_py --[#YellowGreen]-> uptdate_repo_py
-
-    WatchlistOrder <.[#Gray]. watchlist_service_py
-    watchlist_service_py --[#Gray]-> insert_remove_repo_py
-    watchlist_service_py --[#Gray]-> stock_repo_py
-    watchlist_service_py --[#Gray]-> watchlist_repo_py
-
-    autentication_repo_py --> DBExecuter
-    customer_repo_py --> DBExecuter
-
-    DBExecuter ---> sqlite3
-    DBExecuter ---> os
-
-    financial_repo_py --> DBExecuter
-
-    insert_remove_repo_py --> DBExecuter
-
-    order_charges_repo_py --> DBExecuter
+    depot_apis_py -[#magenta]-> depot_service_py
     
-    search_repo_py --> DBExecuter
+    depot_apis_py -[#magenta]-> watchlist_service_py
 
-    stock_repo_py --> DBExecuter
+    ' registration_and_auth_apis_py
+    EmailOAuth2PasswordRequestForm <.[#Purple]. registration_and_auth_apis_py
+    Code <.[#Purple]. registration_and_auth_apis_py
+    Token <.[#Purple]. registration_and_auth_apis_py
+    AccountForm <.[#Purple]. registration_and_auth_apis_py
 
-    transaction_repo_py --> DBExecuter
-
-    uptdate_repo_py --> DBExecuter
-
-    watchlist_repo_py --> DBExecuter
-
-    update_database_py --> Ticker
-    update_database_py --> sqlite3
-    update_database_py --> os
-
-    mainserver_py --> update_database_py
-    FastAPI <-- mainserver_py
-    uvicorn <-- mainserver_py
+    HTTPException <-[#Purple]-- registration_and_auth_apis_py
 
 
+    APIRouter <-[#Purple]-- registration_and_auth_apis_py
+    status <-[#Purple]-- registration_and_auth_apis_py
+
+    registration_and_auth_apis_py -[#Purple]-> exceptions_and_handler_py
+
+    registration_and_auth_apis_py -[#Purple]-> authentication_token_py
+    registration_and_auth_apis_py -[#Purple]-> validation_service_py
+    registration_and_auth_apis_py -[#Purple]-> registration_and_settings_service_py
+    registration_and_auth_apis_py -[#Purple]-> logger_py
 
 
-
-
+    ' depot_trade_and_transfer_apis_py
+    User <.[#Orchid]. depot_trade_and_transfer_apis_py
+    StockTrade <.[#Orchid]. depot_trade_and_transfer_apis_py
+    BankTransfer <.[#Orchid]. depot_trade_and_transfer_apis_py
     
+    HTTPException <-[#Orchid]-- depot_trade_and_transfer_apis_py
+    Annotated <-[#Orchid]-- depot_trade_and_transfer_apis_py
+    APIRouter <-[#Orchid]-- depot_trade_and_transfer_apis_py
+    depot_trade_and_transfer_apis_py -[#Orchid]-> logger_py
+
+    depot_trade_and_transfer_apis_py -[#Orchid]-> exceptions_and_handler_py
+    depot_trade_and_transfer_apis_py -[#Orchid]-> financial_service_py
+    depot_trade_and_transfer_apis_py -[#Orchid]-> stock_service_py
 
 
+    ' informtion_api_py 
+    APIRouter <-[#Indigo]-- informtion_api_py
+    informtion_api_py -[#Indigo]-> exceptions_and_handler_py
+    informtion_api_py -[#Indigo]-> information_service_py
 
 
+    ' authentication_token_py
+    User <.[#Blue]. authentication_token_py
 
+    authentication_token_py -[#Blue]-> os
+    authentication_token_py -[#Blue]-> datetime.datetime
+    authentication_token_py -[#Blue]-> timezone
+    authentication_token_py -[#Blue]-> timedelta
+    authentication_token_py -[#Blue]-> Annotated
+    authentication_token_py -[#Blue]-> jwt
+    authentication_token_py -[#Blue]-> OAuth2PasswordBearer
+    authentication_token_py -[#Blue]-> InvalidTokenError
+    authentication_token_py -[#Blue]-> CryptContext
     
+    authentication_token_py -[#Blue]-> autentication_repo_py
 
-
-
-
-
-
+    ' überprüfen
+    HTTPException <-[#Blue]- authentication_token_py
+    status <-[#Blue]- authentication_token_py
     
+    'registration_and_settings_service_py
+    registration_and_settings_service_py --[#LightBlue]-> customer_repo_py
+    registration_and_settings_service_py --[#LightBlue]-> search_repo_py
+    registration_and_settings_service_py --[#LightBlue]-> uptdate_repo_py
+
+    ' depot_service.py
+    depot_service_py --[#SteelBlue]-> transaction_repo_py
+    depot_service_py -[#SteelBlue]-> search_repo_py
+
+    ' financial_service_py
+    financial_service_py -[#SkyBlue]-> bank_account_encryption_py
+    financial_service_py --[#SkyBlue]-> financial_repo_py
+    financial_service_py --[#SkyBlue]-> search_repo_py
+
+    ' information_service.py
+    information_service_py --[#MediumBlue]-> order_charges_repo_py
+    information_service_py -[#MediumBlue]-> datetime.datetime
+
+    ' stock_service.py
+    stock_service_py --[#RoyalBlue]-> datetime.datetime
+    stock_service_py --[#RoyalBlue]-> timedelta
+    stock_service_py --[#RoyalBlue]-> date
+    stock_service_py --[#RoyalBlue]-> search_repo_py
+    stock_service_py --[#RoyalBlue]-> stock_repo_py
+    stock_service_py --[#RoyalBlue]-> order_charges_repo_py
+    stock_service_py --[#RoyalBlue]-> financial_repo_py
+    stock_service_py --[#RoyalBlue]-> transaction_repo_py
+
+    ' validation_service.py
+    validation_service_py -[#SlateBlue]-> datetime.datetime
+    validation_service_py -[#SlateBlue]-> timezone
+    validation_service_py -[#SlateBlue]-> timedelta
+    validation_service_py --[#SlateBlue]-> random
+    validation_service_py --[#SlateBlue]-> search_repo_py
+    validation_service_py --[#SlateBlue]-> insert_remove_repo_py
+    validation_service_py --[#SlateBlue]-> uptdate_repo_py
+
+    ' watchlist_service.py
+    watchlist_service_py --[#Powderblue]-> insert_remove_repo_py
+    watchlist_service_py --[#Powderblue]-> stock_repo_py
+    watchlist_service_py --[#Powderblue]-> watchlist_repo_py
+
+    ' db_operator.py
+    db_operator_py --> DBOperator
+
+
+    ' DBOperator
+    DBOperator --[#DarkGreen]-> sqlite3
+    DBOperator --[#DarkGreen]-> os
+    DBOperator -[#DarkGreen]-> config_loader_py
+    DBOperator -[#DarkGreen]-> DBOperationError
+
+    ' repo
+    financial_repo_py -[#LightGreen]-> db_operator_py
+    financial_repo_py -[#LightGreen]-> exceptions_and_handler_py
+
+    autentication_repo_py --> db_operator_py
+
+    ' customer_reop_py
+    customer_repo_py -[#LimeGreen]-> db_operator_py
+    customer_repo_py -[#LimeGreen]-> exceptions_and_handler_py
+
+
+
+    insert_remove_repo_py -[#PaleGreen]-> db_operator_py
+    insert_remove_repo_py -[#PaleGreen]-> exceptions_and_handler_py
+    insert_remove_repo_py -[#PaleGreen]-> check_and_error_msg_py
+
+
+    order_charges_repo_py -[#lawngreen]-> db_operator_py
+    order_charges_repo_py -[#lawngreen]-> exceptions_and_handler_py
+    order_charges_repo_py -[#lawngreen]-> check_and_error_msg_py
+
+
+    search_repo_py -[#ForestGreen]-> db_operator_py
+    search_repo_py -[#ForestGreen]-> exceptions_and_handler_py
+    search_repo_py -[#ForestGreen]-> check_and_error_msg_py
+
+
+    stock_repo_py -[#Green]-> Ticker
+    stock_repo_py -[#Green]-> db_operator_py
+    stock_repo_py -[#Green]-> exceptions_and_handler_py
+    stock_repo_py -[#Green]-> check_and_error_msg_py
+    stock_repo_py -[#Green]-> search_repo_py
+
+
+    transaction_repo_py -[#SeaGreen]-> db_operator_py
+    transaction_repo_py -[#SeaGreen]-> exceptions_and_handler_py
+    transaction_repo_py -[#SeaGreen]-> check_and_error_msg_py
+
+
+    uptdate_repo_py -[#OliveDrab]-> db_operator_py
+    uptdate_repo_py -[#OliveDrab]-> exceptions_and_handler_py
+
+
+    watchlist_repo_py -[#MintCream]-> db_operator_py
+    watchlist_repo_py -[#MintCream]-> exceptions_and_handler_py
+
+
+    update_database_py -[#Brown]-> Ticker
+    update_database_py -[#Brown]-> logger_py
+    update_database_py -[#Brown]-> exceptions_and_handler_py
+    update_database_py -[#Brown]-> db_operator_py
+
+
+    mainserver_py -[#Brown]-> update_database_py
+    FastAPI <-[#Brown]- mainserver_py
+    uvicorn <-[#Brown]- mainserver_py
+
+    'bank_account_encryption_py
+    bank_account_encryption_py --[#Orange]-> os
+    bank_account_encryption_py --[#Orange]-> base64
+    bank_account_encryption_py --[#Orange]-> Fernet
+
+
+    ' check_and_error_msg_py
+    check_and_error_msg_py -[#Coral]-> CryptContext
+    check_and_error_msg_py -[#Coral]-> datetime.datetime
+
+
+    ' config_loader_py
+    config_loader_py -[#Darkorange]-> json
+    config_loader_py --[#Darkorange]-> os
+
+    ' exceptions_and_handler_py
+    exceptions_and_handler_py -[#Orange]-> HTTPException
+    exceptions_and_handler_py -[#Orange]-> logger_py
+    exceptions_and_handler_py -[#Orange]-> check_and_error_msg_py
+
+    exceptions_and_handler_py -[#Orange]-> DBOperationError
+    exceptions_and_handler_py -[#Orange]-> SQLExecutionError
+    exceptions_and_handler_py -[#Orange]-> ValidationError
+
 @enduml

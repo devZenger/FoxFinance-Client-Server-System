@@ -3,13 +3,17 @@ Table customers {
     customer_id integer [primary key]
     first_name text [not null]
     last_name text [not null] 
-    birthdate text [not null] 
+    
     email text [not null] 
-    phone_number text [not null] 
+    phone_number text [not null]
+    birthdate text [not null] 
+     
     registration_date timestamp [not null] 
     termination_date text [not null] 
     disabled bool [not null] 
+    
     last_login timestamp [not null]
+    client_ip text
     
     Note: 'UNIQUE (customer_id, registration_date) and UNIQUE (first_name, last_name, birthday)'
     }
@@ -33,6 +37,14 @@ Table financials {
         reference_account text [UNIQUE, not null]
         Note: "UNIQUE reference_account"
     }
+
+Table validation {
+    customer_id integer [PK, ref: - customers.customer_id] 
+    validation_number integer [not null] 
+    date timestamp [not null]
+    Note: "Trigger at date if validation_number is updadeted then date = current_timestamp"
+    }
+
 
 Table financial_transactions{
     financial_transfer_id integer [PK]
@@ -122,9 +134,4 @@ Table order_charges {
     Note: "UNIQUE (start_validation, min_volumn)"
     }
 
-Table validation {
-    customer_id integer [PK, ref: - customers.customer_id] 
-    validation_number integer [not null] 
-    date timestamp [not null]
-    Note: "Trigger at date if validation_number is updadeted then date = current_timestamp"
-    }
+
