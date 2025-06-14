@@ -6,26 +6,21 @@ import uvicorn
 from logger import status_message, error_message
 from database import update_stock_datas, create_db
 from keys import create_keys
-from utilities import DBOperationError, StockDataFetchError
+from service import get_token_key
+from utilities import DBOperationError, StockDataFetchError, read_bank_account_key
 import utilities.config_loader
 
-from api import (depot_stock_apis,
-                 depot_overview_apis,
-                 depot_financial_apis,
-                 depot_settings_api,
-                 authentication_apis,
-                 create_customer_accout_api,
+from api import (depot_apis,
+                 depot_trade_and_transfer_apis,
+                 registration_and_auth_apis,
                  information_api)
 
 server = FastAPI()
 
-server.include_router(create_customer_accout_api.router)
-server.include_router(authentication_apis.router)
-server.include_router(depot_overview_apis.router)
+server.include_router(depot_apis.router)
+server.include_router(registration_and_auth_apis.router)
+server.include_router(depot_trade_and_transfer_apis.router)
 server.include_router(information_api.router)
-server.include_router(depot_stock_apis.router)
-server.include_router(depot_financial_apis.router)
-server.include_router(depot_settings_api.router)
 
 
 @server.get("/")
@@ -33,17 +28,31 @@ async def root():
     return {"message": "Willkommen bei Fox Finance Service"}
 
 
-def start_server():
-    status_message("Start Server")
+def start_server(server_config: dict):
+    status_message("Start Server.\nKonfiguration:\n"
+                   f"Host: {server_config["host"]}\n"
+                   f"Port: {server_config["port"]}\n"
+                   f"Log Level: {server_config["log_level_uvicorn"]}\n"
+                   f"Reload: {server_config["reload"]}\n")
     uvicorn.run(
         "main_server:server",
-        host="127.0.0.1",
-        port=8000,
-        log_level="debug",
-        reload=True)
+        host=server_config["host"],
+        port=server_config["port"],
+        log_level=server_config["log_level_uvicorn"],
+        reload=server_config["reload"])
+
+
+def end_main_server():
+    status_message("\nProgramm wurde beendet.\n")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
+
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
     launch = True
     count = 0
@@ -53,6 +62,7 @@ if __name__ == "__main__":
     while launch:
         utilities.config_loader.load_config()
         path_db = utilities.config_loader.path_db
+        server_config = utilities.config_loader.server_config
 
         if os.path.exists(path_db):
             status_message("Datenbank vorhanden")
@@ -100,32 +110,49 @@ if __name__ == "__main__":
                     pass
 
                 case "3":
-                    sys.exit(0)
+                    end_main_server()
 
                 case _:
                     print("Eingabe konnte nicht zugordnet werden, bitte wiederholen.")
                     count += 1
                     if count > 3:
-                        print("System wird beendet")
-                        sys.exit(0)
+                        end_main_server()
     try:
         update_stock_datas()
-    except StockDataFetchError as e:
+    except (StockDataFetchError, DBOperationError, Exception) as e:
         error_msg = ("Fehler bei Aufruf der Funktion: update_stock_datas.\n"
                      "Ort: main_server.py\n"
                      f"Error: {str(e)}\n")
-        error_message(error_msg)
-        raise StockDataFetchError(error_msg) from e
-    except DBOperationError as e:
-        error_msg = ("Fehler bei Aufruf der Funktion: update_stock_datas.\n"
-                     "Ort: main_server.py\n"
-                     f"Error: {str(e)}\n")
-        error_message(error_msg)
-        raise DBOperationError(error_msg) from e
+        error_message(e, error_msg)
+        end_main_server()
+
+    # load key
+    def key_error(name: str, e):
+        error_msg = f"{name}-Schlüssel konnte nicht gelesen werden."
+        error_message(e, error_msg)
+        end_main_server()
+
+    try:
+        key = read_bank_account_key()
+        if key is None:
+            raise ValueError("Bankkonte-Schlüssel ist None")
     except Exception as e:
-        error_msg = ("Fehler bei Aufruf der Funktion: update_stock_datas.\n"
+        error_msg = key_error("Bankkonto")
+        error_message(e, error_msg)
+        end_main_server()
+    try:
+        key = get_token_key()
+        if key is None:
+            raise ValueError("Token Schlüssel ist None")
+    except Exception as e:
+        error_msg = ("Token", e)
+        error_message(e, error_msg)
+
+    try:
+        start_server(server_config)
+    except Exception as e:
+        error_msg = ("Fehler führte zum Beenden des Programms."
                      "Ort: main_server.py\n"
-                     f"Error: {str(e)}\n")
-        error_message(error_msg)
-        raise Exception(error_msg) from e
-    start_server()
+                     f"Error: {str(e)}")
+        error_message(e, error_msg)
+        end_main_server()

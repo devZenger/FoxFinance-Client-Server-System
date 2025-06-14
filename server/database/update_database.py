@@ -8,8 +8,10 @@ from utilities import DBOperationError, StockDataFetchError
 def update_stock_datas():
 
     db_op.open_connection_db()
+    status_message("Mit Datenbank verbunden.")
     result = db_op.execute("SELECT * FROM stocks").fetchall()
 
+    status_message("Börsendaten werden abgerufen - update_stock_datas()")
     for dsatz in result:
         isin = dsatz[0]
         ticker_symbol = f"{dsatz[1]}.DE"
@@ -18,7 +20,7 @@ def update_stock_datas():
         try:
             ticker_data = yf.Ticker(ticker_symbol)
             historical_data = ticker_data.history(period='2y')
-            status_message(f"Börsendaten abgerufen für {name} Symbol:{ticker_symbol}- update_stock_datas()")
+            status_message(f"Aktuell für {name} Symbol:{ticker_symbol}", False)
 
         except Exception as e:
             error_msg = ("Keine Börsendaten von 'yfinance'.\n"
@@ -89,3 +91,4 @@ def update_stock_datas():
                     raise Exception from e
 
     db_op.close()
+    status_message("Daten erfolgreich eingefügt.")
