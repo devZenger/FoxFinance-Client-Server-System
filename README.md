@@ -242,7 +242,7 @@ Das Diagramm ist auch als `.puml`-Datei im Verzeichnis /docs verfügbar.
 
 **Beschreibung:** Das Diagramm zeigt die relationale Datenbankstruktur des Projekts. Im linken Bereich befindet sich die customer_id-Tabelle, daneben weitere Tabellen die direkt mit dem Nutzer verküpft sind. Rechts davon sind die Tabellen für  Aktientransaktionen(transactions), die Watchlist(wathlist) sowei Überweisungen(financial_transactions). 
 
-Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für Konsistenz und Integrität sorgen. Ein interaktives Online-Diagramm mit ergänzenden Notizen ist auf dbdocs.io <a href="https://dbdocs.io/christian.zenger/FoxFinance?view=relationships">(Link)</a> verfügbar. Dort lassen sich unter anderem Informationen zu Unique-Constraints und Trigger einsehen.
+Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für Konsistenz und Integrität sorgen. Ein interaktives Online-Diagramm mit ergänzenden Notizen ist auf dbdocs.io <a href="https://dbdocs.io/christian.zenger/FoxFinance?view=relationships">(Link)</a> verfügbar. Dort lassen sich unter anderem Informationen zu Unique-Constraints und Trigger einsehen. Das Diagramm ist auch als `.pdf`-Datei im Verzeichnis /docs verfügbar.
 
 
 
