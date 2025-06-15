@@ -10,8 +10,8 @@ Für Geldbeträge wurde im Programm `float` verwendet, da SQLite3 den Datentyp `
 
 <div style="text-align: center;">
   <b>Customer-Client Anwendung: Aktivierung des Kontos</b> <br>
-<img src="docs/images/aktivierung.PNG" alt="Aktivierung des Kontos" title="Customer-Client_Anwendung - Aktivierung" style="width:80%; height:auto;"><br>
-  <div style="display: inline-block;  max-width: 80%; margin: 10x auto; text-align: left;">
+<img src="docs/images/aktivierung.PNG" alt="Benutzeroberfläche zur Aktivierung des Kontos mit SMS-Code" title="Customer-Client Anwendung – Kontoaktivierung per SMS-Code" style="width:80%; height:auto;"><br>
+  <div style="display: inline-block;  max-width: 80%; margin: 5px auto; text-align: left;">
     <p>
       Nach dem Ausfüllen des Formulars und Erstellen des Kontos muss dieses noch aktiviert werden.  
       Die Aktivierung erfolgt durch die Eingabe des Codes, der per SMS an das Mobiltelefon gesendet wird (Simulation).
@@ -41,6 +41,7 @@ Für Geldbeträge wurde im Programm `float` verwendet, da SQLite3 den Datentyp `
   - SQLite – Leichtgewichtige relationale Datenbank  
   - YFinance – Bibliothek zur Abfrage von Börsendaten
   - Uvicorn – ASGI-Server für FastAPI
+  - Flake8 – Tool zu Stilprüfung (PEP8) 
 - weitere Bibliotheken:
   - ``os``, ``sys`` – Systemfunktionen
   - ``request`` – HTTP-Anfragen
@@ -77,6 +78,9 @@ Zusätzlich gibt es:
 - **Schema**: **Pydantic-Modelle** zur Datenvalidierung und zur Definition des Datenformats.
 - **Utilities**: Hilfsmodule wie z.B. Konfiguration oder gemeinsam genutzte Funktionen.
 - **Logger**: Selbst entwickelter Logger für die Initialisierung und Konfiguration von Log-Date  
+
+Für eine einheitliche und gut lesbare Codebasis kam **Flake8** zur Stilprüfung zum Einsatz. Anstelle der üblichen 80 Zeichen pro Zeile wurde die maximale Zeilenlänge projektweit auf 120 Zeichen festgelegt.  
+
 
 #### SQL-Datenbank
 Die Wahl fiel auf **SQLite** als Datenbank, da es sich nahtlos in Python integrieren lässt und eine praktische Erweiterung für die Entwicklungsumgebungen **Visual Studio Code** gibt. Auf den Einsatz von ORMs wie **SQLAlchemy** ist bewusst verzichtet worden, um Erfahrung mit dem direkten Umgang mit **SQL-Befehlen** zu sammeln.  
@@ -198,7 +202,8 @@ FoxFinance/
 │    ├── schemas/
 │    ├── service/
 │    └── main_server.py
-└── README.md
+├── README.md
+└── requirements.txt
 </pre>
 ---
 
@@ -248,11 +253,10 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 
 ## Screenshots
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Einsatzbereiter Server:</h3>
-<img src="docs/images//server_start.PNG" alt="server_start" title="server_start" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/server_start.PNG" alt="Status- und Systemmeldungen beim Start des Servers" title="Serverstart mit Statusmeldungen und Konfigurationsübersicht" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
       <b>Beschreibung:</b> Im oberen Bereich sind Statusmeldungen zur Aktienaktualisierung zu sehen. Darunter folgen Informationen zur aktuellen Serverkonfiguration sowie weitere Systemmeldungen, die den erfolgreichen Start des Servers bestätigen.
     </p>
@@ -260,12 +264,10 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 </div>
 
 
-
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Hauptmenü und Depotmenü:</h3>
-<img src="docs/images//menu.PNG" alt="menu" title="menu" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/menu.PNG" alt="Hauptmenü mit Zugang zum Depotmenü nach dem Login" title="Navigationsmenü mit Zugriff auf alle Systemfunktionen" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
       <b>Beschreibung:</b> Vom Hauptmenü gelangt man nach dem Login zum Depotmenu, von wo aus alle Funktionen des Systems erreichbar sind.
     </p>
@@ -273,24 +275,21 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 </div>
 
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
-  <h3>Konto erstellen und aktiveren:</h3>
-<img src="docs/images//konto_erstellen.PNG" alt="depotuebersicht" title="depotuebersicht" style="width:100%; height:auto;">
-<div style="display: inline-block;  margin: 10x auto; text-align: left;">
+  <h3>Konto erstellen und aktivieren:</h3>
+<img src="docs/images/konto_erstellen.PNG" alt="Formular zur Kontoerstellung mit Datenprüfung und Aktivierungscode" title="Kontoerstellung mit Aktivierungscode (Simulation)" style="width:100%; height:auto;">
+<div style="display: inline-block;  margin: 5px auto; text-align: left;">
     <p>
-      <b>Beschreibung:</b> Zur Kontoerstellung müssen persönliche Daten eingegeben werden. Vor dem Absenden werden diese zur Kontrolle angezeigt. Anschließend ist ein Aktiverungscode erforderlich, um das Konto freizuschalten (Simulation).
+      <b>Beschreibung:</b> Zur Kontoerstellung müssen persönliche Daten eingegeben werden. Vor dem Absenden werden diese zur Kontrolle angezeigt. Anschließend ist ein Aktivierungscode erforderlich, um das Konto freizuschalten (Simulation).
     </p>
   </div>
 </div>
 
 
-
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Depotübersicht:</h3>
-<img src="docs/images//depotuebersicht.PNG" alt="depotuebersicht" title="depotuebersicht" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/depotuebersicht.PNG" alt="Übersicht über das Depot mit Aktienbestand und Kursentwicklung" title="Depotübersicht mit aktuellen Beständen und Wertentwicklung" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
       <b>Beschreibung:</b> Die Depotübersicht zeigt den aktuellen Bestand an Aktien sowie deren Wertentwicklung im Portfolio.
     </p>
@@ -298,23 +297,21 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 </div>
 
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Aktienaufträge der vergangenen drei Monate</h3>
-<img src="docs/images//depot_vergange_order.PNG" alt="depot_vergange_order" title="depot_vergange_order" style="width:100%; height:auto;">
-<div style="display: inline-block;  margin: 10x auto; text-align: left;">
+<img src="docs/images/depot_vergange_order.PNG" alt="Übersicht vergangener Aktienaufträge der letzten drei Monate" title="dVergangene Aktientransaktionen im Depot" style="width:100%; height:auto;">
+<div style="display: inline-block;  margin: 5px auto; text-align: left;">
     <p>
-      <b>Beschreibung:</b> Übersicht vergangener Aktientransaktionen der letzten drei Monate. Alternativ können auch die letzten 12 Monate oder benutzerdefinierter Zeitraum ausgewählt werden.
+      <b>Beschreibung:</b> Übersicht vergangener Aktientransaktionen der letzten drei Monate. Alternativ können auch die letzten 12 Monate oder ein benutzerdefinierter Zeitraum ausgewählt werden.
     </p>
   </div>
 </div>
 
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Aktiensuche:</h3>
-<img src="docs/images//aktiensuche.PNG" alt="depot_vergange_order" title="depot_vergange_order" style="width:100%; height:auto;">
-<div style="display: inline-block;  margin: 10x auto; text-align: left;">
+<img src="docs/images/aktiensuche.PNG" alt="Suchmaske zur Analyse von Aktien über verschiedene Zeiträume" title="Aktiensuche mit Performanceanalyse" style="width:100%; height:auto;">
+<div style="display: inline-block;  margin: 5px auto; text-align: left;">
     <p>
       <b>Beschreibung:</b> Über die Aktiensuche lassen sich Wertpapiere finden und deren Performance über verschiedene Zeiträume (6 Monate, 1 Jahr, 2 Jahre) analysieren.
     </p>
@@ -322,13 +319,12 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 </div>
 
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Aktienkauf:</h3>
-<img src="docs/images//depot_aktienkauf.PNG" alt="depot_aktienkauf" title="depot_aktienkauf" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/depot_aktienkauf.PNG" alt="Eingabemaske für Kauf oder Verkauf von Aktien" title="Aktienauftrag mit Bestätigung vor Ausführung" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
-      <b>Beschreibung:</b> Beim Kauf oder Verkauf von Aktien gibt man den Namen, die Stückzahl und die gewünschten Aktion an. Vor der Ausführung wird der Auftrag zur Bestätigung nochmals angezeigt. 
+      <b>Beschreibung:</b> Beim Kauf oder Verkauf von Aktien gibt man den Namen, die Stückzahl und die gewünschte Aktion an. Vor der Ausführung wird der Auftrag zur Bestätigung nochmals angezeigt. 
     </p>
   </div>
 </div>
@@ -336,20 +332,19 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Kontoübersicht:</h3>
-<img src="docs/images//kontoauszuege.PNG" alt="kontouebersicht" title="kontouebersicht" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/kontoauszuege.PNG" alt="Kontoübersicht mit Buchungen der letzten drei Monate" title="Finanztransaktionen im Überblick mit Filteroptionen" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
-      <b>Beschreibung:</b> Die Kontoübersicht zeigt vergangene Finanztransaktionen. Hier dargestellt sind die Buchungen der letzen drei Monate. Weitere Zeiträume wie 12 Monate oder benutzerdefinierte Filter sind ebenfalls möglich. 
+      <b>Beschreibung:</b> Die Kontoübersicht zeigt vergangene Finanztransaktionen. Hier dargestellt sind die Buchungen der letzten drei Monate. Weitere Zeiträume wie 12 Monate oder benutzerdefinierte Filter sind ebenfalls möglich. 
     </p>
   </div>
 </div>
 
 
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Überweisung von Geld aufs Konto:</h3>
-<img src="docs/images//konto_einzahlung.PNG" alt="depot_einzahlung" title="depot_einzahlung" style="width:100%; height:auto;">
-<div style="display: inline-block; margin: 10x auto; text-align: left;">
+<img src="docs/images/konto_einzahlung.PNG" alt="Darstellung des Ablaufs einer Einzahlung auf das Referenzkonto" title="Einzahlung auf das Referenzkonto – Schritt-für-Schritt-Anleitung" style="width:100%; height:auto;">
+<div style="display: inline-block; margin: 5px auto; text-align: left;">
     <p>
       <b>Beschreibung:</b> Überweisungen auf das oder vom Referenzkonto sind möglich. Im Bild ist der Ablauf einer Einzahlung dargestellt. 
     </p>
@@ -357,12 +352,10 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 </div>
 
 
-
-
 <div style="width: 70%; margin: 0 auto; text-align: left;">
   <h3>Kontodaten ändern:</h3>
-<img src="docs/images//einstellungen.PNG" alt="setting" title="setting" style="width:100%; height:auto;">
-<div style="margin: 10x auto;">
+<img src="docs/images/einstellungen.PNG" alt="Benutzeroberfläche zur Änderung der Kontodaten in den Einstellungen" title="Kontodaten ändern – persönliche Angaben aktualisieren" style="width:100%; height:auto;">
+<div style="margin: 5px auto;">
     <p>
       <b>Beschreibung:</b> Unter dem Menüpunkt „Kontodaten ändern“ lassen sich persönliche Angaben wie Anschrift, Telefonnummer, Bankverbindung und Passwort aktualisieren.
     </p>
