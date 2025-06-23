@@ -201,7 +201,7 @@ FoxFinance/
 │    ├── schemas/
 │    ├── service/
 │    └── main_server.py
-├── LICSENSE.txt
+├── LICENSE.txt
 ├── README.md
 └── requirements.txt
 </pre>
@@ -420,11 +420,7 @@ Bitte beachte, dass dieses Projekt **nicht unter einer Open-Source-Lizenz** steh
 
 Bei Fragen oder Feedback freue ich mich über eine Nachricht.
   
-
-Bei Fragen oder Feedback freue ich mich über eine Nachricht.
-
-
-
+  
 ### Verwendete Drittanbieter-Bibliotheken
 
 Das Projekt verwendet folgende Open-Source-Bibliotheken und Tools:
@@ -435,4 +431,6 @@ Das Projekt verwendet folgende Open-Source-Bibliotheken und Tools:
 - **Uvicorn** – [BSD License](https://github.com/encode/uvicorn/blob/master/LICENSE.md)
 - **YFinance** – [Apache 2.0 License](https://github.com/ranaroussi/yfinance/blob/main/LICENSE)
 - **Flake8** – [MIT License](https://github.com/PyCQA/flake8/blob/main/LICENSE)
-- Weitere Bibliotheken wie `requests`, `pydantic`, `jwt`, `passlib`, etc. stehen ebenfalls unter Open-Source-Lizenzen (z. B.tte beachte die jeweiligen Lizenzbedingungen bei Weiterverwendung).
+- Weitere Bibliotheken wie `requests`, `pydantic`, `jwt`, `passlib`, etc. stehen ebenfalls unter Open-Source-Lizenzen.
+
+Bitte beachte die jeweiligen Lizenzbedingungen bei Weiterverwendung.
