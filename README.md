@@ -38,7 +38,6 @@ Für Geldbeträge wurde im Programm `float` verwendet, da SQLite3 den Datentyp `
   - SQLite 3.45.3 (direkte Verwendung ohne ORM)
 - Frameworks & Tools:
   - FastAPi – Framework zur Entwicklung der REST_API
-  - SQLite – Leichtgewichtige relationale Datenbank  
   - YFinance – Bibliothek zur Abfrage von Börsendaten
   - Uvicorn – ASGI-Server für FastAPI
   - Flake8 – Tool zu Stilprüfung (PEP8) 
@@ -202,6 +201,7 @@ FoxFinance/
 │    ├── schemas/
 │    ├── service/
 │    └── main_server.py
+├── LICSENSE.txt
 ├── README.md
 └── requirements.txt
 </pre>
@@ -413,6 +413,26 @@ Dieses Projekt wurde ausschließlich zu **Lern- und Demonstrationszwecken** entw
 Für Teile des Codes basieren auf der offiziellen Dokumentation bzw. den Tutorials von FASTAPI ([siehe hier](https://fastapi.tiangolo.com/de/tutorial/)). 
 Diese Inhalte wurden unter der **MIT-Lizenz** veröffentlicht und in angepasster Form im Projekt verwendet.  
 
-Die Nutzung des Quellcodes ist für den privaten, nicht-kommerziellen Gebrauch gestattet. Eine Weitergabe, Veränderung oder kommerzielle Nutzung ist nur mit ausdrücklicher Genehmigung erlaubt.  
+
+Der Quellcode dieses Projekts darf **für private, nicht-kommerzielle Zwecke verwendet** werden.  
+Eine Weitergabe, Veränderung oder kommerzielle Nutzung ist **nur mit ausdrücklicher Genehmigung** des Autors gestattet.  
+Bitte beachte, dass dieses Projekt **nicht unter einer Open-Source-Lizenz** steht, auch wenn es auf Open-Source-Komponenten basiert.
 
 Bei Fragen oder Feedback freue ich mich über eine Nachricht.
+  
+
+Bei Fragen oder Feedback freue ich mich über eine Nachricht.
+
+
+
+### Verwendete Drittanbieter-Bibliotheken
+
+Das Projekt verwendet folgende Open-Source-Bibliotheken und Tools:
+
+- **Python 3.13.1** – [PSF License](https://docs.python.org/3/license.html)
+- **SQLite 3.45.3** – [Public Domain](https://www.sqlite.org/copyright.html)
+- **FastAPI** – [MIT License](https://github.com/fastapi/fastapi/blob/master/LICENSE)
+- **Uvicorn** – [BSD License](https://github.com/encode/uvicorn/blob/master/LICENSE.md)
+- **YFinance** – [Apache 2.0 License](https://github.com/ranaroussi/yfinance/blob/main/LICENSE)
+- **Flake8** – [MIT License](https://github.com/PyCQA/flake8/blob/main/LICENSE)
+- Weitere Bibliotheken wie `requests`, `pydantic`, `jwt`, `passlib`, etc. stehen ebenfalls unter Open-Source-Lizenzen (z. B.tte beachte die jeweiligen Lizenzbedingungen bei Weiterverwendung).
