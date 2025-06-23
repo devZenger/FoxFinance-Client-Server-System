@@ -117,6 +117,7 @@ FoxFinance/
 │    ├── __init__.py
 │    ├── config.json
 │    └── main_server.py
+├── LICENSE.md
 ├── README.md
 └── requirements.txt
 </pre>
