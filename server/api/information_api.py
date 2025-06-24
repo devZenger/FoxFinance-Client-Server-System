@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from utilities import excptions_handler
+from utilities import exceptions_handler
 from service import all_order_charges
 
 router = APIRouter()
@@ -14,4 +14,4 @@ async def get_information():
         return {"message": charges}
 
     except Exception as e:
-        excptions_handler(e, "get_information() (information_api.py)")
+        exceptions_handler(e, "get_information() (information_api.py)")

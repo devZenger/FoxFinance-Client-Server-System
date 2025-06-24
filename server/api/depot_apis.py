@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends, APIRouter
 
-from utilities import excptions_handler, check_not_None_and_empty
+from utilities import exceptions_handler, check_not_None_and_empty
 from service import (customer_name,
                      depot_overview,
                      get_current_active_user,
@@ -39,7 +39,7 @@ async def get_depot(current_customer: Annotated[User, Depends(get_current_active
         return {"message": name}
 
     except Exception as e:
-        excptions_handler(e, "get_depot() (dept_overview_apis.py)")
+        exceptions_handler(e, "get_depot() (dept_overview_apis.py)")
 
 
 # 2. /depot/depotoverview/
@@ -51,7 +51,7 @@ async def get_depot_overview(current_customer: Annotated[User, Depends(get_curre
         return {"message": depot}
 
     except Exception as e:
-        excptions_handler(e, "get_depot_overview() (dept_overview_apis.py)")
+        exceptions_handler(e, "get_depot_overview() (dept_overview_apis.py)")
 
 
 # 3. get(/depot/stocksearch/{search_term})
@@ -64,7 +64,7 @@ async def get_stock_search(search_term: str, current_customer: Annotated[User, D
         return {"message": result}
 
     except Exception as e:
-        excptions_handler(e, "get_stock_search() (depot_stock_api.py)")
+        exceptions_handler(e, "get_stock_search() (depot_stock_api.py)")
 
 
 # 4. get("/depot/watchlist/")
@@ -76,7 +76,7 @@ async def get_watchlist(current_customer: Annotated[User, Depends(get_current_ac
         return {"message": result}
 
     except Exception as e:
-        excptions_handler(e, "get_watchlist() (depot_stock_api.py)")
+        exceptions_handler(e, "get_watchlist() (depot_stock_api.py)")
 
 
 # 5. post("/depot/editingwatchlist/")
@@ -89,7 +89,7 @@ async def post_editing_watchlist(watchlist_order: WatchlistOrder,
         editing_watchlist(current_customer["customer_id"], True, wl_order)
 
     except Exception as e:
-        excptions_handler(e, "post_edditing_watchlist() (depot_stock_api.py)")
+        exceptions_handler(e, "post_edditing_watchlist() (depot_stock_api.py)")
 
 
 # 6. delete("/depot/editingwatchlist/")
@@ -102,7 +102,7 @@ async def delete_editing_watchlist(watchlist_order: WatchlistOrder,
         editing_watchlist(current_customer["customer_id"], False, wl_order)
 
     except Exception as e:
-        excptions_handler(e, "delete_edditing_watchlist() (depot_stock_api.py)")
+        exceptions_handler(e, "delete_edditing_watchlist() (depot_stock_api.py)")
 
 
 # 7. get("/depot/settings/")
@@ -115,7 +115,7 @@ async def get_settings(current_customer: Annotated[User, Depends(get_current_act
         return {"message": current_settings}
 
     except Exception as e:
-        excptions_handler(e, "get_settings() (depot_settings_api.py)")
+        exceptions_handler(e, "get_settings() (depot_settings_api.py)")
 
 
 # 8. patch("/depot/changesettings/")
@@ -131,4 +131,4 @@ async def change_settings(settings: Settings, current_customer: Annotated[User, 
         return {"message": "Updated"}
 
     except Exception as e:
-        excptions_handler(e, "change_settings() (depot_settings_api.py)")
+        exceptions_handler(e, "change_settings() (depot_settings_api.py)")

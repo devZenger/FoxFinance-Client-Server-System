@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends, APIRouter, HTTPException
 
-from utilities import error_msg_no_service, excptions_handler, check_not_None_and_empty
+from utilities import error_msg_no_service, exceptions_handler, check_not_None_and_empty
 from service import (get_current_active_user,
                      get_customer_balance,
                      do_past_fin_transactions,
@@ -33,7 +33,7 @@ async def get_current_balance(current_customer: Annotated[User, Depends(get_curr
         return {"message": current_balance}
 
     except Exception as e:
-        excptions_handler(e, "get_current_balance() (depot_financial_apis.py)")
+        exceptions_handler(e, "get_current_balance() (depot_financial_apis.py)")
 
 
 # 2. get("/depot/pastfinancialtransactions/{search_start}/{search_end}")
@@ -53,7 +53,7 @@ async def get_past_financial_transactions(search_start: str,
             raise HTTPException(status_code=422, detail=error_msg_no_service)
 
     except Exception as e:
-        excptions_handler(e, "get_past_financial_transactions() (depot_financial_apis.py)")
+        exceptions_handler(e, "get_past_financial_transactions() (depot_financial_apis.py)")
 
 
 # 3. post("/depot/banktransfer/")
@@ -67,7 +67,7 @@ async def post_bank_transfer(bank_transfer: BankTransfer,
         return {"message": transfer}
 
     except Exception as e:
-        excptions_handler(e, "post_bank_transfer() (depot_financial_apis.py)")
+        exceptions_handler(e, "post_bank_transfer() (depot_financial_apis.py)")
 
 
 # 4 get("/depot/pasttransactions/{search_start}/{search_end}")
@@ -84,7 +84,7 @@ async def get_past_transactions(search_start: str,
         return {"message": transactions}
 
     except Exception as e:
-        excptions_handler(e, "get_past_transactions() (dept_overview_apis.py)")
+        exceptions_handler(e, "get_past_transactions() (dept_overview_apis.py)")
 
 
 # 5 post("/depot/tradestocks/")
@@ -98,4 +98,4 @@ async def trade_stocks(stock_trade: StockTrade, current_customer: Annotated[User
         return {"message": message}
 
     except Exception as e:
-        excptions_handler(e, "trade_stocks() (depot_stock_api.py)")
+        exceptions_handler(e, "trade_stocks() (depot_stock_api.py)")

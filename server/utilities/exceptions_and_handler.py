@@ -24,7 +24,7 @@ class NoneOrEmptyError(ValueError):
     pass
 
 
-def excptions_handler(e: Exception, msg: str):
+def exceptions_handler(e: Exception, msg: str):
 
     if isinstance(e, ValueError):
         message_msg = (f"Oberstes Modul: {msg}.\n"

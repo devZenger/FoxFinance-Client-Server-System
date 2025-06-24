@@ -3,7 +3,7 @@ from .exceptions_and_handler import (DBOperationError,
                                      SQLExecutionError,
                                      StockDataFetchError,
                                      NoneOrEmptyError,
-                                     excptions_handler)
+                                     exceptions_handler)
 from .repo_utilitys import make_dictionary, make_dictionary_one_result
 from .service_utilitys import date_form_validation, time_check
 from .check_and_error_msg import (error_msg_no_service,

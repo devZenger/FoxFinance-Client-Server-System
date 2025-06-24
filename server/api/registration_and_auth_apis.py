@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Request
 
-from utilities import excptions_handler
+from utilities import exceptions_handler
 from logger import error_login_message
 from service import (authenticate_customer,
                      create_access_token,
@@ -49,7 +49,7 @@ async def customer_login_for_access_token(login_form: EmailOAuth2PasswordRequest
         return Token(access_token=await create_access_token(customer), token_type="bearer")
 
     except Exception as e:
-        excptions_handler(e, "customer_login_for_access_tokenä() (registration_and_auth_apis.py)")
+        exceptions_handler(e, "customer_login_for_access_tokenä() (registration_and_auth_apis.py)")
 
 
 @router.post("/create_customer_account/")
@@ -61,7 +61,7 @@ async def create_account(account_form: AccountForm, request: Request) -> None:
         make_registration(new_account, client_ip)
 
     except Exception as e:
-        excptions_handler(e, "create_account() (registration_and_auth_apis.py)")
+        exceptions_handler(e, "create_account() (registration_and_auth_apis.py)")
 
 
 @router.get("/startvalidation/{email}/")
@@ -72,7 +72,7 @@ async def get_validation(email: str):
         return {"message": validation}
 
     except Exception as e:
-        excptions_handler(e, "get_validation() (registration_and_auth_apis.py)")
+        exceptions_handler(e, "get_validation() (registration_and_auth_apis.py)")
 
 
 @router.post("/activateaccount/")
@@ -84,4 +84,4 @@ async def post_activate_account(code: Code):
         return {"message": transmission}
 
     except Exception as e:
-        excptions_handler(e, "post_active_account() (registration_and_auth_apis.py)")
+        exceptions_handler(e, "post_active_account() (registration_and_auth_apis.py)")
