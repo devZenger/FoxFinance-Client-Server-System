@@ -1,214 +1,240 @@
-# Projekt: FoxFinance - Ein Server-Client Projekt
-FoxFinance ist ein Server-Client-Projekt, das es Nutzern ermöglicht, ein Aktiendepot zu eröffnen und Aktien zu handeln.
-Das Client-Programm dient als Benutzerschnittstelle, während das Server-Programm die Verwaltung von Konten und Transaktionen übernimmt. Die Daten werden in einer SQLite-Datenbank gespeichert.
-- Das Client-Programm  ist eine Konsolenanwendung, umgesetzt nach dem **MVC-Pattern**.
-- Das Server-Programm basiert auf einer **mehrschichtigen Architektur** (Schichtenarchitektur)
-- Implementiert wurde das Projekt in **Python** unter Einsatz von **FastAPI** und **SQLite**.
+# 🦊 FoxFinance – Eine Aktiendepot-Simulation mit Python & FastAPI
 
-**Hinweis:**  
-Für Geldbeträge wurde im Programm `float` verwendet, da SQLite3 den Datentyp `Decimal` nicht unterstützt. Da die Genauigkeit in diesem Projekt nicht im Vordergrund stand, wurde in der Datenbank entsprechend der Type `REAL` verwendet.
+**FoxFinance** ist ein vollständiges Server-Client-Projekt, mit dem Benutzer ein digitales Aktiendepot eröffnen und verwalten können. Der **Client** ist eine objektorientierte Konsolenanwendung im **MVC-Stil**, während der **Server** im prozeduralen Stil naein einer klaren, mehrschichtigen Architektur aufgebaut ist – mit **FastAPI** als Framework für die REST-API und **SQLite** als Datenbanklösung folgt.
 
-<div style="text-align: center;">
-  <b>Customer-Client Anwendung: Aktivierung des Kontos</b> <br>
-<img src="docs/images/aktivierung.PNG" alt="Benutzeroberfläche zur Aktivierung des Kontos mit SMS-Code" title="Customer-Client Anwendung – Kontoaktivierung per SMS-Code" style="width:80%; height:auto;"><br>
-  <div style="display: inline-block;  max-width: 80%; margin: 5px auto; text-align: left;">
-    <p>
-      Nach dem Ausfüllen des Formulars und Erstellen des Kontos muss dieses noch aktiviert werden.  
-      Die Aktivierung erfolgt durch die Eingabe des Codes, der per SMS an das Mobiltelefon gesendet wird (Simulation).
-    </p>
-  </div>
-</div>
+Ziel des Projekts war es, die praktische Umsetzung eines vollständigen REST-basierten Client-Server-Systems zu erlernen – mit besonderem Fokus auf **Sicherheit**, **strukturierter Softwarearchitektur** und direkter **SQL-Kontrolle ohne ORM**.
 
+---
 
-## Inhaltsverzeichnis:
-- [Verendete Technologien](#verwendete-technologien)
+### Highlights
+
+- **Komplette Client-Server-Architektur**
+- Fokus auf **Sicherheit**, **SQL-Datenhaltung**, **Token-Authentifizierung**
+- Implementiert in **Python** mit direktem SQL-Zugriff (kein ORM)
+- Client folgt **MVC-Architektur** mit objektorientierter Struktur
+- Integrierte Features: Zwei-Faktor-Login, Watchlist, Ordergebühren, Passwort-Hashing, Datenverschlüsselung
+
+---
+
+## Inhaltsverzeichnis
+
+- [Verwendete Technologien](#verwendete-technologien)
 - [Projektvorstellung](#projektvorstellung)
-- [Projektübersicht](#projektübersicht)
-  - [Funktionen](#funktionen)
-  - [Projektverzeichnis](#projectverzeichnis)
-  - [Uml-Klassendiagramm](#uml-klassendiaggramm)
-  - [Relationale Datenbankdiagramm](#relationales-datenbankmodell)
-- [Screenshoots](#screenshots)
+- [Funktionen](#funktionen)
+- [Projektverzeichnis](#projektverzeichnis)
+- [UML-Klassendiagramm](#uml-klassendiagramm)
+- [Relationales Datenbankmodell](#relationales-datenbankmodell)
+- [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Lizenz](#lizenz)
 
-## Verwendete Technologien:
-- Programmiersprachen:
-  - Python 3.13.1
-  - SQLite 3.45.3 (direkte Verwendung ohne ORM)
-- Frameworks & Tools:
-  - FastAPi – Framework zur Entwicklung der REST_API
-  - YFinance – Bibliothek zur Abfrage von Börsendaten
-  - Uvicorn – ASGI-Server für FastAPI
-  - Flake8 – Tool zu Stilprüfung (PEP8) 
-- weitere Bibliotheken:
-  - ``os``, ``sys`` – Systemfunktionen
-  - ``request`` – HTTP-Anfragen
-  - ``datetime`` – Zeitverarbeitung
-  - ``getpass`` – Passwort-Eingabe ohne Anzeige
-  - ``jwt``, ``passlib.context`` – Authentifizierung & Passwort-Hashing
-  - ``pydantic`` – Datenvalidierung
-  - ``typing`` – Typannotationen
-- Diagrammtools:
-  - PlantUML – Erstellen von Klassendiagrammen
-  - dbdiagram.io – Visualisierung des relationalen Datenbankmodells
+<hr style="border: 1px solid #ccc;" />
 
+## Verwendete Technologien
 
-## Projektvorstellung:
+#### Programmiersprachen & Datenbanken
+- Python 3.13.1
+- SQLite 3.45.3
 
-Ziel des Projekts war es, ein tieferes Verständnis von **Python** und **SQL** zu entwickeln. Aus persönlichem Interesse habe ich mich für das Thema **Aktiendepot-Simulation** entschieden, da es vielfältige Aspekte der Softwareentwicklung vereint – darunter **Datenverarbeitung, Benutzerinteraktion, Sicherheit und Datenbankanbindung**. Da sich die Projektidee gut in eine **Client-Anwendung** und ein **Server-Programm** aufteilen lässt, wollte ich außerdem praktische Erfahrung mit dem Aufbau eines vollständigen **Client-Server-Systems** und der Entwicklung einer **REST-API** sammeln.
-#### Client-Anwendung
-Die Client-Anwendung ist komplett objektorientiert als Konsolenprogramm im **MVC-Pattern** umgesetzt:
-- **Model**: Enthält Geschäftslogik, verwaltet Daten, implementiert Validierungsregeln und enthält Funktion zur Kommunikation mit der Service-Komponente. Hilfsfunktionen wurden dort ebenfalls untergebracht.
-- **View**: Zuständig für die Darstellung der Daten auf der Konsole sowie das Erfassen von Benutzereingaben. Auch die zuständigen Hilfsfunktionen befinden sich hier.
-- **Controller**: Vermittelt zwischen View und Model und verarbeitet Benutzerinteraktionen.
-- **Service**: Eine separate Komponente zur Abwicklung von **HTTP-Anfragen** (Senden und Empfangen).  
+#### Frameworks & Tools
+- FastAPI – Entwicklung der REST-API
+- YFinance – Live-Aktienkurse
+- Uvicorn – ASGI-Server
+- Flake8 – Stilprüfung (Konfiguriert auf max. 120 Zeichen pro Zeile)
+- Visual Studio Code + SQLite Viewer Extension
+- DB Browser for SQLite
 
-Einen Überblick bietet das **UML-Klassendiagramm** [siehe hier (link geplant)]. Um den Fokus auf objektorientierte Programmierung mit Python zu legen und einen zügigen Projektfortschritt zu ermöglichen, wurde bewusst eine **Konsolenanwendung** gewählt - und auf eine GUI- oder Frontend-Lösung verzichtet.  
+Weitere Bibliotheken
+- `os`, `sys`, `datetime`, `getpass`, `typing`
+- `requests` – HTTP-Kommunikation
+- `pydantic` – Datenvalidierung
+- `jwt`, `passlib.context` – Authentifizierung
+- `cryptography.fernet` – Datenverschlüsselung
 
-#### Server-Programm
-Im Gegensatz zur objektorientierten Client-Anwendung ist das Server-Programm strukturiert und prozedural programmiert –  mit Ausnahme der Komponente `DBOperator`, der für strukturierte Datenbankzugriffe sorgt.  
-Der Server ist in folgende Schicht unterteilt:
-- **API-Schicht**: Entgegennahme und Weiterleitung von **HTTP-Anfragen**, inkl. Authentifizierung über **Zugangstoken**.
-- **Service-Schicht**: Enthält die Geschäftslogik und validiert Daten.  
-- **Repository-Schicht**: Zuständig für **Datenbankzugriffe**  
+Diagramm-Tools
+- PlantUML – Klassendiagramme
+- dbdiagram.io – Datenbankmodell
 
-Zusätzlich gibt es:
-- **Schema**: **Pydantic-Modelle** zur Datenvalidierung und zur Definition des Datenformats.
-- **Utilities**: Hilfsmodule wie z.B. Konfiguration oder gemeinsam genutzte Funktionen.
-- **Logger**: Selbst entwickelter Logger für die Initialisierung und Konfiguration von Log-Date  
+<br>
+<hr style="border: 1px solid #ccc;" />
+<br>
 
-Für eine einheitliche und gut lesbare Codebasis kam **Flake8** zur Stilprüfung zum Einsatz. Anstelle der üblichen 80 Zeichen pro Zeile wurde die maximale Zeilenlänge projektweit auf 120 Zeichen festgelegt.  
+## Projektvorstellung
 
-
-#### SQL-Datenbank
-Die Wahl fiel auf **SQLite** als Datenbank, da es sich nahtlos in Python integrieren lässt und eine praktische Erweiterung für die Entwicklungsumgebungen **Visual Studio Code** gibt. Auf den Einsatz von ORMs wie **SQLAlchemy** ist bewusst verzichtet worden, um Erfahrung mit dem direkten Umgang mit **SQL-Befehlen** zu sammeln.  
-
-#### REST-API
-Für die Umsetzung der REST-API entschied ich mich für **FASTAPi**, da mir die Dokumentation besonders zusagte. Weitere Vorteile von FASTAPi sind die native Unterstützung **asynchroner Programmierung**, die einfache **tokenbasierte Authentifizierung** (z.B. mit **JWT**) sowie eine interaktive **Swagger-Oberfläche**, mit der die API automatisch dokumentiert und getestet werden kann.
-
-#### Börsendaten
-Die Börsendaten werden mit der Python-Bibliothek **YFinance** abgerufen – einem Community-Projekt, das den Zugriff auf Finanzdaten von **Yahoo Finance** ermöglicht. Im Vergleich zu vielen kostenlosen professionellen APIs bietet YFinance weniger Einschränkungen und für die Zwecke der Simulation vollkommen ausreichend.
-
----
-### Technische Schwerpunkte
-
-Während des Projekts sammelte ich fundierte Erfahrungen in der **objektorientierten Programmierung**. Durch den Einsatz von **Vererbung** und die gemeinsame Nutzung von Klassen ließ sich **Code-Redundanz** vermeiden – ebenso durch die Wiederverwendung einheitlicher Funktionen nach dem Prinzip **„Don't repeat yourself“ (DRY)**.  
-Ein weiterer Vorteil zeigte sich in der Verwendung von **Komposition** innerhalb der Control-Schicht: Modellbasierte Objekte wurden per **Reflektion** an die View-Schicht übergeben, wodurch Attribute dynamisch gesetzt und ausgelesen werden konnten.  
-Mit der der ``property``-Funktion konnte der Zugriff auf interne Attribute gekapselt und validiert werden. 
-
-Durch die klare Trennung von Verantwortung und Zuständigkeit entstand ein **modularer Aufbau**, so sind die beiden Anwendungen einfach erweiterbar und einfach zu Testen.
-
-Die Tests wurden in erster Linie **manuell** durchgeführt, indem die Programme gestartet und ihre Zusammenarbeit überprüft wurde. Zusätzlich wurden einzelne Module gezielt über die Konsole getestet, z.B. mit dem Befehl: 
-```bash
-python -m ort.modulname
-```
-Es wurde eine grundlegende **Fehlerbehandlung** in der Client-Anwendung implementiert, die mithilfe von try-except-Blöcken ungültige Eingaben abfängt und benutzerfreundlich behandelt. Im Gegensatz dazu kamen beim Server **benutzerdefinierte Fehlerklassen** zum Einsatz – die Klasse ``DBOperationError``, die bei ``DBOperator`` verwendet wird, um Fehler bei Dankbankoperationen gezielt zu erfassen.  
-Die Fehler werden in einen selbst entwickelten **Logger** erfasst und können je nach Konfiguration in der Konsole und/oder Datei ausgegeben werden.  
-
-Beim Erstellen der Tabellen in der relationalen Datenbank wurde darauf geachtet das **ACID-Prinzip** einzuhalten. Eine Ausnahme bilden Postleitzahlen und Städtenamen, die der Einfachheit halber in der Tabelle ``customer_adresses`` belassen wurden. Eine Übersicht über die Datenbank bietet das **relationale Datenbankdiagramm** (link hier, geplant). Vor mehrfachen ``execute``-Befehlen wird mit ``transaction`` und ``rollback`` im ``try-except``-Block gearbeitet.
-
-
-Die **HTTP-Anfragen** wurden im Client über die ``requests`` Bibliothek umgesetzt. Die genutzten HTTP-Befehle sind ``set``, ``post``, ``delete`` und ``patch``. Die Nachrichten werden mit ``.json()`` entpackt und entsprecht ihres **Statuscodes** weiterberarbeitet. Da es sich um eine Simulation handelt, wurde auf **HTTPS** verzichtet.  
-Die **REST-API** sowie die Authentifizierung und Token-Erstellung wurden mithilfe des offizielen FASTAPI-Tutorials umgessetzt. Das Token wird mit Hilfe der Bibliothek ``JWT`` erstellt. Der von FASTAPi bereitgestellte Code steht unter **MIT-Lizenz** und wurde an die Projektanforderungen angepasst  – so erfolgt die Authentifizierung nicht über den Benutzername, sondern über Email und Passwort. Mit der Basisklasse ``BaseModel`` aus der Bibliothek ``pydantic`` wurden Klassen zur **Datendefinition** und **Datenvalidierung** erstellt. Diese befinden sich im Ordner ``schemas`` und sind für FASTAPI zur entgegenahme von HTTP-Anfragen erforderlich.
-
-Die Börsendaten werden beim Start des Servers sowie bei kursrelevanten Abfragen – etwa dbei Kauf-Transaktionen – aktualisiert. Die Steuerungerfolgt über die Service-Schicht.
-
----
-### Sicherheitsaspekte
-Bei der Umsetzung des Projekts wurde auch auf die Sicherheit geachtet. So wurde nicht nur eine **Token-Authentifizierung** implementiert, sondern auch darauf geachtet, dass das Token im Client-Programm **nicht als Attribute einer Klasse** gespeichert wird.  
-Darüber hinaus wird der Kunde aufgefordert, ein Passwort zu wählen, das den empfohlenen **Sicherheitsanforderungen** entspricht. Zur Aktivierung des Kontos wird eine **Zwei-Faktor-Authentifizierung** simuliert.  
-Zur Gewährleistung von **Datenschutz** und **Datensicherheit** wurden die Kundendaten von Kunden in mehrere Tabelle aufgeteilt. Das **Passwort** und das **Bankkonto** werden in der Datenbank verschlüsselt gespeichert.
-- Beim Passwort wird mit **Bcrypt** gehast
-- Das Bankkonto wird mithilfe von **Fernet** (symmetrische Verschlüsselung) verschlüsselt.  
-
-Die Verschlüsselung erfolgt in den **Pydantic-Datenmodellen**, sobald die Daten empfangen und validiert wurden.
-Der von Fernet verwendete Schlüssel – ebenso wie der Schlüssel zur Token-Generierung – kann automatisch neu erstellt werden, wenn eine neue Datenbank mit der Server-Anwendung erzeugt wird.
-In der Datenbank werden automatisch die **Login-Zeit** und die **IP-Adresse** erfasst. Außerdem wird für jede Datenbankanfrage eine Verbindung geöffnet und geschlossen.
-Zur Vermeidung von **SQL-Injection** werden Benutzereingaben ausschließlich über **Platzhalter** in SQL-Befehle eingefügt.  
-
----
-### Grenzen des Projekts
-Ursprünglich war geplant einen zweites Client-Programm zuschreiben, das die **Bank-Seite** repräsentiert. Dafür wurden auch schon Kundendaten erstellt. Und es war vorgesehen, **Transaktion für die letzten Jahre** einzupflegen, um der Bank-Seite eine Grundlage für **Statistiken** zu bieten. Diese Erweiterung konnte aus **Zeitgründen** nicht realisiert werden.  
-Aus demselben Grund wurde auch auf die Umsetzung der **asynchronen Programmierung** verzichtet.
-
----
-### Fazit
-Das Projekt es ein gutes Beispiel für den praktischen Einsatz beider **Programmierparadigmen**: **objektorientiert** und **prozedural**. 
-Die Client-Anwendung demonstriert die Vorteile der **objektorientierten Programmierung** – etwa das Bündeln von zusammenhängenden Funktionen in Klassen, das Speichern und Verwalten von Zuständen, die Wiederverwendbarkeit durch **Vererbung**, sowie den gezielten Einsatz von **Komposition** und **Reflektion**, um dynamisch auf Attribute zuzugreifen.
-
-Im Gegensatz dazu ist der Server bewusst **prozedural** aufgebaut. Hier zeigt sich, dass bei klar abgegrenzten Aufgaben – wie dem Verarbeiten und Weiterreichen von Daten – **Funktionen** oft völlig ausreichend sind. Gleichzeitig wird deutlich, dass es auch in prozeduralen Architekturen sinnvolle Anwendungsfälle für **Klassen** gibt: Die ``DBOperator`` etwa kapselt wiederkehrende Abläufe und Fehlerbehandlung beim Datenbankzugriff und zeigt, wie strukturierte Zustandsverwaltung auch in einem prozeduralen Kontext hilfreich sein kann.
-
-Eine wichtige Erfahrung aus dem Projekt war, wie häufig und wiederholt getestet werden musste. Um in zukünftigen Projekten Zeit zu sparen und die Qualität zu sichern, ist einer der nächsten Schritte, sich intensiver mit **automatisierten Tests** auseinanderzusetzen.
-
-Beim Schreiben der **SQL-Befehle** musste abgewogen werden, wie allgemein ein Befehl gestaltet werden sollte. Einerseits ist es sinnvoll, wiederverwendbare und flexible Abfragen zu formulieren, um **Redudanz** im Code zu vermeiden. Andererseits kann eine zu starke **Generalisierung** den Code unnötig komplex machen und den **Zeitaufwand** erhöhen. Ob sich dieser Mehraufwand lohnt, sollte im Vorfeld überlegt werden – insbesondere, wenn zum Zeitpunkt der Erstellung nur ein konkreter Anwendungsfall bekannt ist.
-
-In solchen Fällen ist es oft effizienter, eine einfache, spezifische Lösung zu wählen, anstatt Zeit in die Entwicklung eines universellen Befehls zu investieren, der möglicherweise nie ausreichend mehrfach wiederverwendet das sich diese Zeit auch rentiert. Diese Abwägung zwischen **Wiederverwendbarkeit** und **Entwicklungsaufwand** war eine wichtige Erfahrung des Projekts und hat mein Verständnis für **pragmatische Softwareentwicklung** geschärft.
-
-**Generalisierte SQL-Befehle** bergen zudem auch ein zusätzliches Sicherheitsrisiko. Ein Beispiel wäre: 
-````python
-sql = f"""INSERT INTO {table} ({key_column}) VALUES({key_value})"""´
-````
-Solche Konstrukte könnten ausgenutzt werden, um Daten in Tabellen zu verändern, für die der Befehl ursrpünglich nicht vorgesehen war. Auch wenn es sich bei diesem Projekt um eine Simulation handelt, wurde deutlich, dass **Sicherheit** nicht erst beim Zugriff auf sensible Daten beginnt.
-Ein Beispiel dafür ist der bewusste **Verzicht darauf, Zugangstoken als Attribut in einer Klasse zu speichern**, um Missbrauch oder versehentliches Weitergeben zu vermeiden. Diese Erkenntnis hat mein Bewusstsein dafür geschärft, dass **sichere Softwareentwicklung** bereits bei der Gestaltung und Strukturierung des Codes beginnt.  
-
-Das Projekt war ein spannendes und lehrreiche Erfahrung. Gleichzeitig bin ich froh, es nun abschließen zu können und mich neuen Projekten und Herausforderungen zu widmen.
-
-
-
-## Projektübersicht
-
-### Funktionen:
-- **beim Serverstart:**
-  - Prüfen, ob eine Datenbank vorhanden ist
-  - Falls nicht:
-    - Erstellen von neuen Schlüsseln (für Token und Kontodatenverschlüsselung)
-    - Erstellen der Datenbank
-
-- **Mit dem Client:**
-  - Konto erstellen und einloggen
-  - Aktien suche und handeln
-  - Watchlist verwalten
-  - Konto- und Depotübersicht anzeigen
-  - Geld ein-/auszahlen
-  - Ordergebühren anzeigen
-  - Kontodaten bearbeiten
-  - Abmelden oder Programm beenden
-
+Das Projekt entstand mit dem Ziel, praktische Erfahrung in folgenden Bereichen zu sammeln:
+- Aufbau und Strukturierung eines **RESTful Client-Server-Systems**
+- Umsetzung sicherer **Benutzerauthentifizierung** mit JWT und Hashing
+- Verarbeitung und Speicherung von Börsendaten mit **SQL**
+- Anwendung von **OOP** und MVC im Konsolen-Client
+- Verwendung direkter SQL-Abfragen zur Einhaltung des **ACID-Prinzips**
 
 ---
 
-### Projektverzeichnis
-Ein komplettes Verzeichnis findet sich hier: Link
+### Client – OOP & MVC
 
-<pre style="font-size:12px; font-family:Consolas;">
+- **Model:** Datenhaltung, Validierung, Serverkommunikation
+- **View:** Konsolenausgabe & Eingabeverarbeitung
+- **Controller:** Koordination der Programmabläufe
+- **Service:** Kapselung der HTTP-Kommunikation
+
+#### Besonderheiten:
+
+- Einsatz von **Vererbung**, **Komposition** und **Reflexion** zur Wiederverwendung von Logik
+- **Keine GUI**: Fokus liegt auf klarer Struktur und objektorientierter Programmierung
+
+---
+
+### Server – REST-API mit FastAPI
+
+Die Serveranwendung folgt einer **Schichtenarchitektur**:
+
+- **API-Schicht:** Endpunkte mit FastAPI inkl. JWT-Login
+- **Service-Schicht:** Geschäftslogik & Validierungen
+- **Repository-Schicht:** SQL-Operationen mit `sqlite3`
+
+zusätzliche Komponenten  
+- **Database:** Sqlite-Datenbank und Update-Skript beim Serverstart
+  - **SQLite Scripts:**  Skripte zur Erstellung von Tabellen und Einlesen von Beispiel- und Aktiendaten
+- **Schemas:** Pydantic-Modelle für Anfrage- & Antwortdaten
+- **Utilities:** Hilfsfunktionen
+- **Logger:** Logging-Komponente
+  - **Log Files:** Logging-Ausgaben als `.txt`-Dateien
+
+---
+
+### Datenbank & Sicherheit
+
+Daten werden in einer **SQLite-Datenbank** gespeichert – vollständig ohne ORM. Im Fokus standen folgende Aspekte:
+
+- **ACID-Konformität** mit Transaktionen und Rollback
+- **Sicherheitsfunktionen:**
+  - Passwörter werden mit **Bcrypt** gehasht
+  - Bankdaten sind mit **Fernet** symmetrisch verschlüsselt
+  - Schutz vor SQL-Injection **parametrisierte Abfragen**
+  - Login-Protokollierung mit Zeitstempel und IP
+  - **Trennung sensibler Kundendaten** (z. B. Adressdaten, Finanzdaten, Zugangsdaten) zur Minimierung von Risiken bei Datenlecks
+
+---
+
+### Fehlerbehandlung
+
+- **Client:**
+  - Eingabeüberprüfung zur Vermeidung ungültiger Werte mit benutzerfreundlicher Rückmeldung
+  - Grundlegende Fehlerbehandlung sowie Umgang mit HTTP-Fehlern
+
+- **Server:**
+  - Automatische Datenvalidierung durch Pydantic-Modelle beim Empfang von API-Anfragen
+  - Verwendung eigener Exception-Klassen zur gezielten Unterscheidung von Fehlerursachen (z. B. Datenbankfehler)
+  - **Selbstentwickelter Logger** zur Speicherung und Ausgabe von Fehler- und Statusmeldungen
+  - Zentrale Fehlerbehandlungsfunktion zur konsistenten Reaktion auf unterschiedliche Fehlertypen
+  - Fehlernachrichten enthalten kontextbezogene Informationen wie SQL-Query, Benutzerinput und Funktionsname
+  - Benutzerfreundliche HTTP-Antworten mit passenden Statuscodes und verständlichen Fehlermeldungen
+
+---
+
+### REST-API & Börsendaten
+
+Die REST-API mit FastAPI umfasst u. a.:
+
+- Automatisch generierte API-Dokumentation via Swagger UI
+- Tokenbasierte Authentifizierung via JSON Web Tokens (JWT)
+- Alle API-Endpunkte sind asynchron (`async def`) und unterstützen `await`-fähige Funktionen – bereit für parallele Verarbeitung
+- Nutzung von HTTP-Methoden: GET, POST, DELETE und PATCH
+- Interner Finanzdatenabruf mit YFinance und Speicherung der Börsendaten
+
+---
+
+### Erfahrung und Erkenntnisse:
+
+Das Projekt zeigt den praktischen Einsatz sowohl **objektorientierter** als auch **prozeduraler Programmierung**:
+
+- **Objektorientierte Programmierung** ist ideal für den Client, da man typische Merkmale wie Zustandsverwaltung, Wiederverwendbarkeit (Vererbung, Komposition) und Reflektion gezielt einsetzen kann.
+- **Prozedurale Struktur** auf dem Server ermöglicht einfache, nachvollziehbare Datenflüsse
+
+**Wichtige Erkenntnisse:**
+
+- **Tests:** Häufiges manuelles Testen hat gezeigt, wie wichtig automatisierte Tests für zukünftige Projekte sind.
+- **Fehlerbehandlung:** Debugging war ein zentraler Bestandteil der Entwicklung – das gezielte Lesen und Verstehen von Fehlermeldungen ist essenziell für effizientes Arbeiten.
+- **SQL-Design:** Die Balance zwischen Wiederverwendbarkeit und Einfachheit ist entscheidend – nicht jede Abfrage muss maximal flexibel sein.
+- **Pragmatisches Arbeiten:** Manchmal ist eine einfache, spezifische Lösung sinnvoller als eine übergeneralisierte, die kaum wiederverwendet wird.
+
+Das Projekt hat meine technischen Fähigkeiten in Python und SQL deutlich erweitert – und mir gezeigt, wie zentral sauberes Debugging, Fehlermeldungen und gezielte Planung für effiziente Entwicklung sind.
+
+---
+
+### Ausblick
+
+Geplante, aber nicht umgesetzte Features:
+
+- Separater **Bank-Client** mit Statisiken und Verwaltungsfunktionen für die Bankseite 
+- Implementierung der **Uvicorn-Servermeldungen in das bestehende Logging-System
+
+---
+
+## TL;DR – Warum dieses Projekt relevant ist:
+
+- Vollständiges Client-Server-System mit REST-API
+- Fokus auf Sicherheit und sauberen SQL-Code
+- Demonstration moderner Python-Entwicklung
+- Klare Schichten- & Modulstruktur
+- Erweiterbare Architektur (Async, GUI etc.)
+
+<hr style="border: 1px solid #ccc;" />
+
+## Funktionen
+
+### Beim Serverstart:
+
+- Überprüfung, ob Datenbank vorhanden ist
+- Falls nicht:
+  - Generierung von Schlüsseln (JWT, Verschlüsselung)
+  - Erstellung der Tabellenstruktur
+  - Einlesen von Kundendaten und Beispieldepot
+
+### Mit dem Client:
+
+- Konto erstellen & aktivieren (Zwei-Faktor, simuliert)
+- Login mit Token-Erstellung
+- Aktien suchen & handeln
+- Watchlist verwalten
+- Depot- & Kontostand einsehen
+- Geld ein-/auszahlen
+- Kontodaten ändern
+- Programm beenden oder abmelden
+
+<hr style="border: 1px solid #ccc;" />
+
+## Projektverzeichnis
+Eine vollständige Übersicht über die Projektstruktur befindet sich [hier](https://github.com/devZenger/FoxFinance/blob/main/docs/verzeichnis.md).
+
+```plaintext
 FoxFinance/
 ├── customer_client/
-│    ├── controller/
-│    ├── model/
-│    ├── service/
-│    ├── view/
-│    └── app.py
-├── docs/
-│    └── imgages/
+│   ├── controller/
+│   ├── model/
+│   ├── service/
+│   ├── view/
+│   └── app.py
 ├── server/
-│    ├── api/
-│    ├── database/
-│    │    ├── sqlite_scripts/
-│    │    └── FoxFinanceData.db
-│    ├── logger/
-│    ├── repository/
-│    ├── schemas/
-│    ├── service/
-│    └── main_server.py
+│   ├── api/
+│   ├── database/
+│   │   ├── sqlite_scripts/
+│   │   └── FoxFinanceData.db
+│   ├── logger/
+│   ├── repository/
+│   ├── schemas/
+│   ├── service/
+│   └── main_server.py
+├── docs/
+│   └── images/
 ├── LICENSE.txt
 ├── README.md
 └── requirements.txt
-</pre>
----
+```
 
-### UML Klassendiaggramm
+<hr style="border: 1px solid #ccc;" />
 
+## UML Klassendiaggramm
 
 #### Klassendiagramm von der Client-Anwendung
 
@@ -239,7 +265,7 @@ Das Diagramm ist auch als `.puml`-Datei im Verzeichnis /docs verfügbar.
 
 ---
 
-### Relationales Datenbankmodell
+## Relationales Datenbankmodell
 
 <div style="width: 100%; margin: 0 auto; text-align: left;">
 <img src="docs/images//relationales_Datenbankdiagramm.PNG" alt="relationales_Datenbankdiagramm" title="relationales_Datenbankdiagramm" style="width:100%; height:auto;">
@@ -247,7 +273,7 @@ Das Diagramm ist auch als `.puml`-Datei im Verzeichnis /docs verfügbar.
 
 **Beschreibung:** Das Diagramm zeigt die relationale Datenbankstruktur des Projekts. Im linken Bereich befindet sich die customer_id-Tabelle, daneben weitere Tabellen die direkt mit dem Nutzer verküpft sind. Rechts davon sind die Tabellen für  Aktientransaktionen(transactions), die Watchlist(wathlist) sowei Überweisungen(financial_transactions). 
 
-Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für Konsistenz und Integrität sorgen. Ein interaktives Online-Diagramm mit ergänzenden Notizen ist auf dbdocs.io <a href="https://dbdocs.io/christian.zenger/FoxFinance?view=relationships">(Link)</a> verfügbar. Dort lassen sich unter anderem Informationen zu Unique-Constraints und Trigger einsehen. Das Diagramm ist auch als `.pdf`-Datei im Verzeichnis /docs verfügbar.
+Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für Konsistenz und Integrität sorgen. Ein interaktives Online-Diagramm mit ergänzenden Notizen ist auf dbdocs.io <a href="https://dbdocs.io/test/FoxFinance?view=relationships">(Link)</a> verfügbar. Dort lassen sich unter anderem Informationen zu Unique-Constraints und Trigger einsehen. Das Diagramm ist auch als `.pdf`-Datei im Verzeichnis /docs verfügbar.
 
 
 
@@ -364,14 +390,14 @@ Um das ACID-Prinzip einzuhalten, wurden zusätzliche Tabellen ergänzt, die für
 
 
 
-
+<hr style="border: 1px solid #ccc;" />
 
 
 ## Installation
 Voraussetzung: Python 3.10 oder neuer muss installiert sein.
 ### 1. Repository klonen
  ```bash
-git clone https://github.com/Name/Name.git
+git clone https://github.com/devZenger/FoxFinance.git
 ```
 
 ### 2. In das Projektverzeichnis wechseln
@@ -406,9 +432,12 @@ python app.py
 ```
 (Pfad: ..\FoxFinance\customer_client\app.py)
 
----
+<hr style="border: 1px solid #ccc;" />
 
 ## Lizenz
+Copyright (c) 2025 Christian Zenger  
+GitHub: https://github.com/devZenger/FoxFinance  
+
 Dieses Projekt wurde ausschließlich zu **Lern- und Demonstrationszwecken** entwickelt.
 Für Teile des Codes basieren auf der offiziellen Dokumentation bzw. den Tutorials von FASTAPI ([siehe hier](https://fastapi.tiangolo.com/de/tutorial/)). 
 Diese Inhalte wurden unter der **MIT-Lizenz** veröffentlicht und in angepasster Form im Projekt verwendet.  
@@ -421,7 +450,7 @@ Bitte beachte, dass dieses Projekt **nicht unter einer Open-Source-Lizenz** steh
 Bei Fragen oder Feedback freue ich mich über eine Nachricht.
   
   
-### Verwendete Drittanbieter-Bibliotheken
+### Verwendete Drittanbieter-Technologien
 
 Das Projekt verwendet folgende Open-Source-Bibliotheken und Tools:
 

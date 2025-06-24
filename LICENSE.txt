@@ -1,6 +1,7 @@
-Lizenz für FoxFinance 
-GitHub: https://github.com/devZenger/FoxFinance
-
+Lizenz für FoxFinance  
+Copyright (c) 2025 Christian Zenger  
+GitHub: https://github.com/devZenger/FoxFinance  
+  
 Dieses Projekt wurde ausschließlich zu Lern- und Demonstrationszwecken entwickelt.
 Für Teile des Codes basieren auf der offiziellen Dokumentation bzw. den Tutorials von FASTAPI (siehe hier: https://fastapi.tiangolo.com/de/tutorial/). 
 Diese Inhalte wurden unter der MIT-Lizenz veröffentlicht und in angepasster Form im Projekt verwendet.  
