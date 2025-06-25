@@ -149,7 +149,8 @@ Die REST-API mit FastAPI umfasst u. a.:
 Das Projekt zeigt den praktischen Einsatz sowohl **objektorientierter** als auch **prozeduraler Programmierung**:
 
 - **Objektorientierte Programmierung** ist ideal für den Client, da man typische Merkmale wie Zustandsverwaltung, Wiederverwendbarkeit (Vererbung, Komposition) und Reflektion gezielt einsetzen kann.
-- **Prozedurale Struktur** auf dem Server ermöglicht einfache, nachvollziehbare Datenflüsse
+- **Prozedurale Struktur** auf dem Server ermöglicht einfache, nachvollziehbare Datenflüsse.
+- **Allerdings** zeigten sich auch Grenzen und bewusste Abweichungen: Auf dem Client wurde die Wiederverwendung von Funktionen prozedural umgesetzt, da dies für kleinere, klar abgegrenzte Aufgaben praktikabler war. Umgekehrt wurde auf dem Server der Datenbankzugriff objektorientiert realisiert – durch die Kapselung von Kommandos wie connect, execute und rollback in einer Klasse konnte die Logik sauber gebündelt und wiederverwendbar gestaltet werden.
 
 **Wichtige Erkenntnisse:**
 
