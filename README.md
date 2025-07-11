@@ -248,11 +248,11 @@ Das Diagramm ist als `.puml`-Datei im Verzeichnis /docs verfügbar.
 
 ---
 
-#### Klassendigramm vom Server-Programm
+#### Mudolübersicht vom Server-Programm
 <div style="text-align: center;">
 <img src="docs/images//server_klassendiagramm.PNG" alt="Klassendiagramm vom Server-Programm" title="klassendiagramm vom Server-Programm" style="width:100%; height:auto;"></div>
 
-**Beschreibung:** Das Klassendiagramm zeigt die verschiedenen Schichten des Server-Programms.
+**Beschreibung:** Das Diagramm zeigt die modulare Struktur des Server-Programms und veranschaulicht die Beziehungen zwischen den einzelnen Python-Dateien (Modulen) in einer mehrschichtigen Architektur.
 
 - Die **API-Schicht** ist in **Lila-Tönen** dargestellt. Sie nimmt HTTP Anfragen entgegen und sendet Antworten.
 Sie steht primär in Verbindung mit der Service-Schicht, welche die Geschäftslogik enthält, sowie mit der Schema-Schicht, die die Datenklasse definiert.
