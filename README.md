@@ -1,6 +1,6 @@
 # 🦊 FoxFinance – Eine Aktiendepot-Simulation mit Python & FastAPI
 
-**FoxFinance** ist ein vollständiges Server-Client-Projekt, mit dem Benutzer ein digitales Aktiendepot eröffnen und verwalten können. Der **Client** ist eine objektorientierte Konsolenanwendung im **MVC-Stil**, während der **Server** im prozeduralen Stil naein einer klaren, mehrschichtigen Architektur aufgebaut ist – mit **FastAPI** als Framework für die REST-API und **SQLite** als Datenbanklösung folgt.
+**FoxFinance** ist ein vollständiges Server-Client-Projekt, mit dem Benutzer ein digitales Aktiendepot eröffnen und verwalten können. Der **Client** ist eine objektorientierte Konsolenanwendung im **MVC-Stil**, während der **Server** im prozeduralen Stil nach einer klaren, mehrschichtigen Architektur aufgebaut ist – mit **FastAPI** als Framework für die REST-API und **SQLite** als Datenbanklösung folgt.
 
 Ziel des Projekts war es, die praktische Umsetzung eines vollständigen REST-basierten Client-Server-Systems zu erlernen – mit besonderem Fokus auf **Sicherheit**, **strukturierter Softwarearchitektur** und direkter **SQL-Kontrolle ohne ORM**.
 
